@@ -3,6 +3,7 @@ package fr.galaxyoyo.mobdefense;
 import com.adamki11s.pathing.AStar;
 import com.adamki11s.pathing.PathingResult;
 import com.adamki11s.pathing.Tile;
+import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
 import com.google.common.collect.Sets;
 import net.minecraft.server.v1_10_R1.EntityCreature;
@@ -99,6 +100,9 @@ public class Wave
 					t.printStackTrace();
 				}
 
+				starts.put(c, c.getLocation().clone());
+				creatureCurrentTile.put(c, 1);
+				creatureTiles.put(c, Lists.newArrayList());
 				recalculate(c);
 				new BukkitRunnable()
 				{
@@ -154,7 +158,7 @@ public class Wave
 	public void update(Creature c)
 	{
 		Tile currentTile = creatureTiles.get(c).get(creatureCurrentTile.get(c));
-		if (currentTile.getLocation(starts.get(c)).distanceSquared(c.getLocation()) > 1)
+		if (currentTile.getLocation(starts.get(c)).distanceSquared(c.getLocation()) > 2)
 			return;
 		int tileId = creatureCurrentTile.get(c) + 1;
 		creatureCurrentTile.put(c, tileId);
