@@ -172,14 +172,7 @@ public abstract class Tower
 			@Override
 			protected IProjectile a(World world, IPosition pos, net.minecraft.server.v1_10_R1.ItemStack itemStack)
 			{
-				return new EntityArrow(world, pos.getX(), pos.getY(), pos.getZ())
-				{
-					@Override
-					protected net.minecraft.server.v1_10_R1.ItemStack j()
-					{
-						return itemStack;
-					}
-				};
+				return new EntityTippedArrow(world);
 			}
 		};
 		projectile.b(new SourceBlock(((CraftWorld) getLocation().getWorld()).getHandle(), new BlockPosition(getLocation().getBlockX(), getLocation().getBlockY(), getLocation()
