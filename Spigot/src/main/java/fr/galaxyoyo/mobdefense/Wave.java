@@ -94,7 +94,7 @@ public class Wave
 					t.printStackTrace();
 				}
 
-				Bukkit.getScheduler().runTaskTimer(MobDefense.instance(), () -> update(c), 0, 5L);
+				Bukkit.getScheduler().runTaskTimer(MobDefense.instance(), () -> update(c), 0, 10L);
 			}
 		}
 
@@ -114,7 +114,7 @@ public class Wave
 			if (pf.getPathingResult() == PathingResult.NO_PATH)
 				return false;
 			List<Tile> tiles = pf.iterate();
-			Tile next = tiles.get(1);
+			Tile next = tiles.get(2);
 			((CraftCreature) c).getHandle().getNavigation().a(next.getX(c.getLocation()), next.getY(c.getLocation()) + 1, next.getZ(c.getLocation()), 1.0D);
 		}
 		catch (AStar.InvalidPathException ignored)
