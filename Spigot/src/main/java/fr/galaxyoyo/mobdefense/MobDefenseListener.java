@@ -2,10 +2,7 @@ package fr.galaxyoyo.mobdefense;
 
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
-import org.bukkit.entity.Creature;
-import org.bukkit.entity.EntityType;
-import org.bukkit.entity.Player;
-import org.bukkit.entity.Villager;
+import org.bukkit.entity.*;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.block.BlockBreakEvent;
@@ -15,6 +12,7 @@ import org.bukkit.event.player.PlayerInteractEntityEvent;
 import org.bukkit.event.player.PlayerJoinEvent;
 import org.bukkit.event.player.PlayerQuitEvent;
 import org.bukkit.event.weather.WeatherChangeEvent;
+import org.bukkit.event.world.WorldLoadEvent;
 import org.bukkit.inventory.ItemFlag;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
@@ -78,6 +76,8 @@ public class MobDefenseListener implements Listener
 	@EventHandler
 	public void onEntityDamage(EntityDamageEvent event)
 	{
+		if (event.getCause() == EntityDamageEvent.DamageCause.CUSTOM)
+			return;
 		if (event.getEntity() instanceof Villager)
 			event.setCancelled(true);
 	}
@@ -145,7 +145,12 @@ public class MobDefenseListener implements Listener
 	@EventHandler
 	public void onEntityGone(EntityGoneEvent event)
 	{
-		event.getEntity().remove();
 		Bukkit.broadcastMessage(event.getEntity().getCustomName() + " a réussi à passer !");
+	}
+
+	@EventHandler
+	public void onWorldLoaded(WorldLoadEvent event)
+	{
+		event.getWorld().getEntities().stream().filter(entity -> (entity instanceof Player)).forEach(Entity::remove);
 	}
 }
