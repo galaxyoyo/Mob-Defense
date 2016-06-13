@@ -18,6 +18,7 @@ import org.bukkit.entity.Player;
 import org.bukkit.entity.Villager;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.MerchantRecipe;
+import org.bukkit.inventory.meta.ItemMeta;
 import org.bukkit.plugin.java.JavaPlugin;
 import org.mcstats.Metrics;
 
@@ -107,8 +108,19 @@ public class MobDefense extends JavaPlugin
 				npcTower.setCollidable(false);
 				npcTower.setAI(false);
 				npcTower.setProfession(Villager.Profession.FARMER);
-				npcTower.setRecipes(Lists.newArrayList());
-				npcTower.setCustomName("Towers (Soon ...)");
+				List<MerchantRecipe> recipes = Lists.newArrayList();
+				npcTower.setRecipes(recipes);
+				for (Class<? extends Tower> clazz : Tower.getTowerClasses())
+				{
+					ItemStack result = new ItemStack(Material.DISPENSER);
+					ItemMeta meta = result.getItemMeta();
+					meta.setDisplayName(Tower.getTowerName(clazz));
+					result.setItemMeta(meta);
+					MerchantRecipe recipe = new MerchantRecipe(result, Integer.MAX_VALUE);
+					recipe.setIngredients(Lists.newArrayList(Tower.getTowerPrice(clazz)));
+					recipes.add(recipe);
+				}
+				npcTower.setCustomName("Towers");
 			}
 
 			for (int i = 0; i < 3; ++i)
