@@ -70,7 +70,7 @@ public class Wave
 					entry.set(entries.iterator().next());
 					entries.remove(entry.get());
 				}
-				Creature c = (Creature) Bukkit.getWorlds().get(0).spawnEntity(MobDefense.instance().getSpawn(), entry.get().getKey().getType());
+				Creature c = (Creature) Bukkit.getWorlds().get(0).spawnEntity(MobDefense.instance().getSpawn().clone().add(0, 2, 0), entry.get().getKey().getType());
 				c.setCustomName(entry.get().getKey().getDisplayName());
 				c.setCustomNameVisible(true);
 				c.setMaxHealth(entry.get().getKey().getHP());
@@ -123,7 +123,7 @@ public class Wave
 					t.printStackTrace();
 				}
 
-				starts.put(c, c.getLocation().clone());
+				starts.put(c, MobDefense.instance().getSpawn().clone());
 				creatureCurrentTile.put(c, 1);
 				creatureTiles.put(c, Lists.newArrayList());
 				recalculate(c);
