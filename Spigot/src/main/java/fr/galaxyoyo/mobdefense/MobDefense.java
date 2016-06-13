@@ -113,6 +113,7 @@ public class MobDefense extends JavaPlugin
 			else
 				ex.printStackTrace();
 			getLogger().severe("The plugin will now be disabled.");
+			getLogger().severe("*************************************");
 			getServer().getPluginManager().disablePlugin(this);
 		}
 	}

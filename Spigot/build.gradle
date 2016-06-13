@@ -1,6 +1,7 @@
 apply plugin: 'java'
 apply plugin: 'idea'
 
+//noinspection GroovyUnusedAssignment
 sourceCompatibility = 1.8
 
 archivesBaseName = 'MobDefense'
@@ -26,8 +27,26 @@ repositories {
     }
 }
 
+//noinspection GroovyAssignabilityCheck
+configurations {
+    included
+    //noinspection GroovyAssignabilityCheck
+    compile.extendsFrom included
+}
+
 dependencies {
     testCompile group: 'junit', name: 'junit', version: '4.11'
     compile 'org.spigotmc:spigot:1.10-R0.1-SNAPSHOT'
-    compile 'org.mcstats.bukkit:metrics:R8-SNAPSHOT'
+    included 'org.mcstats.bukkit:metrics:R8-SNAPSHOT'
+}
+
+task fatjar(type: Jar) {
+    baseName = archivesBaseName
+
+    from {
+        configurations.included.collect {
+            it.isDirectory() ? it : zipTree(it).matching { exclude { it.toString().contains('META-INF') && it.toString() != "META-INF" } }
+        }
+    }
+    with jar
 }
