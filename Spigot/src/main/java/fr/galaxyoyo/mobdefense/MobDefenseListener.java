@@ -2,6 +2,7 @@ package fr.galaxyoyo.mobdefense;
 
 import fr.galaxyoyo.mobdefense.towers.Tower;
 import org.bukkit.Bukkit;
+import org.bukkit.GameMode;
 import org.bukkit.Material;
 import org.bukkit.entity.Creature;
 import org.bukkit.entity.Entity;
@@ -61,7 +62,7 @@ public class MobDefenseListener implements Listener
 		{
 			event.setCancelled(true);
 			event.setBuild(true);
-			if (Tower.placeAt(event.getBlockPlaced().getLocation(), event.getItemInHand()) == null)
+			if (!Tower.placeAt(event.getBlockPlaced().getLocation(), event.getItemInHand()))
 			{
 				event.setBuild(false);
 				return;
@@ -96,7 +97,7 @@ public class MobDefenseListener implements Listener
 	public void onBlockBreak(BlockBreakEvent event)
 	{
 		Tower t = Tower.breakAt(event.getBlock().getLocation());
-		if (t != null)
+		if (t != null && event.getPlayer().getGameMode() != GameMode.CREATIVE)
 		{
 			ItemStack stack = new ItemStack(Material.DISPENSER);
 			ItemMeta meta = stack.getItemMeta();

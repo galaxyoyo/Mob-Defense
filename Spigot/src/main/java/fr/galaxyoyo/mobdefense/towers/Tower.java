@@ -47,41 +47,52 @@ public abstract class Tower
 		towerClasses.add(clazz);
 	}
 
-	public static <T extends Tower> T placeAt(Location loc, ItemStack stack)
+	public static boolean placeAt(Location loc, ItemStack stack)
 	{
 		Location towerLoc = loc.clone().add(0, 1, 0);
 		if (towerLoc.getBlock().getType() != Material.AIR)
-			return null;
+			return false;
 
-		Class<T> clazz = null;
+		Class<? extends Tower> clazz = null;
 		for (Class<? extends Tower> towerClass : towerClasses)
 		{
 			if (getTowerName(towerClass).equals(stack.getItemMeta().getDisplayName()))
 			{
 				//noinspection unchecked
-				clazz = (Class<T>) towerClass;
+				clazz = towerClass;
 				break;
 			}
 		}
 
 		if (clazz == null)
-			return null;
+			return false;
 
 		try
 		{
-			towerLoc.getBlock().setType(Material.DISPENSER);
-			BlockFace face = ((Dispenser) loc.getBlock().getState().getData()).getFacing();
-			System.out.println(face);
-			((Dispenser) towerLoc.getBlock().getState().getData()).setFacingDirection(face);
-			T tower = clazz.getConstructor(Location.class).newInstance(towerLoc);
-			loc.getBlock().setType(tower.getMaterial());
-			towersByLocation.put(towerLoc, tower);
-			return tower;
+			Class<? extends Tower> finalClazz = clazz;
+			Bukkit.getScheduler().runTask(MobDefense.instance(), () -> {
+				towerLoc.getBlock().setType(Material.DISPENSER);
+				BlockFace face = ((Dispenser) loc.getBlock().getState().getData()).getFacing();
+				((Dispenser) towerLoc.getBlock().getState().getData()).setFacingDirection(face);
+				Tower tower = null;
+				try
+				{
+					tower = finalClazz.getConstructor(Location.class).newInstance(towerLoc);
+				}
+				catch (Exception ex)
+				{
+					ex.printStackTrace();
+					return;
+				}
+				loc.getBlock().setType(tower.getMaterial());
+				towersByLocation.put(towerLoc, tower);
+			});
+			return true;
 		}
 		catch (Exception ex)
 		{
 			ex.printStackTrace();
-			return null;
+			return false;
 		}
 	}
 

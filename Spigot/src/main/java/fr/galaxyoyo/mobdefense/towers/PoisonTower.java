@@ -5,32 +5,32 @@ import org.bukkit.Material;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.potion.PotionType;
 
-public class DamageTower extends Tower
+public class PoisonTower extends Tower
 {
-	public DamageTower(Location location)
+	public PoisonTower(Location location)
 	{
 		super(location);
 	}
 
 	public static String getName()
 	{
-		return "Damage Tower";
+		return "Poison Tower";
 	}
 
 	public static ItemStack[] getPrice()
 	{
-		return new ItemStack[]{new ItemStack(Material.GOLD_INGOT, 1)};
+		return new ItemStack[]{new ItemStack(Material.GOLD_INGOT, 5)};
 	}
 
 	@Override
 	public Material getMaterial()
 	{
-		return Material.NETHER_WART_BLOCK;
+		return Material.SLIME_BLOCK;
 	}
 
 	@Override
 	public void onTick()
 	{
-		launchArrow(10, PotionType.INSTANT_DAMAGE);
+		launchArrow(10, PotionType.POISON);
 	}
 }
