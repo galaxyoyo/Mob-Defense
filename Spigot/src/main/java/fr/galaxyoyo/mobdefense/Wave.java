@@ -111,7 +111,7 @@ public class Wave
 						}
 						update(c);
 					}
-				}.runTaskTimer(MobDefense.instance(), 0, 20L);
+				}.runTaskTimer(MobDefense.instance(), 0, 15L);
 			}
 		}
 
@@ -127,8 +127,8 @@ public class Wave
 	{
 		try
 		{
-			AStar pf = new AStar(c.getLocation().clone().subtract(0, 1, 0), MobDefense.instance().getEnd().clone().subtract(0, 1, 0), (int) MobDefense.instance().getEnd().distance(c
-					.getLocation()));
+			AStar pf = new AStar(c.getLocation().clone().subtract(0, 1, 0), MobDefense.instance().getEnd().clone().subtract(0, 1, 0), (int) MobDefense.instance().getEnd()
+					.distanceSquared(c.getLocation()));
 			if (pf.getPathingResult() == PathingResult.NO_PATH)
 				return false;
 			List<Tile> tiles = pf.iterate();
