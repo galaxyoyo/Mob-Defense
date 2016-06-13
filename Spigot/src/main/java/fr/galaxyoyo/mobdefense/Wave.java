@@ -162,7 +162,7 @@ public class Wave
 					}
 				}.runTaskTimer(MobDefense.instance(), 0L, 5L);
 			}
-		}.runTaskTimer(MobDefense.instance(), 0, 20L);
+		}.runTaskTimer(MobDefense.instance(), 0, 40L);
 
 		waves.put(this, creatures);
 	}

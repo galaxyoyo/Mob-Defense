@@ -87,17 +87,6 @@ public class AStar
 						// if block is out of bounds continue
 						continue;
 
-					if (x != 0 && z != 0 && (y == 0 || y == 1))
-					{
-						// check to stop jumping through diagonal blocks
-						Tile xOff = new Tile((short) (current.getX() + x), (short) (current.getY() + y), (current.getZ()), current), zOff =
-								new Tile(current.getX(), (short) (current.getY() + y), (short) (current.getZ() + z), current);
-						if (!this.isTileWalkable(xOff) && !this.isTileWalkable(zOff))
-						{
-							continue;
-						}
-					}
-
 					if (this.isOnClosedList(t))
 						// ignore tile
 						continue;
@@ -145,6 +134,11 @@ public class AStar
 				|| id == 76 || id == 78);
 	}
 
+	private boolean isOnClosedList(Tile t)
+	{
+		return closed.containsKey(t.getUID());
+	}
+
 	private boolean isTileWalkable(Tile t)
 	{
 		Location l = new Location(w, (sx + t.getX()), (sy + t.getY()), (sz + t.getZ()));
@@ -170,11 +164,6 @@ public class AStar
 		{
 			return false;
 		}
-	}
-
-	private boolean isOnClosedList(Tile t)
-	{
-		return closed.containsKey(t.getUID());
 	}
 
 	private Tile isOnOpenList(Tile t)
@@ -333,13 +322,9 @@ public class AStar
 		{
 			StringBuilder sb = new StringBuilder();
 			if (!s)
-			{
 				sb.append("Start Location was air. ");
-			}
 			if (!e)
-			{
 				sb.append("End Location was air.");
-			}
 			return sb.toString();
 		}
 
