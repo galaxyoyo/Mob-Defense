@@ -1,17 +1,16 @@
 package fr.galaxyoyo.mobdefense;
 
 import com.adamki11s.pathing.AStar;
+import com.adamki11s.pathing.PathingResult;
 import com.adamki11s.pathing.Tile;
-import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
+import com.google.common.collect.Sets;
 import net.minecraft.server.v1_10_R1.EntityCreature;
 import net.minecraft.server.v1_10_R1.PathfinderGoalSelector;
 import org.bukkit.Bukkit;
 import org.bukkit.craftbukkit.v1_10_R1.entity.CraftCreature;
 import org.bukkit.entity.Ageable;
-import org.bukkit.entity.ArmorStand;
 import org.bukkit.entity.Creature;
-import org.bukkit.entity.EntityType;
 import org.bukkit.inventory.ItemStack;
 
 import java.lang.reflect.Field;
@@ -21,12 +20,17 @@ import java.util.Set;
 
 public class Wave
 {
+	private static Map<Wave, Set<Creature>> waves = Maps.newHashMap();
+	private static Map<Creature, Wave> wavesByCreature = Maps.newHashMap();
+	private static Map<Integer, Wave> wavesByNumber = Maps.newHashMap();
 	private int number;
 	private Map<MobClass, Integer> spawns = Maps.newHashMap();
 
-	public int getNumber()
+	public static Set<Creature> getAllCreatures()
 	{
-		return number;
+		Set<Creature> allCreatures = Sets.newHashSet();
+		waves.values().forEach(allCreatures::addAll);
+		return allCreatures;
 	}
 
 	public Map<MobClass, Integer> getSpawns()
@@ -36,14 +40,11 @@ public class Wave
 
 	public void start()
 	{
-		Bukkit.broadcastMessage("Démarrage de la vague #" + number);
+		number = wavesByNumber.size() + 1;
+		wavesByNumber.put(number, this);
+		Bukkit.broadcastMessage("Démarrage de la vague #" + getNumber());
 
-		ArmorStand as = (ArmorStand) Bukkit.getWorlds().get(0).spawnEntity(MobDefense.instance().getEnd(), EntityType.ARMOR_STAND);
-		as.setVisible(false);
-		as.setAI(false);
-		as.setGravity(false);
-
-		List<Creature> creatures = Lists.newArrayList();
+		Set<Creature> creatures = Sets.newHashSet();
 		for (Map.Entry<MobClass, Integer> entry : spawns.entrySet())
 		{
 			for (int i = 0; i < entry.getValue(); ++i)
@@ -69,6 +70,7 @@ public class Wave
 				c.getEquipment().setItemInMainHandDropChance(0.0F);
 				c.getEquipment().setItemInOffHandDropChance(0.0F);
 				creatures.add(c);
+				wavesByCreature.put(c, this);
 
 				EntityCreature ec = ((CraftCreature) c).getHandle();
 
@@ -86,29 +88,38 @@ public class Wave
 					bTarget.clear();
 					Set cTarget = (Set) cField.get(ec.targetSelector);
 					cTarget.clear();
-					//	ec.goalSelector.a(1, new PathfinderGoalWalkToLoc(ec, MobDefense.instance().getEnd(), entry.getKey().getSpeed()));
-					//	ec.targetSelector.a(1, new PathfinderGoalWalkToLoc(ec, MobDefense.instance().getEnd(), entry.getKey().getSpeed()));
 				}
 				catch (Throwable t)
 				{
 					t.printStackTrace();
 				}
-				c.setTarget(as);
 
-				Bukkit.getScheduler().runTaskTimer(MobDefense.instance(), () -> {
-					try
-					{
-						AStar pf = new AStar(c.getLocation().clone().subtract(0, 1, 0), MobDefense.instance().getEnd().clone().subtract(0, 1, 0), 142);
-						List<Tile> tiles = pf.iterate();
-						Tile next = tiles.get(1);
-						ec.getNavigation().a(next.getX(c.getLocation()), next.getY(c.getLocation()) + 1, next.getZ(c.getLocation()), 1.0D);
-					}
-					catch (AStar.InvalidPathException e)
-					{
-						e.printStackTrace();
-					}
-				}, 0, 5L);
+				Bukkit.getScheduler().runTaskTimer(MobDefense.instance(), () -> update(c), 0, 5L);
 			}
 		}
+
+		waves.put(this, creatures);
+	}
+
+	public int getNumber()
+	{
+		return number;
+	}
+
+	public static boolean update(Creature c)
+	{
+		try
+		{
+			AStar pf = new AStar(c.getLocation().clone().subtract(0, 1, 0), MobDefense.instance().getEnd().clone().subtract(0, 1, 0), 142);
+			if (pf.getPathingResult() == PathingResult.NO_PATH)
+				return false;
+			List<Tile> tiles = pf.iterate();
+			Tile next = tiles.get(1);
+			((CraftCreature) c).getHandle().getNavigation().a(next.getX(c.getLocation()), next.getY(c.getLocation()) + 1, next.getZ(c.getLocation()), 1.0D);
+		}
+		catch (AStar.InvalidPathException ignored)
+		{
+		}
+		return true;
 	}
 }

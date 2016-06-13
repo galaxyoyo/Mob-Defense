@@ -1,9 +1,9 @@
 package fr.galaxyoyo.mobdefense;
 
-import com.adamki11s.pathing.PathingResult;
 import com.adamki11s.pathing.Tile;
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
+import org.bukkit.entity.Creature;
 import org.bukkit.entity.EntityType;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
@@ -38,7 +38,7 @@ public class MobDefenseListener implements Listener
 	public void onJoin(PlayerJoinEvent event)
 	{
 		Wave w = new Wave();
-		w.getSpawns().put(MobDefense.instance().getMobClasses().get(0), 1);
+		w.getSpawns().put(MobDefense.instance().getMobClasses().get(0), 6);
 		w.start();
 
 		ItemStack pickaxe = new ItemStack(Material.DIAMOND_PICKAXE);
@@ -58,22 +58,23 @@ public class MobDefenseListener implements Listener
 	@EventHandler
 	public void onBlockPlace(BlockPlaceEvent event)
 	{
-		List<Tile> oldPath = path;
-		path = MobDefense.instance().getPathfinder().iterate();
-		if (MobDefense.instance().getPathfinder().getPathingResult() == PathingResult.NO_PATH)
+		for (Creature c : Wave.getAllCreatures())
 		{
-			event.setCancelled(true);
-			path = oldPath;
+			if (!Wave.update(c))
+			{
+				event.setCancelled(true);
+				break;
+			}
 		}
 	}
 
 	@EventHandler
 	public void onBlockBreak(BlockBreakEvent event)
 	{
-		if (event.getBlock().getType() == Material.DISPENSER)
+	/*	if (event.getBlock().getType() == Material.DISPENSER)
 			path = MobDefense.instance().getPathfinder().iterate();
 		else
-			event.setCancelled(true);
+			event.setCancelled(true);*/
 	}
 
 	@EventHandler
