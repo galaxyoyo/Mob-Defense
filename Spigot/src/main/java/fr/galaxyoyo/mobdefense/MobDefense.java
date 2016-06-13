@@ -12,7 +12,9 @@ import org.bukkit.World;
 import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.craftbukkit.v1_10_R1.CraftWorld;
 import org.bukkit.enchantments.Enchantment;
+import org.bukkit.entity.Entity;
 import org.bukkit.entity.EntityType;
+import org.bukkit.entity.Player;
 import org.bukkit.entity.Villager;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.MerchantRecipe;
@@ -93,6 +95,8 @@ public class MobDefense extends JavaPlugin
 				mobClasses.add(sample);
 				FileUtils.writeStringToFile(file, gson.toJson(mobClasses), StandardCharsets.UTF_8);
 			}
+
+			world.getEntities().stream().filter(entity -> !(entity instanceof Player)).forEach(Entity::remove);
 
 			Random random = ((CraftWorld) world).getHandle().random;
 
