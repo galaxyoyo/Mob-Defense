@@ -70,11 +70,11 @@ public abstract class Tower
 
 		try
 		{
-			BlockFace face = ((Dispenser) loc.getBlock().getState().getData()).getFacing();
+			byte data = ((Dispenser) loc.getBlock().getState().getData()).getData();
 			Class<? extends Tower> finalClazz = clazz;
 			Bukkit.getScheduler().runTask(MobDefense.instance(), () -> {
 				towerLoc.getBlock().setType(Material.DISPENSER);
-				((Dispenser) towerLoc.getBlock().getState().getData()).setFacingDirection(face);
+				((Dispenser) towerLoc.getBlock().getState().getData()).setData(data);
 				Tower tower = null;
 				try
 				{
@@ -167,6 +167,7 @@ public abstract class Tower
 				(range - 1) * face.getModZ()), 1, -2, clazz);
 		if (type != null)
 			((TippedArrow) arrow).setBasePotionData(new PotionData(type));
+		arrow.setTicksLived(5900);
 		return arrow;
 	}
 
