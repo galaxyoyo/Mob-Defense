@@ -81,6 +81,7 @@ public class MobDefenseListener implements Listener
 	@EventHandler
 	public void onBlockBreak(BlockBreakEvent event)
 	{
+		Tower.breakAt(event.getBlock().getLocation());
 		Wave.getAllCreatures().forEach(Wave::recalculate);
 	}
 

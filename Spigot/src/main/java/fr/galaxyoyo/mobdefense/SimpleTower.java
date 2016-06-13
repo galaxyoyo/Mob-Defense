@@ -2,7 +2,6 @@ package fr.galaxyoyo.mobdefense;
 
 import org.bukkit.Location;
 import org.bukkit.Material;
-import org.bukkit.block.Dispenser;
 import org.bukkit.inventory.ItemStack;
 
 public class SimpleTower extends Tower
@@ -31,8 +30,6 @@ public class SimpleTower extends Tower
 	@Override
 	public void onTick()
 	{
-		Dispenser d = (Dispenser) getLocation().getBlock().getState();
-		d.getInventory().addItem(new ItemStack(Material.ARROW));
-		d.dispense();
+		launchArrow(10);
 	}
 }

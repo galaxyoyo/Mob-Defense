@@ -5,10 +5,16 @@ import com.google.common.collect.Sets;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.Material;
+import org.bukkit.block.BlockFace;
+import org.bukkit.entity.Arrow;
+import org.bukkit.entity.TippedArrow;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
 import org.bukkit.material.Dispenser;
+import org.bukkit.potion.PotionData;
+import org.bukkit.potion.PotionType;
 import org.bukkit.scheduler.BukkitTask;
+import org.bukkit.util.Vector;
 
 import java.util.Map;
 import java.util.Set;
@@ -135,6 +141,33 @@ public abstract class Tower
 
 	public void onBreak()
 	{
+	}
+
+	public void launchArrow(int range)
+	{
+		launchArrow(range, null);
+	}
+
+	public void launchArrow(int range, PotionType type)
+	{
+		Vector vec;
+		if (getDispenser().getFacing() == BlockFace.NORTH)
+			vec = new Vector(range, 0, 0);
+		else if (getDispenser().getFacing() == BlockFace.WEST)
+			vec = new Vector(0, 0, -range);
+		else if (getDispenser().getFacing() == BlockFace.SOUTH)
+			vec = new Vector(-range, 0, 0);
+		else
+			vec = new Vector(0, 0, range);
+		if (type == null)
+		{
+			Arrow arrow = getLocation().getWorld().spawnArrow(getLocation(), vec, 1.0F, 12.0F);
+		}
+		else
+		{
+			TippedArrow arrow = getLocation().getWorld().spawnArrow(getLocation(), vec, 1.0F, 12.0F, TippedArrow.class);
+			arrow.setBasePotionData(new PotionData(type));
+		}
 	}
 
 	public Dispenser getDispenser()
