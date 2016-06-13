@@ -6,14 +6,17 @@ import fr.galaxyoyo.mobdefense.MobDefense;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.Material;
-import org.bukkit.craftbukkit.v1_10_R1.entity.CraftTippedArrow;
-import org.bukkit.entity.EntityType;
+import org.bukkit.block.BlockFace;
+import org.bukkit.craftbukkit.v1_10_R1.CraftWorld;
+import org.bukkit.entity.Arrow;
+import org.bukkit.entity.TippedArrow;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
 import org.bukkit.material.Dispenser;
 import org.bukkit.potion.PotionData;
 import org.bukkit.potion.PotionType;
 import org.bukkit.scheduler.BukkitTask;
+import org.bukkit.util.Vector;
 
 import java.util.Map;
 import java.util.Set;
@@ -142,17 +145,25 @@ public abstract class Tower
 	{
 	}
 
-	public void launchArrow(int range)
+	public Arrow launchArrow(int range)
 	{
-		launchArrow(range, null);
+		return launchArrow(range, null);
 	}
 
-	public void launchArrow(int range, PotionType type)
+	@SuppressWarnings("unchecked")
+	public <T extends Arrow> T launchArrow(int range, PotionType type)
 	{
-		CraftTippedArrow arrow = (CraftTippedArrow) location.getWorld().spawnEntity(location, EntityType.TIPPED_ARROW);
+		BlockFace face = getDispenser().getFacing();
+		Class<T> clazz;
+		if (type == null)
+			clazz = (Class<T>) Arrow.class;
+		else
+			clazz = (Class<T>) TippedArrow.class;
+		T arrow = ((CraftWorld) location.getWorld()).spawnArrow(location.add(face.getModX(), 0, face.getModZ()), new Vector(range * face.getModX(), 0,
+				range * face.getModZ()), 10, 0, clazz);
 		if (type != null)
-			arrow.setBasePotionData(new PotionData(type));
-		arrow.getHandle().shoot(location.getX(), location.getY(), location.getZ(), 0, range);
+			((TippedArrow) arrow).setBasePotionData(new PotionData(type));
+		return arrow;
 	}
 
 	public Dispenser getDispenser()
