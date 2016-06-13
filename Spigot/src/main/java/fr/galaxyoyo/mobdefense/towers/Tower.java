@@ -1,7 +1,8 @@
-package fr.galaxyoyo.mobdefense;
+package fr.galaxyoyo.mobdefense.towers;
 
 import com.google.common.collect.Maps;
 import com.google.common.collect.Sets;
+import fr.galaxyoyo.mobdefense.MobDefense;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.Material;
@@ -112,14 +113,14 @@ public abstract class Tower
 	{
 		Tower t = towersByLocation.get(loc);
 		if (t == null)
-			t = towersByLocation.get(loc.clone().subtract(0, 1, 0));
+			t = towersByLocation.get(loc.clone().add(0, 1, 0));
 		if (t == null)
 			return;
 
 		t.getLocation().getBlock().setType(Material.AIR);
 		t.getLocation().clone().subtract(0, 1, 0).getBlock().setType(Material.AIR);
 
-		ItemStack stack = loc.getBlock().getState().getData().toItemStack();
+		ItemStack stack = new ItemStack(Material.DISPENSER);
 		ItemMeta meta = stack.getItemMeta();
 		meta.setDisplayName(getTowerName(t.getClass()));
 		stack.setItemMeta(meta);
@@ -165,7 +166,7 @@ public abstract class Tower
 		}
 		else
 		{
-			TippedArrow arrow = getLocation().getWorld().spawnArrow(getLocation(), vec, 1.0F, 12.0F, TippedArrow.class);
+			TippedArrow arrow = getLocation().getWorld().spawnArrow(getLocation().add(new Vector(vec.getX() / range, 0, vec.getZ() / range)), vec, 1.0F, 12.0F, TippedArrow.class);
 			arrow.setBasePotionData(new PotionData(type));
 		}
 	}

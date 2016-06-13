@@ -1,5 +1,6 @@
 package fr.galaxyoyo.mobdefense;
 
+import fr.galaxyoyo.mobdefense.towers.Tower;
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
 import org.bukkit.entity.Creature;

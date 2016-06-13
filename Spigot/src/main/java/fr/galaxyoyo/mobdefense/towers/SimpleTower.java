@@ -1,4 +1,4 @@
-package fr.galaxyoyo.mobdefense;
+package fr.galaxyoyo.mobdefense.towers;
 
 import org.bukkit.Location;
 import org.bukkit.Material;
