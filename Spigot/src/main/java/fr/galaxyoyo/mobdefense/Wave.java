@@ -111,7 +111,7 @@ public class Wave
 						}
 						update(c);
 					}
-				}.runTaskTimer(MobDefense.instance(), 0, 5L);
+				}.runTaskTimer(MobDefense.instance(), 0, 20L);
 			}
 		}
 
