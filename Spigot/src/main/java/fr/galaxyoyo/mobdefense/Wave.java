@@ -98,7 +98,7 @@ public class Wave
 				Bukkit.getScheduler().runTaskTimer(MobDefense.instance(), () -> {
 					try
 					{
-						AStar pf = new AStar(c.getLocation(), MobDefense.instance().getEnd().clone().subtract(0, 1, 0), 142);
+						AStar pf = new AStar(c.getLocation().clone().subtract(0, 1, 0), MobDefense.instance().getEnd().clone().subtract(0, 1, 0), 142);
 						List<Tile> tiles = pf.iterate();
 						Tile next = tiles.get(1);
 						ec.getNavigation().a(next.getX(c.getLocation()), next.getY(c.getLocation()) + 1, next.getZ(c.getLocation()), 1.0D);
