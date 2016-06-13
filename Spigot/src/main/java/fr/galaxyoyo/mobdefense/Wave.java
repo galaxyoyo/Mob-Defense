@@ -59,6 +59,7 @@ public class Wave
 				c.setCustomNameVisible(true);
 				c.setMaxHealth(entry.getKey().getHP());
 				c.setHealth(entry.getKey().getHP());
+				c.setCollidable(false);
 				if (c instanceof Ageable)
 					((Ageable) c).setAdult();
 				if (c instanceof Zombie)
