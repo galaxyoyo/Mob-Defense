@@ -27,6 +27,7 @@ public abstract class Tower
 	static
 	{
 		registerTower(SimpleTower.class);
+		registerTower(DamageTower.class);
 	}
 
 	private final Location location;
@@ -38,7 +39,7 @@ public abstract class Tower
 		this.location = location;
 		dispenser = (Dispenser) location.getBlock().getState().getData();
 		towersByLocation.put(location, this);
-		loop = Bukkit.getScheduler().runTaskTimer(MobDefense.instance(), this::onTick, 10L, 10L);
+		loop = Bukkit.getScheduler().runTaskTimer(MobDefense.instance(), this::onTick, 20L, 20L);
 	}
 
 	public static void registerTower(Class<? extends Tower> clazz)
@@ -69,7 +70,9 @@ public abstract class Tower
 		try
 		{
 			towerLoc.getBlock().setType(Material.DISPENSER);
-			((Dispenser) towerLoc.getBlock().getState().getData()).setFacingDirection(((Dispenser) loc.getBlock().getState().getData()).getFacing());
+			BlockFace face = ((Dispenser) loc.getBlock().getState().getData()).getFacing();
+			System.out.println(face);
+			((Dispenser) towerLoc.getBlock().getState().getData()).setFacingDirection(face);
 			T tower = clazz.getConstructor(Location.class).newInstance(towerLoc);
 			loc.getBlock().setType(tower.getMaterial());
 			towersByLocation.put(towerLoc, tower);

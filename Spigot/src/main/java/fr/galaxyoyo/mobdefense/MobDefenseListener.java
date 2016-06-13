@@ -73,6 +73,7 @@ public class MobDefenseListener implements Listener
 			if (!Wave.recalculate(c))
 			{
 				event.setCancelled(true);
+				event.setBuild(false);
 				break;
 			}
 		}
@@ -83,9 +84,9 @@ public class MobDefenseListener implements Listener
 				Tower.breakAt(event.getBlockPlaced().getLocation());
 			else
 			{
-				event.getItemInHand().setAmount(event.getItemInHand().getAmount() - 1);
-				if (event.getItemInHand().getAmount() <= 0)
-					event.getItemInHand().setType(Material.AIR);
+				ItemStack stack = event.getItemInHand().clone();
+				stack.setAmount(1);
+				event.getPlayer().getInventory().remove(stack);
 			}
 		}
 	}
