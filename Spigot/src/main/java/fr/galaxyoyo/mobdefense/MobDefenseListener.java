@@ -56,6 +56,15 @@ public class MobDefenseListener implements Listener
 	@EventHandler
 	public void onBlockPlace(BlockPlaceEvent event)
 	{
+		if (event.getBlockPlaced().getType() == Material.DISPENSER)
+		{
+			if (Tower.placeAt(event.getBlockPlaced().getLocation(), event.getItemInHand()) == null)
+			{
+				event.setCancelled(true);
+				return;
+			}
+		}
+
 		for (Creature c : Wave.getAllCreatures())
 		{
 			if (!Wave.recalculate(c))
@@ -64,6 +73,9 @@ public class MobDefenseListener implements Listener
 				break;
 			}
 		}
+
+		if (event.isCancelled() && event.getBlockPlaced().getType() == Material.DISPENSER)
+			Tower.breakAt(event.getBlockPlaced().getLocation());
 	}
 
 	@EventHandler
