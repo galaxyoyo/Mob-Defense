@@ -7,7 +7,9 @@ import net.minecraft.server.v1_10_R1.PathfinderGoalSelector;
 import org.bukkit.Bukkit;
 import org.bukkit.craftbukkit.v1_10_R1.entity.CraftCreature;
 import org.bukkit.entity.Ageable;
+import org.bukkit.entity.ArmorStand;
 import org.bukkit.entity.Creature;
+import org.bukkit.entity.EntityType;
 import org.bukkit.inventory.ItemStack;
 
 import java.lang.reflect.Field;
@@ -33,6 +35,12 @@ public class Wave
 	public void start()
 	{
 		Bukkit.broadcastMessage("Démarrage de la vague #" + number);
+
+		ArmorStand as = (ArmorStand) Bukkit.getWorlds().get(0).spawnEntity(MobDefense.instance().getEnd(), EntityType.ARMOR_STAND);
+		as.setVisible(false);
+		as.setAI(false);
+		as.setGravity(false);
+
 		List<Creature> creatures = Lists.newArrayList();
 		for (Map.Entry<MobClass, Integer> entry : spawns.entrySet())
 		{
@@ -43,6 +51,7 @@ public class Wave
 				c.setCustomNameVisible(true);
 				c.setMaxHealth(entry.getKey().getHP());
 				c.setHealth(entry.getKey().getHP());
+				c.setTarget(as);
 				if (c instanceof Ageable)
 					((Ageable) c).setAdult();
 				ItemStack[] inv = entry.getKey().getInv();

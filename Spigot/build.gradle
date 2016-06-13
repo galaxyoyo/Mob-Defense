@@ -44,6 +44,7 @@ task fatjar(type: Jar) {
     baseName = archivesBaseName
 
     from {
+        //noinspection GroovyAssignabilityCheck
         configurations.included.collect {
             it.isDirectory() ? it : zipTree(it).matching { exclude { it.toString().contains('META-INF') && it.toString() != "META-INF" } }
         }
