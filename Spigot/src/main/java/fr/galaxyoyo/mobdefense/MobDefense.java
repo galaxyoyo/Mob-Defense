@@ -109,7 +109,6 @@ public class MobDefense extends JavaPlugin
 				npcTower.setAI(false);
 				npcTower.setProfession(Villager.Profession.FARMER);
 				List<MerchantRecipe> recipes = Lists.newArrayList();
-				npcTower.setRecipes(recipes);
 				for (Class<? extends Tower> clazz : Tower.getTowerClasses())
 				{
 					ItemStack result = new ItemStack(Material.DISPENSER);
@@ -120,6 +119,7 @@ public class MobDefense extends JavaPlugin
 					recipe.setIngredients(Lists.newArrayList(Tower.getTowerPrice(clazz)));
 					recipes.add(recipe);
 				}
+				npcTower.setRecipes(recipes);
 				npcTower.setCustomName("Towers");
 			}
 
