@@ -73,8 +73,7 @@ public abstract class Tower
 			byte data = ((Dispenser) loc.getBlock().getState().getData()).getData();
 			Class<? extends Tower> finalClazz = clazz;
 			Bukkit.getScheduler().runTask(MobDefense.instance(), () -> {
-				towerLoc.getBlock().setType(Material.DISPENSER);
-				((Dispenser) towerLoc.getBlock().getState().getData()).setData(data);
+				towerLoc.getBlock().setTypeIdAndData(Material.DISPENSER.getId(), data, true);
 				Tower tower = null;
 				try
 				{
