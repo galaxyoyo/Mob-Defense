@@ -7,7 +7,6 @@ import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.block.BlockFace;
-import org.bukkit.craftbukkit.v1_10_R1.CraftWorld;
 import org.bukkit.entity.Arrow;
 import org.bukkit.entity.TippedArrow;
 import org.bukkit.inventory.ItemStack;
@@ -71,7 +70,7 @@ public abstract class Tower
 		try
 		{
 			towerLoc.getBlock().setType(Material.DISPENSER);
-			towerLoc.getBlock().getState().setData(loc.getBlock().getState().getData());
+			((Dispenser) towerLoc.getBlock().getState().getData()).setFacingDirection(((Dispenser) loc.getBlock().getState().getData()).getFacing());
 			T tower = clazz.getConstructor(Location.class).newInstance(towerLoc);
 			loc.getBlock().setType(tower.getMaterial());
 			towersByLocation.put(towerLoc, tower);
@@ -141,10 +140,6 @@ public abstract class Tower
 
 	public abstract void onTick();
 
-	public void onBreak()
-	{
-	}
-
 	public Arrow launchArrow(int range)
 	{
 		return launchArrow(range, null);
@@ -159,8 +154,8 @@ public abstract class Tower
 			clazz = (Class<T>) Arrow.class;
 		else
 			clazz = (Class<T>) TippedArrow.class;
-		T arrow = ((CraftWorld) location.getWorld()).spawnArrow(location.add(face.getModX(), 0, face.getModZ()), new Vector(range * face.getModX(), 0,
-				range * face.getModZ()), 10, 0, clazz);
+		T arrow = location.getWorld().spawnArrow(location.add(face.getModX(), 0, face.getModZ()), new Vector((range - 1) * face.getModX(), 0,
+				(range - 1) * face.getModZ()), 1, 4, clazz);
 		if (type != null)
 			((TippedArrow) arrow).setBasePotionData(new PotionData(type));
 		return arrow;
