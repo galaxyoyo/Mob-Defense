@@ -10,9 +10,13 @@ import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.World;
 import org.bukkit.configuration.file.YamlConfiguration;
+import org.bukkit.craftbukkit.v1_10_R1.CraftWorld;
 import org.bukkit.enchantments.Enchantment;
+import org.bukkit.entity.Entity;
 import org.bukkit.entity.EntityType;
+import org.bukkit.entity.Villager;
 import org.bukkit.inventory.ItemStack;
+import org.bukkit.inventory.MerchantRecipe;
 import org.bukkit.plugin.java.JavaPlugin;
 import org.mcstats.Metrics;
 
@@ -21,6 +25,7 @@ import java.io.IOException;
 import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Random;
 
 public class MobDefense extends JavaPlugin
 {
@@ -28,6 +33,7 @@ public class MobDefense extends JavaPlugin
 	private Gson gson;
 	private List<MobClass> mobClasses = Lists.newArrayList();
 	private Location spawn, end;
+	private Location npcTowerLoc, npcUpgradesLoc, npcExchangeLoc;
 
 	public static MobDefense instance()
 	{
@@ -53,6 +59,15 @@ public class MobDefense extends JavaPlugin
 			String endStr = config.getString("end-loc", LocationConverter.instance().toString(world.getSpawnLocation()));
 			config.set("end-loc", endStr);
 			end = LocationConverter.instance().fromString(endStr);
+			String towerLoc = config.getString("npc-tower-loc", LocationConverter.instance().toString(world.getSpawnLocation()));
+			config.set("npc-tower-loc", towerLoc);
+			npcTowerLoc = LocationConverter.instance().fromString(towerLoc);
+			String upgradesLoc = config.getString("npc-upgrades-loc", LocationConverter.instance().toString(world.getSpawnLocation()));
+			config.set("npc-upgrades-loc", upgradesLoc);
+			npcUpgradesLoc = LocationConverter.instance().fromString(upgradesLoc);
+			String exchangeLoc = config.getString("npc-exchange-loc", LocationConverter.instance().toString(world.getSpawnLocation()));
+			config.set("npc-exchange-loc", exchangeLoc);
+			npcExchangeLoc = LocationConverter.instance().fromString(exchangeLoc);
 			saveConfig();
 
 			File file = new File(getDataFolder(), "mobs.json");
@@ -78,6 +93,58 @@ public class MobDefense extends JavaPlugin
 				MobClass sample = new MobClass("sample", "Sample Zombie", 42, 42.0F, EntityType.ZOMBIE, new ItemStack[]{helmet, chestplate, leggings, boots, sword, shield});
 				mobClasses.add(sample);
 				FileUtils.writeStringToFile(file, gson.toJson(mobClasses), StandardCharsets.UTF_8);
+			}
+
+			world.getEntities().forEach(Entity::remove);
+			Random random = ((CraftWorld) world).getHandle().random;
+
+			for (int i = 0; i < 3; ++i)
+			{
+				Villager npcTower = (Villager) world.spawnEntity(npcTowerLoc.clone().add(random.nextDouble() * 2.0D - 1.0D, 0, random.nextDouble() * 2.0D - 1.0D),
+						EntityType.VILLAGER);
+				npcTower.setCollidable(false);
+				npcTower.setAI(false);
+				npcTower.setProfession(Villager.Profession.FARMER);
+				npcTower.setRecipes(Lists.newArrayList());
+				npcTower.setCustomName("Towers (Soon ...)");
+			}
+
+			for (int i = 0; i < 3; ++i)
+			{
+				Villager npcUpgrades = (Villager) world.spawnEntity(npcUpgradesLoc.clone().add(random.nextDouble() * 2.0D - 1.0D, 0, random.nextDouble() * 2.0D - 1.0D),
+						EntityType.VILLAGER);
+				npcUpgrades.setCollidable(false);
+				npcUpgrades.setAI(false);
+				npcUpgrades.setProfession(Villager.Profession.LIBRARIAN);
+				npcUpgrades.setRecipes(Lists.newArrayList());
+				npcUpgrades.setCustomName("Upgrades (Soon ...)");
+			}
+
+			for (int i = 0; i < 3; ++i)
+			{
+				Villager npcExchange = (Villager) world.spawnEntity(npcExchangeLoc.clone().add(random.nextDouble() * 2.0D - 1.0D, 0, random.nextDouble() * 2.0D - 1.0D),
+						EntityType.VILLAGER);
+				npcExchange.setCollidable(false);
+				npcExchange.setAI(false);
+				npcExchange.setProfession(Villager.Profession.BLACKSMITH);
+				MerchantRecipe nuggetToIngot = new MerchantRecipe(new ItemStack(Material.GOLD_INGOT), Integer.MAX_VALUE);
+				MerchantRecipe ingotToNugget = new MerchantRecipe(new ItemStack(Material.GOLD_NUGGET, 9), Integer.MAX_VALUE);
+				MerchantRecipe ingotToBlock = new MerchantRecipe(new ItemStack(Material.GOLD_BLOCK), Integer.MAX_VALUE);
+				MerchantRecipe blockToIngot = new MerchantRecipe(new ItemStack(Material.GOLD_INGOT, 9), Integer.MAX_VALUE);
+				MerchantRecipe blockToEmerald = new MerchantRecipe(new ItemStack(Material.EMERALD), Integer.MAX_VALUE);
+				MerchantRecipe emeraldToBlock = new MerchantRecipe(new ItemStack(Material.GOLD_BLOCK, 9), Integer.MAX_VALUE);
+				MerchantRecipe emeraldToEBlock = new MerchantRecipe(new ItemStack(Material.EMERALD_BLOCK), Integer.MAX_VALUE);
+				MerchantRecipe eBlockToEmerald = new MerchantRecipe(new ItemStack(Material.EMERALD, 9), Integer.MAX_VALUE);
+				nuggetToIngot.addIngredient(new ItemStack(Material.GOLD_NUGGET, 9));
+				ingotToNugget.addIngredient(new ItemStack(Material.GOLD_INGOT));
+				ingotToBlock.addIngredient(new ItemStack(Material.GOLD_INGOT, 9));
+				blockToIngot.addIngredient(new ItemStack(Material.GOLD_BLOCK));
+				blockToEmerald.addIngredient(new ItemStack(Material.GOLD_BLOCK, 9));
+				emeraldToBlock.addIngredient(new ItemStack(Material.EMERALD));
+				emeraldToEBlock.addIngredient(new ItemStack(Material.EMERALD, 9));
+				eBlockToEmerald.addIngredient(new ItemStack(Material.EMERALD_BLOCK));
+				npcExchange.setRecipes(Lists.newArrayList(nuggetToIngot, ingotToNugget, ingotToBlock, blockToIngot, blockToEmerald, emeraldToBlock, emeraldToEBlock, eBlockToEmerald));
+				npcExchange.setCustomName("Exchange");
 			}
 
 			Metrics metrics = new Metrics(this);
