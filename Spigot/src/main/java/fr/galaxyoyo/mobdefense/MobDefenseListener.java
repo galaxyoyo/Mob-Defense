@@ -85,6 +85,8 @@ public class MobDefenseListener implements Listener
 	@EventHandler
 	public void onEntityDamageByEntity(EntityDamageByEntityEvent event)
 	{
+		if (event.getCause() == EntityDamageEvent.DamageCause.CUSTOM)
+			return;
 		if (event.getDamager() instanceof Player)
 			event.setCancelled(true);
 	}
