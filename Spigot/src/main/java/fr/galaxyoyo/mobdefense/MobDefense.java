@@ -1,7 +1,5 @@
 package fr.galaxyoyo.mobdefense;
 
-import com.adamki11s.pathing.AStar;
-import com.adamki11s.pathing.PathingResult;
 import com.google.common.collect.Lists;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
@@ -30,7 +28,6 @@ public class MobDefense extends JavaPlugin
 	private Gson gson;
 	private List<MobClass> mobClasses = Lists.newArrayList();
 	private Location spawn, end;
-	private AStar pathfinder;
 
 	public static MobDefense instance()
 	{
@@ -57,18 +54,6 @@ public class MobDefense extends JavaPlugin
 			config.set("end-loc", endStr);
 			end = LocationConverter.instance().fromString(endStr);
 			saveConfig();
-
-			pathfinder = new AStar(spawn.clone().subtract(0, 1, 0), end.clone().subtract(0, 1, 0), 142);
-			pathfinder.iterate();
-			if (pathfinder.getPathingResult() == PathingResult.NO_PATH)
-			{
-				getLogger().severe("****************************************************");
-				getLogger().severe("No path were found between the 2 points.");
-				getLogger().severe("Please check default map, spawn point and end point.");
-				getLogger().severe("The plugin will now be disabled.");
-				getLogger().severe("****************************************************");
-				getServer().getPluginManager().disablePlugin(this);
-			}
 
 			File file = new File(getDataFolder(), "mobs.json");
 			if (file.exists())
@@ -102,30 +87,11 @@ public class MobDefense extends JavaPlugin
 		{
 			ex.printStackTrace();
 		}
-		catch (AStar.InvalidPathException ex)
-		{
-			getLogger().severe("*************************************");
-			getLogger().severe("An error occurred while path finding:");
-			if (ex.isStartNotSolid())
-				getLogger().severe("Start is not solid!");
-			else if (ex.isEndNotSolid())
-				getLogger().severe("End is not solid!");
-			else
-				ex.printStackTrace();
-			getLogger().severe("The plugin will now be disabled.");
-			getLogger().severe("*************************************");
-			getServer().getPluginManager().disablePlugin(this);
-		}
 	}
 
 	public Gson getGson()
 	{
 		return gson;
-	}
-
-	public AStar getPathfinder()
-	{
-		return pathfinder;
 	}
 
 	public Location getSpawn()
