@@ -7,7 +7,7 @@ import org.bukkit.potion.PotionType;
 
 public class DamageTower extends Tower
 {
-	protected DamageTower(Location location)
+	public DamageTower(Location location)
 	{
 		super(location);
 	}

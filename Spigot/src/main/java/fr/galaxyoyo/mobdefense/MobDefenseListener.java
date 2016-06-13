@@ -80,6 +80,7 @@ public class MobDefenseListener implements Listener
 
 		if (event.getBlockPlaced().getType() == Material.DISPENSER)
 		{
+			System.out.println(event.canBuild());
 			if (!event.canBuild())
 				Tower.breakAt(event.getBlockPlaced().getLocation());
 			else
