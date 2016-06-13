@@ -3,14 +3,15 @@ package fr.galaxyoyo.mobdefense.towers;
 import com.google.common.collect.Maps;
 import com.google.common.collect.Sets;
 import fr.galaxyoyo.mobdefense.MobDefense;
-import net.minecraft.server.v1_10_R1.*;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.Material;
-import org.bukkit.craftbukkit.v1_10_R1.CraftWorld;
+import org.bukkit.craftbukkit.v1_10_R1.entity.CraftTippedArrow;
+import org.bukkit.entity.EntityType;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
 import org.bukkit.material.Dispenser;
+import org.bukkit.potion.PotionData;
 import org.bukkit.potion.PotionType;
 import org.bukkit.scheduler.BukkitTask;
 
@@ -148,35 +149,10 @@ public abstract class Tower
 
 	public void launchArrow(int range, PotionType type)
 	{
-		/*((CraftDispenser) getLocation().getBlock().getState()).dispense();
-		Vector vec;
-		if (getDispenser().getFacing() == BlockFace.NORTH)
-			vec = new Vector(range, 0, 0);
-		else if (getDispenser().getFacing() == BlockFace.WEST)
-			vec = new Vector(0, 0, -range);
-		else if (getDispenser().getFacing() == BlockFace.SOUTH)
-			vec = new Vector(-range, 0, 0);
-		else
-			vec = new Vector(0, 0, range);
-		Arrow arrow;
-		if (type == null)
-			arrow = getLocation().getWorld().spawnArrow(getLocation(), vec, 1.0F, 12.0F);
-		else
-		{
-			arrow = getLocation().getWorld().spawnArrow(getLocation().add(new Vector(vec.getX() / range, 0, vec.getZ() / range)), vec, 1.0F, 12.0F, TippedArrow.class);
-			((TippedArrow) arrow).setBasePotionData(new PotionData(type));
-		}*/
-
-		DispenseBehaviorProjectile projectile = new DispenseBehaviorProjectile()
-		{
-			@Override
-			protected IProjectile a(World world, IPosition pos, net.minecraft.server.v1_10_R1.ItemStack itemStack)
-			{
-				return new EntityTippedArrow(world);
-			}
-		};
-		projectile.b(new SourceBlock(((CraftWorld) getLocation().getWorld()).getHandle(), new BlockPosition(getLocation().getBlockX(), getLocation().getBlockY(), getLocation()
-				.getBlockZ())), new net.minecraft.server.v1_10_R1.ItemStack(Items.ARROW));
+		CraftTippedArrow arrow = (CraftTippedArrow) location.getWorld().spawnEntity(location, EntityType.TIPPED_ARROW);
+		if (type != null)
+			arrow.setBasePotionData(new PotionData(type));
+		arrow.getHandle().shoot(location.getX(), location.getY(), location.getZ(), 0, range);
 	}
 
 	public Dispenser getDispenser()
