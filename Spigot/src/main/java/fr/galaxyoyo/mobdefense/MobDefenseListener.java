@@ -5,14 +5,12 @@ import org.bukkit.Material;
 import org.bukkit.entity.Creature;
 import org.bukkit.entity.EntityType;
 import org.bukkit.entity.Player;
+import org.bukkit.entity.Villager;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.block.BlockBreakEvent;
 import org.bukkit.event.block.BlockPlaceEvent;
-import org.bukkit.event.entity.CreatureSpawnEvent;
-import org.bukkit.event.entity.EntityCombustEvent;
-import org.bukkit.event.entity.EntityDamageByEntityEvent;
-import org.bukkit.event.entity.EntityDamageEvent;
+import org.bukkit.event.entity.*;
 import org.bukkit.event.player.PlayerInteractEntityEvent;
 import org.bukkit.event.player.PlayerJoinEvent;
 import org.bukkit.event.player.PlayerQuitEvent;
@@ -80,6 +78,8 @@ public class MobDefenseListener implements Listener
 	@EventHandler
 	public void onEntityDamage(EntityDamageEvent event)
 	{
+		if (event.getEntity() instanceof Villager)
+			event.setCancelled(true);
 	}
 
 	@EventHandler
@@ -87,6 +87,47 @@ public class MobDefenseListener implements Listener
 	{
 		if (event.getDamager() instanceof Player)
 			event.setCancelled(true);
+	}
+
+	@EventHandler
+	public void onEntityDeath(EntityDeathEvent event)
+	{
+		if (!(event.getEntity() instanceof Creature))
+			return;
+		MobClass mobClass = Wave.getClass((Creature) event.getEntity());
+		event.setDroppedExp(0);
+		if (mobClass == null)
+		{
+			event.getDrops().clear();
+			return;
+		}
+		int loot = mobClass.getLoot();
+		int emeraldBlocks = loot / (9 * 9 * 9 * 9);
+		if (emeraldBlocks > 0)
+		{
+			event.getDrops().add(new ItemStack(Material.EMERALD_BLOCK, emeraldBlocks));
+			loot %= 9 * 9 * 9 * 9;
+		}
+		int emeralds = loot / (9 * 9 * 9);
+		if (emeralds > 0)
+		{
+			event.getDrops().add(new ItemStack(Material.EMERALD, emeralds));
+			loot %= 9 * 9 * 9;
+		}
+		int goldBlocks = loot / (9 * 9);
+		if (goldBlocks > 0)
+		{
+			event.getDrops().add(new ItemStack(Material.GOLD_BLOCK, goldBlocks));
+			loot %= 9 * 9;
+		}
+		int goldIngots = loot / 9;
+		if (goldIngots > 0)
+		{
+			event.getDrops().add(new ItemStack(Material.GOLD_INGOT, goldIngots));
+			loot %= 9;
+		}
+		if (loot > 0)
+			event.getDrops().add(new ItemStack(Material.GOLD_NUGGET, loot));
 	}
 
 	@EventHandler

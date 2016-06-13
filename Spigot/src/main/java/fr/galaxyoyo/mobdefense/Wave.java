@@ -24,6 +24,7 @@ import java.util.concurrent.atomic.AtomicReference;
 
 public class Wave
 {
+	private static Map<Creature, MobClass> creatureClasses = Maps.newHashMap();
 	private static Map<Wave, Set<Creature>> waves = Maps.newHashMap();
 	private static Map<Creature, Wave> wavesByCreature = Maps.newHashMap();
 	private static Map<Integer, Wave> wavesByNumber = Maps.newHashMap();
@@ -38,6 +39,11 @@ public class Wave
 		Set<Creature> allCreatures = Sets.newHashSet();
 		waves.values().forEach(allCreatures::addAll);
 		return allCreatures;
+	}
+
+	public static MobClass getClass(Creature c)
+	{
+		return creatureClasses.get(c);
 	}
 
 	public Map<MobClass, Integer> getSpawns()
@@ -75,6 +81,7 @@ public class Wave
 				c.setCustomNameVisible(true);
 				c.setMaxHealth(entry.get().getKey().getHP());
 				c.setHealth(entry.get().getKey().getHP());
+				c.setCanPickupItems(false);
 				if (c instanceof Ageable)
 					((Ageable) c).setAdult();
 				if (c instanceof Zombie)
@@ -118,6 +125,7 @@ public class Wave
 					t.printStackTrace();
 				}
 
+				creatureClasses.put(c, entry.get().getKey());
 				starts.put(c, MobDefense.instance().getSpawn().clone());
 				creatureCurrentTile.put(c, 1);
 				creatureTiles.put(c, Lists.newArrayList());
@@ -130,6 +138,7 @@ public class Wave
 						if (c.isDead())
 						{
 							Wave w = Wave.this;
+							creatureClasses.remove(c);
 							wavesByCreature.remove(c);
 							waves.get(w).remove(c);
 							if (waves.get(w).isEmpty())
@@ -145,6 +154,7 @@ public class Wave
 						{
 							c.remove();
 							Wave w = Wave.this;
+							creatureClasses.remove(c);
 							wavesByCreature.remove(c);
 							waves.get(w).remove(c);
 							if (waves.get(w).isEmpty())

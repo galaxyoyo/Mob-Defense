@@ -13,13 +13,14 @@ public class MobClass implements Serializable
 	private double speed;
 	private EntityType type;
 	private ItemStack[] inv;
+	private int loot;
 
 	@SuppressWarnings("unused")
-	public MobClass()
+	private MobClass()
 	{
 	}
 
-	public MobClass(String name, String displayName, int hp, float speed, EntityType type, ItemStack[] inv)
+	public MobClass(String name, String displayName, int hp, float speed, EntityType type, ItemStack[] inv, int loot)
 	{
 		this.name = name;
 		this.displayName = displayName;
@@ -27,6 +28,7 @@ public class MobClass implements Serializable
 		this.speed = speed;
 		this.type = type;
 		this.inv = inv;
+		this.loot = loot;
 	}
 
 	public String getName()
@@ -57,5 +59,10 @@ public class MobClass implements Serializable
 	public ItemStack[] getInv()
 	{
 		return inv;
+	}
+
+	public int getLoot()
+	{
+		return loot;
 	}
 }
