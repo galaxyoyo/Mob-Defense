@@ -3,10 +3,7 @@ package fr.galaxyoyo.mobdefense.towers;
 import com.google.common.collect.Maps;
 import com.google.common.collect.Sets;
 import fr.galaxyoyo.mobdefense.MobDefense;
-import net.minecraft.server.v1_10_R1.BlockPosition;
-import net.minecraft.server.v1_10_R1.DispenseBehaviorItem;
-import net.minecraft.server.v1_10_R1.Items;
-import net.minecraft.server.v1_10_R1.SourceBlock;
+import net.minecraft.server.v1_10_R1.*;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.Material;
@@ -170,9 +167,23 @@ public abstract class Tower
 			((TippedArrow) arrow).setBasePotionData(new PotionData(type));
 		}*/
 
-		DispenseBehaviorItem item = new DispenseBehaviorItem();
-		item.a(new SourceBlock(((CraftWorld) getLocation().getWorld()).getHandle(), new BlockPosition(getLocation().getBlockX(), getLocation().getBlockY(), getLocation().getBlockZ())),
-				new net.minecraft.server.v1_10_R1.ItemStack(Items.ARROW));
+		DispenseBehaviorProjectile projectile = new DispenseBehaviorProjectile()
+		{
+			@Override
+			protected IProjectile a(World world, IPosition pos, net.minecraft.server.v1_10_R1.ItemStack itemStack)
+			{
+				return new EntityArrow(world, pos.getX(), pos.getY(), pos.getZ())
+				{
+					@Override
+					protected net.minecraft.server.v1_10_R1.ItemStack j()
+					{
+						return itemStack;
+					}
+				};
+			}
+		};
+		projectile.b(new SourceBlock(((CraftWorld) getLocation().getWorld()).getHandle(), new BlockPosition(getLocation().getBlockX(), getLocation().getBlockY(), getLocation()
+				.getBlockZ())), new net.minecraft.server.v1_10_R1.ItemStack(Items.ARROW));
 	}
 
 	public Dispenser getDispenser()
