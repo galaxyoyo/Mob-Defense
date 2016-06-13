@@ -158,6 +158,7 @@ public class Wave
 							w.creatureCurrentTile.remove(c);
 							w.starts.remove(c);
 							cancel();
+							Bukkit.getPluginManager().callEvent(new EntityGoneEvent(c));
 							return;
 						}
 
@@ -165,7 +166,7 @@ public class Wave
 					}
 				}.runTaskTimer(MobDefense.instance(), 5L, 5L);
 			}
-		}.runTaskTimer(MobDefense.instance(), 0, 1L);
+		}.runTaskTimer(MobDefense.instance(), 0, 3L);
 
 		waves.put(this, creatures);
 	}
