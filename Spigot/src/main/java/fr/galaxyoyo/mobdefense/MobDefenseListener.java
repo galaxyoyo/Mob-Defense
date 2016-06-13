@@ -86,9 +86,22 @@ public class MobDefenseListener implements Listener
 				Tower.breakAt(event.getBlockPlaced().getLocation());
 			else
 			{
-				ItemStack stack = event.getItemInHand().clone();
-				stack.setAmount(1);
-				event.getPlayer().getInventory().remove(stack);
+				ItemStack stack = event.getItemInHand();
+				if (stack.getAmount() > 1)
+					stack.setAmount(stack.getAmount() - 1);
+				else
+				{
+					ItemStack[] items = event.getPlayer().getInventory().getStorageContents();
+
+					for (int i = 0; i < items.length; ++i)
+					{
+						if (items[i] != null && items[i].equals(stack))
+						{
+							event.getPlayer().getInventory().clear(i);
+							break;
+						}
+					}
+				}
 			}
 		}
 	}

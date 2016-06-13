@@ -163,7 +163,7 @@ public abstract class Tower
 			clazz = (Class<T>) Arrow.class;
 		else
 			clazz = (Class<T>) TippedArrow.class;
-		T arrow = location.getWorld().spawnArrow(location.clone().add(face.getModX() + 0.5D, 0, face.getModZ() + 0.5D), new Vector((range - 1) * face.getModX(), 0,
+		T arrow = location.getWorld().spawnArrow(location.clone().add(face.getModX() + 0.5D, 0.5D, face.getModZ() + 0.5D), new Vector((range - 1) * face.getModX(), 0,
 				(range - 1) * face.getModZ()), 1, -2, clazz);
 		if (type != null)
 			((TippedArrow) arrow).setBasePotionData(new PotionData(type));
