@@ -2,12 +2,18 @@ package fr.galaxyoyo.mobdefense;
 
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
-import org.bukkit.entity.*;
+import org.bukkit.entity.Creature;
+import org.bukkit.entity.Entity;
+import org.bukkit.entity.EntityType;
+import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.block.BlockBreakEvent;
 import org.bukkit.event.block.BlockPlaceEvent;
-import org.bukkit.event.entity.*;
+import org.bukkit.event.entity.CreatureSpawnEvent;
+import org.bukkit.event.entity.EntityCombustEvent;
+import org.bukkit.event.entity.EntityDamageByEntityEvent;
+import org.bukkit.event.entity.EntityDeathEvent;
 import org.bukkit.event.player.PlayerInteractEntityEvent;
 import org.bukkit.event.player.PlayerJoinEvent;
 import org.bukkit.event.player.PlayerQuitEvent;
@@ -74,19 +80,8 @@ public class MobDefenseListener implements Listener
 	}
 
 	@EventHandler
-	public void onEntityDamage(EntityDamageEvent event)
-	{
-		if (event.getCause() == EntityDamageEvent.DamageCause.CUSTOM)
-			return;
-		if (event.getEntity() instanceof Villager)
-			event.setCancelled(true);
-	}
-
-	@EventHandler
 	public void onEntityDamageByEntity(EntityDamageByEntityEvent event)
 	{
-		if (event.getCause() == EntityDamageEvent.DamageCause.CUSTOM)
-			return;
 		if (event.getDamager() instanceof Player)
 			event.setCancelled(true);
 	}
