@@ -10,7 +10,6 @@ import org.bukkit.block.BlockFace;
 import org.bukkit.entity.Arrow;
 import org.bukkit.entity.TippedArrow;
 import org.bukkit.inventory.ItemStack;
-import org.bukkit.inventory.meta.ItemMeta;
 import org.bukkit.material.Dispenser;
 import org.bukkit.potion.PotionData;
 import org.bukkit.potion.PotionType;
@@ -109,23 +108,18 @@ public abstract class Tower
 		}
 	}
 
-	public static void breakAt(Location loc)
+	public static Tower breakAt(Location loc)
 	{
 		Tower t = towersByLocation.get(loc);
 		if (t == null)
 			t = towersByLocation.get(loc.clone().add(0, 1, 0));
 		if (t == null)
-			return;
+			return null;
 
 		t.getLocation().getBlock().setType(Material.AIR);
 		t.getLocation().clone().subtract(0, 1, 0).getBlock().setType(Material.AIR);
-
-		ItemStack stack = new ItemStack(Material.DISPENSER);
-		ItemMeta meta = stack.getItemMeta();
-		meta.setDisplayName(getTowerName(t.getClass()));
-		stack.setItemMeta(meta);
-		loc.getBlock().breakNaturally(stack);
 		t.loop.cancel();
+		return t;
 	}
 
 	public Location getLocation()
@@ -154,7 +148,7 @@ public abstract class Tower
 			clazz = (Class<T>) Arrow.class;
 		else
 			clazz = (Class<T>) TippedArrow.class;
-		T arrow = location.getWorld().spawnArrow(location.clone().add(face.getModX(), 0, face.getModZ()), new Vector((range - 1) * face.getModX(), 0,
+		T arrow = location.getWorld().spawnArrow(location.clone().add(face.getModX() - 0.5D, 0, face.getModZ() - 0.5D), new Vector((range - 1) * face.getModX(), 0,
 				(range - 1) * face.getModZ()), 1, -2, clazz);
 		if (type != null)
 			((TippedArrow) arrow).setBasePotionData(new PotionData(type));

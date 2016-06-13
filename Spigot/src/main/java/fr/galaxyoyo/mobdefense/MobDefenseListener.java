@@ -59,9 +59,11 @@ public class MobDefenseListener implements Listener
 	{
 		if (event.getBlockPlaced().getType() == Material.DISPENSER)
 		{
+			event.setCancelled(true);
+			event.setBuild(true);
 			if (Tower.placeAt(event.getBlockPlaced().getLocation(), event.getItemInHand()) == null)
 			{
-				event.setCancelled(true);
+				event.setBuild(false);
 				return;
 			}
 		}
@@ -75,14 +77,31 @@ public class MobDefenseListener implements Listener
 			}
 		}
 
-		if (event.isCancelled() && event.getBlockPlaced().getType() == Material.DISPENSER)
-			Tower.breakAt(event.getBlockPlaced().getLocation());
+		if (event.getBlockPlaced().getType() == Material.DISPENSER)
+		{
+			if (!event.canBuild())
+				Tower.breakAt(event.getBlockPlaced().getLocation());
+			else
+			{
+				event.getItemInHand().setAmount(event.getItemInHand().getAmount() - 1);
+				if (event.getItemInHand().getAmount() <= 0)
+					event.getItemInHand().setType(Material.AIR);
+			}
+		}
 	}
 
 	@EventHandler
 	public void onBlockBreak(BlockBreakEvent event)
 	{
-		Tower.breakAt(event.getBlock().getLocation());
+		Tower t = Tower.breakAt(event.getBlock().getLocation());
+		if (t != null)
+		{
+			ItemStack stack = new ItemStack(Material.DISPENSER);
+			ItemMeta meta = stack.getItemMeta();
+			meta.setDisplayName(Tower.getTowerName(t.getClass()));
+			stack.setItemMeta(meta);
+			t.getLocation().getWorld().dropItem(t.getLocation(), stack);
+		}
 		Wave.getAllCreatures().forEach(Wave::recalculate);
 	}
 
