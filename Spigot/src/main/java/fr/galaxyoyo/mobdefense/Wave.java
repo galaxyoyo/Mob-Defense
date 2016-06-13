@@ -145,6 +145,8 @@ public class Wave
 			if (pf.getPathingResult() == PathingResult.NO_PATH)
 				return false;
 			List<Tile> tiles = pf.iterate();
+			if (tiles == null)
+				return false;
 			wavesByCreature.get(c).starts.put(c, c.getLocation().clone());
 			wavesByCreature.get(c).creatureCurrentTile.put(c, 1);
 			wavesByCreature.get(c).creatureTiles.put(c, tiles);
