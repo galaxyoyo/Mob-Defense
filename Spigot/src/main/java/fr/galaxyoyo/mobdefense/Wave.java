@@ -19,6 +19,8 @@ import java.lang.reflect.Field;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import java.util.concurrent.atomic.AtomicInteger;
+import java.util.concurrent.atomic.AtomicReference;
 
 public class Wave
 {
@@ -50,15 +52,29 @@ public class Wave
 		Bukkit.broadcastMessage("Démarrage de la vague #" + getNumber());
 
 		Set<Creature> creatures = Sets.newHashSet();
-		for (Map.Entry<MobClass, Integer> entry : spawns.entrySet())
+		Set<Map.Entry<MobClass, Integer>> entries = spawns.entrySet();
+		AtomicReference<Map.Entry<MobClass, Integer>> entry = new AtomicReference<>(null);
+		AtomicInteger current = new AtomicInteger(0);
+		new BukkitRunnable()
 		{
-			for (int i = 0; i < entry.getValue(); ++i)
+			@Override
+			public void run()
 			{
-				Creature c = (Creature) Bukkit.getWorlds().get(0).spawnEntity(MobDefense.instance().getSpawn(), entry.getKey().getType());
-				c.setCustomName(entry.getKey().getDisplayName());
+				if (entry.get() == null || current.incrementAndGet() == entry.get().getValue())
+				{
+					if (entries.isEmpty())
+					{
+						cancel();
+						return;
+					}
+					entry.set(entries.iterator().next());
+					entries.remove(entry.get());
+				}
+				Creature c = (Creature) Bukkit.getWorlds().get(0).spawnEntity(MobDefense.instance().getSpawn(), entry.get().getKey().getType());
+				c.setCustomName(entry.get().getKey().getDisplayName());
 				c.setCustomNameVisible(true);
-				c.setMaxHealth(entry.getKey().getHP());
-				c.setHealth(entry.getKey().getHP());
+				c.setMaxHealth(entry.get().getKey().getHP());
+				c.setHealth(entry.get().getKey().getHP());
 				c.setCollidable(false);
 				if (c instanceof Ageable)
 					((Ageable) c).setAdult();
@@ -69,7 +85,7 @@ public class Wave
 				}
 				if (c instanceof Skeleton)
 					((Skeleton) c).setSkeletonType(Skeleton.SkeletonType.NORMAL);
-				ItemStack[] inv = entry.getKey().getInv();
+				ItemStack[] inv = entry.get().getKey().getInv();
 				c.getEquipment().setHelmet(inv[0]);
 				c.getEquipment().setChestplate(inv[1]);
 				c.getEquipment().setLeggings(inv[2]);
@@ -83,7 +99,7 @@ public class Wave
 				c.getEquipment().setItemInMainHandDropChance(0.0F);
 				c.getEquipment().setItemInOffHandDropChance(0.0F);
 				creatures.add(c);
-				wavesByCreature.put(c, this);
+				wavesByCreature.put(c, Wave.this);
 
 				EntityCreature ec = ((CraftCreature) c).getHandle();
 
@@ -149,7 +165,7 @@ public class Wave
 					}
 				}.runTaskTimer(MobDefense.instance(), 5L, 5L);
 			}
-		}
+		}.runTaskTimer(MobDefense.instance(), 0, 1L);
 
 		waves.put(this, creatures);
 	}
@@ -188,8 +204,11 @@ public class Wave
 		if (currentTile.getLocation(starts.get(c)).distanceSquared(c.getLocation()) < 6)
 		{
 			int tileId = creatureCurrentTile.get(c) + 1;
-			creatureCurrentTile.put(c, tileId);
-			next = creatureTiles.get(c).get(tileId);
+			if (tileId < creatureTiles.get(c).size())
+			{
+				creatureCurrentTile.put(c, tileId);
+				next = creatureTiles.get(c).get(tileId);
+			}
 		}
 		((CraftCreature) c).getHandle().getNavigation().a(next.getX(start), next.getY(start) + 1, next.getZ(start), 1.0D);
 	}
