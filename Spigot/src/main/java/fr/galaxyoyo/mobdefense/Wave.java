@@ -167,11 +167,13 @@ public class Wave
 	public void update(Creature c)
 	{
 		Tile currentTile = creatureTiles.get(c).get(creatureCurrentTile.get(c));
-		if (currentTile.getLocation(starts.get(c)).distanceSquared(c.getLocation()) > 10)
-			return;
-		int tileId = creatureCurrentTile.get(c) + 1;
-		creatureCurrentTile.put(c, tileId);
-		Tile next = creatureTiles.get(c).get(tileId);
+		Tile next = currentTile;
+		if (currentTile.getLocation(starts.get(c)).distanceSquared(c.getLocation()) < 6)
+		{
+			int tileId = creatureCurrentTile.get(c) + 1;
+			creatureCurrentTile.put(c, tileId);
+			next = creatureTiles.get(c).get(tileId);
+		}
 		((CraftCreature) c).getHandle().getNavigation().a(next.getX(c.getLocation()), next.getY(c.getLocation()) + 1, next.getZ(c.getLocation()), 1.0D);
 	}
 }
