@@ -11,8 +11,7 @@ import net.minecraft.server.v1_10_R1.PathfinderGoalSelector;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.craftbukkit.v1_10_R1.entity.CraftCreature;
-import org.bukkit.entity.Ageable;
-import org.bukkit.entity.Creature;
+import org.bukkit.entity.*;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.scheduler.BukkitRunnable;
 
@@ -62,6 +61,13 @@ public class Wave
 				c.setHealth(entry.getKey().getHP());
 				if (c instanceof Ageable)
 					((Ageable) c).setAdult();
+				if (c instanceof Zombie)
+				{
+					((Zombie) c).setBaby(false);
+					((Zombie) c).setVillagerProfession(Villager.Profession.NORMAL);
+				}
+				if (c instanceof Skeleton)
+					((Skeleton) c).setSkeletonType(Skeleton.SkeletonType.NORMAL);
 				ItemStack[] inv = entry.getKey().getInv();
 				c.getEquipment().setHelmet(inv[0]);
 				c.getEquipment().setChestplate(inv[1]);
@@ -160,7 +166,7 @@ public class Wave
 	public void update(Creature c)
 	{
 		Tile currentTile = creatureTiles.get(c).get(creatureCurrentTile.get(c));
-		if (currentTile.getLocation(starts.get(c)).distanceSquared(c.getLocation()) > 4)
+		if (currentTile.getLocation(starts.get(c)).distanceSquared(c.getLocation()) > 6)
 			return;
 		int tileId = creatureCurrentTile.get(c) + 1;
 		creatureCurrentTile.put(c, tileId);
