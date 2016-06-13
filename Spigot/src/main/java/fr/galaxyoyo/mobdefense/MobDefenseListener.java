@@ -1,6 +1,5 @@
 package fr.galaxyoyo.mobdefense;
 
-import com.adamki11s.pathing.Tile;
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
 import org.bukkit.entity.Creature;
@@ -21,12 +20,8 @@ import org.bukkit.inventory.ItemFlag;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
 
-import java.util.List;
-
 public class MobDefenseListener implements Listener
 {
-	private List<Tile> path;
-
 	@EventHandler
 	public void onCreatureSpawn(CreatureSpawnEvent event)
 	{
@@ -60,7 +55,7 @@ public class MobDefenseListener implements Listener
 	{
 		for (Creature c : Wave.getAllCreatures())
 		{
-			if (!Wave.update(c))
+			if (!Wave.recalculate(c))
 			{
 				event.setCancelled(true);
 				break;
@@ -71,10 +66,7 @@ public class MobDefenseListener implements Listener
 	@EventHandler
 	public void onBlockBreak(BlockBreakEvent event)
 	{
-	/*	if (event.getBlock().getType() == Material.DISPENSER)
-			path = MobDefense.instance().getPathfinder().iterate();
-		else
-			event.setCancelled(true);*/
+		Wave.getAllCreatures().forEach(Wave::recalculate);
 	}
 
 	@EventHandler

@@ -12,6 +12,7 @@ import org.bukkit.craftbukkit.v1_10_R1.entity.CraftCreature;
 import org.bukkit.entity.Ageable;
 import org.bukkit.entity.Creature;
 import org.bukkit.inventory.ItemStack;
+import org.bukkit.scheduler.BukkitRunnable;
 
 import java.lang.reflect.Field;
 import java.util.List;
@@ -25,6 +26,8 @@ public class Wave
 	private static Map<Integer, Wave> wavesByNumber = Maps.newHashMap();
 	private int number;
 	private Map<MobClass, Integer> spawns = Maps.newHashMap();
+	private Map<Creature, List<Tile>> creatureTiles = Maps.newHashMap();
+	private Map<Creature, Integer> creatureCurrentTile = Maps.newHashMap();
 
 	public static Set<Creature> getAllCreatures()
 	{
@@ -94,7 +97,21 @@ public class Wave
 					t.printStackTrace();
 				}
 
-				Bukkit.getScheduler().runTaskTimer(MobDefense.instance(), () -> update(c), 0, 10L);
+				recalculate(c);
+				new BukkitRunnable()
+				{
+					@Override
+					public void run()
+					{
+						if (c.getLocation().distanceSquared(MobDefense.instance().getEnd()) < 4)
+						{
+							c.remove();
+							cancel();
+							return;
+						}
+						update(c);
+					}
+				}.runTaskTimer(MobDefense.instance(), 0, 5L);
 			}
 		}
 
@@ -106,7 +123,7 @@ public class Wave
 		return number;
 	}
 
-	public static boolean update(Creature c)
+	public static boolean recalculate(Creature c)
 	{
 		try
 		{
@@ -114,12 +131,20 @@ public class Wave
 			if (pf.getPathingResult() == PathingResult.NO_PATH)
 				return false;
 			List<Tile> tiles = pf.iterate();
-			Tile next = tiles.get(2);
-			((CraftCreature) c).getHandle().getNavigation().a(next.getX(c.getLocation()), next.getY(c.getLocation()) + 1, next.getZ(c.getLocation()), 1.0D);
+			wavesByCreature.get(c).creatureCurrentTile.put(c, 1);
+			wavesByCreature.get(c).creatureTiles.put(c, tiles);
 		}
 		catch (AStar.InvalidPathException ignored)
 		{
 		}
 		return true;
+	}
+
+	public void update(Creature c)
+	{
+		int tileId = creatureCurrentTile.get(c) + 1;
+		creatureCurrentTile.put(c, tileId);
+		Tile next = creatureTiles.get(c).get(tileId);
+		((CraftCreature) c).getHandle().getNavigation().a(next.getX(c.getLocation()), next.getY(c.getLocation()) + 1, next.getZ(c.getLocation()), 1.0D);
 	}
 }
