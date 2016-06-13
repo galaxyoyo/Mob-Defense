@@ -166,6 +166,7 @@ public class Wave
 
 	public void update(Creature c)
 	{
+		Location start = starts.get(c);
 		Tile currentTile = creatureTiles.get(c).get(creatureCurrentTile.get(c));
 		Tile next = currentTile;
 		if (currentTile.getLocation(starts.get(c)).distanceSquared(c.getLocation()) < 6)
@@ -174,6 +175,6 @@ public class Wave
 			creatureCurrentTile.put(c, tileId);
 			next = creatureTiles.get(c).get(tileId);
 		}
-		((CraftCreature) c).getHandle().getNavigation().a(next.getX(c.getLocation()), next.getY(c.getLocation()) + 1, next.getZ(c.getLocation()), 1.0D);
+		((CraftCreature) c).getHandle().getNavigation().a(next.getX(start), next.getY(start) + 1, next.getZ(start), 1.0D);
 	}
 }
