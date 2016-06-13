@@ -1,7 +1,7 @@
 package fr.galaxyoyo.mobdefense.towers;
 
+import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
-import com.google.common.collect.Sets;
 import fr.galaxyoyo.mobdefense.MobDefense;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
@@ -16,18 +16,19 @@ import org.bukkit.potion.PotionType;
 import org.bukkit.scheduler.BukkitTask;
 import org.bukkit.util.Vector;
 
+import java.util.List;
 import java.util.Map;
-import java.util.Set;
 
 public abstract class Tower
 {
-	private static final Set<Class<? extends Tower>> towerClasses = Sets.newHashSet();
+	private static final List<Class<? extends Tower>> towerClasses = Lists.newArrayList();
 	private static final Map<Location, Tower> towersByLocation = Maps.newHashMap();
 
 	static
 	{
 		registerTower(SimpleTower.class);
 		registerTower(DamageTower.class);
+		registerTower(PoisonTower.class);
 	}
 
 	private final Location location;
@@ -69,10 +70,10 @@ public abstract class Tower
 
 		try
 		{
+			BlockFace face = ((Dispenser) loc.getBlock().getState().getData()).getFacing();
 			Class<? extends Tower> finalClazz = clazz;
 			Bukkit.getScheduler().runTask(MobDefense.instance(), () -> {
 				towerLoc.getBlock().setType(Material.DISPENSER);
-				BlockFace face = ((Dispenser) loc.getBlock().getState().getData()).getFacing();
 				((Dispenser) towerLoc.getBlock().getState().getData()).setFacingDirection(face);
 				Tower tower = null;
 				try
@@ -141,7 +142,7 @@ public abstract class Tower
 		return location;
 	}
 
-	public static Set<Class<? extends Tower>> getTowerClasses()
+	public static List<Class<? extends Tower>> getTowerClasses()
 	{
 		return towerClasses;
 	}
