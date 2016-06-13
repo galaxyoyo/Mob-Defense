@@ -118,6 +118,14 @@ public class Wave
 					{
 						if (c.isDead())
 						{
+							Wave w = Wave.this;
+							wavesByCreature.remove(c);
+							waves.get(w).remove(c);
+							if (waves.get(w).isEmpty())
+								waves.remove(w);
+							w.creatureTiles.remove(c);
+							w.creatureCurrentTile.remove(c);
+							w.starts.remove(c);
 							cancel();
 							return;
 						}
@@ -125,6 +133,14 @@ public class Wave
 						if (c.getLocation().distanceSquared(MobDefense.instance().getEnd()) < 4)
 						{
 							c.remove();
+							Wave w = Wave.this;
+							wavesByCreature.remove(c);
+							waves.get(w).remove(c);
+							if (waves.get(w).isEmpty())
+								waves.remove(w);
+							w.creatureTiles.remove(c);
+							w.creatureCurrentTile.remove(c);
+							w.starts.remove(c);
 							cancel();
 							return;
 						}
