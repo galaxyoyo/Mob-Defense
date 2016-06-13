@@ -1,0 +1,4 @@
+rootProject.name = 'Mob Defense'
+include 'Spigot'
+findProject(':Spigot')?.name = 'mobdefense'
+

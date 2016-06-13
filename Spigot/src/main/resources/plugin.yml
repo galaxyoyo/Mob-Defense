@@ -1,0 +1,12 @@
+name: MobDefense
+main: fr.galaxyoyo.mobdefense.MobDefense
+version: 1.0
+author: galaxyoyo
+
+commands:
+  mobdefense:
+    aliases:
+    - mobdef
+    - mdef
+    - mobd
+    - md
