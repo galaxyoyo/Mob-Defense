@@ -105,15 +105,22 @@ public class Wave
 					@Override
 					public void run()
 					{
+						if (c.isDead())
+						{
+							cancel();
+							return;
+						}
+
 						if (c.getLocation().distanceSquared(MobDefense.instance().getEnd()) < 4)
 						{
 							c.remove();
 							cancel();
 							return;
 						}
+
 						update(c);
 					}
-				}.runTaskTimer(MobDefense.instance(), 0, 5L);
+				}.runTaskTimer(MobDefense.instance(), 5L, 5L);
 			}
 		}
 
@@ -134,6 +141,7 @@ public class Wave
 			if (pf.getPathingResult() == PathingResult.NO_PATH)
 				return false;
 			List<Tile> tiles = pf.iterate();
+			wavesByCreature.get(c).starts.put(c, c.getLocation().clone());
 			wavesByCreature.get(c).creatureCurrentTile.put(c, 1);
 			wavesByCreature.get(c).creatureTiles.put(c, tiles);
 		}
