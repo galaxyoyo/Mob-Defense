@@ -62,9 +62,9 @@ public abstract class Tower
 
 		try
 		{
-			T tower = clazz.getConstructor(Location.class).newInstance(towerLoc);
 			towerLoc.getBlock().setType(Material.DISPENSER);
 			towerLoc.getBlock().getState().setData(loc.getBlock().getState().getData());
+			T tower = clazz.getConstructor(Location.class).newInstance(towerLoc);
 			loc.getBlock().setType(tower.getMaterial());
 			towersByLocation.put(towerLoc, tower);
 			return tower;
