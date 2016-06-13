@@ -57,8 +57,6 @@ public class AStar
 		Block b = l.getBlock();
 		int i = b.getTypeId();
 
-		System.out.println(i);
-
 		// make sure the blocks above are air or can be walked through
 		return i != 10 && i != 11 && i != 51 && i != 59 && i != 65 && i != 0 && !canBlockBeWalkedThrough(i) &&
 				canBlockBeWalkedThrough(b.getRelative(0, 1, 0).getTypeId()) && b.getRelative(0, 2, 0).getTypeId() == 0;
@@ -79,6 +77,9 @@ public class AStar
 
 					if (x == 0 && y == 0 && z == 0)
 						continue;// don't check current square
+
+					if (x != 0 && z != 0) // Don't want diagonals
+						continue;
 
 					Tile t = new Tile((short) (current.getX() + x), (short) (current.getY() + y), (short) (current.getZ() + z), current);
 
