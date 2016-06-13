@@ -1,5 +1,7 @@
 package fr.galaxyoyo.mobdefense;
 
+import com.adamki11s.pathing.AStar;
+import com.adamki11s.pathing.Tile;
 import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
 import net.minecraft.server.v1_10_R1.EntityCreature;
@@ -51,7 +53,6 @@ public class Wave
 				c.setCustomNameVisible(true);
 				c.setMaxHealth(entry.getKey().getHP());
 				c.setHealth(entry.getKey().getHP());
-				c.setTarget(as);
 				if (c instanceof Ageable)
 					((Ageable) c).setAdult();
 				ItemStack[] inv = entry.getKey().getInv();
@@ -92,9 +93,20 @@ public class Wave
 				{
 					t.printStackTrace();
 				}
+				c.setTarget(as);
 
 				Bukkit.getScheduler().runTaskTimer(MobDefense.instance(), () -> {
-
+					try
+					{
+						AStar pf = new AStar(c.getLocation(), MobDefense.instance().getEnd().clone().subtract(0, 1, 0), 142);
+						List<Tile> tiles = pf.iterate();
+						Tile next = tiles.get(1);
+						ec.getNavigation().a(next.getX(c.getLocation()), next.getY(c.getLocation()) + 1, next.getZ(c.getLocation()), 1.0D);
+					}
+					catch (AStar.InvalidPathException e)
+					{
+						e.printStackTrace();
+					}
 				}, 0, 5L);
 			}
 		}
