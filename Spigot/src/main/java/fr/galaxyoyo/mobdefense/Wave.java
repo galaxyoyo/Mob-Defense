@@ -166,7 +166,7 @@ public class Wave
 	public void update(Creature c)
 	{
 		Tile currentTile = creatureTiles.get(c).get(creatureCurrentTile.get(c));
-		if (currentTile.getLocation(starts.get(c)).distanceSquared(c.getLocation()) > 6)
+		if (currentTile.getLocation(starts.get(c)).distanceSquared(c.getLocation()) > 10)
 			return;
 		int tileId = creatureCurrentTile.get(c) + 1;
 		creatureCurrentTile.put(c, tileId);
