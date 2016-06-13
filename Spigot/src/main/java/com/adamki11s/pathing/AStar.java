@@ -66,7 +66,7 @@ public class AStar
 	private void processAdjacentTiles(Tile current)
 	{
 		// set of possible walk to locations adjacent to current tile
-		HashSet<Tile> possible = new HashSet<>(26);
+		HashSet<Tile> possible = new HashSet<>(6);
 
 		for (byte x = -1; x <= 1; x++)
 		{

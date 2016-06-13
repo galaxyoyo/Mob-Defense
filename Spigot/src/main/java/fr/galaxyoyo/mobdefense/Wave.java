@@ -8,6 +8,7 @@ import com.google.common.collect.Sets;
 import net.minecraft.server.v1_10_R1.EntityCreature;
 import net.minecraft.server.v1_10_R1.PathfinderGoalSelector;
 import org.bukkit.Bukkit;
+import org.bukkit.Location;
 import org.bukkit.craftbukkit.v1_10_R1.entity.CraftCreature;
 import org.bukkit.entity.Ageable;
 import org.bukkit.entity.Creature;
@@ -28,6 +29,7 @@ public class Wave
 	private Map<MobClass, Integer> spawns = Maps.newHashMap();
 	private Map<Creature, List<Tile>> creatureTiles = Maps.newHashMap();
 	private Map<Creature, Integer> creatureCurrentTile = Maps.newHashMap();
+	private Map<Creature, Location> starts = Maps.newHashMap();
 
 	public static Set<Creature> getAllCreatures()
 	{
@@ -111,7 +113,7 @@ public class Wave
 						}
 						update(c);
 					}
-				}.runTaskTimer(MobDefense.instance(), 0, 15L);
+				}.runTaskTimer(MobDefense.instance(), 0, 5L);
 			}
 		}
 
@@ -128,7 +130,7 @@ public class Wave
 		try
 		{
 			AStar pf = new AStar(c.getLocation().clone().subtract(0, 1, 0), MobDefense.instance().getEnd().clone().subtract(0, 1, 0), (int) MobDefense.instance().getEnd()
-					.distanceSquared(c.getLocation()));
+					.distance(c.getLocation()));
 			if (pf.getPathingResult() == PathingResult.NO_PATH)
 				return false;
 			List<Tile> tiles = pf.iterate();
@@ -143,6 +145,9 @@ public class Wave
 
 	public void update(Creature c)
 	{
+		Tile currentTile = creatureTiles.get(c).get(creatureCurrentTile.get(c));
+		if (currentTile.getLocation(starts.get(c)).distanceSquared(c.getLocation()) > 1)
+			return;
 		int tileId = creatureCurrentTile.get(c) + 1;
 		creatureCurrentTile.put(c, tileId);
 		Tile next = creatureTiles.get(c).get(tileId);
