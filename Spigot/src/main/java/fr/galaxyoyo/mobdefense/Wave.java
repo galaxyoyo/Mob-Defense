@@ -70,7 +70,7 @@ public class Wave
 					entry.set(entries.iterator().next());
 					entries.remove(entry.get());
 				}
-				Creature c = (Creature) Bukkit.getWorlds().get(0).spawnEntity(MobDefense.instance().getSpawn().clone().add(0, 2, 0), entry.get().getKey().getType());
+				Creature c = (Creature) Bukkit.getWorlds().get(0).spawnEntity(MobDefense.instance().getSpawn().clone(), entry.get().getKey().getType());
 				c.setCustomName(entry.get().getKey().getDisplayName());
 				c.setCustomNameVisible(true);
 				c.setMaxHealth(entry.get().getKey().getHP());
@@ -109,14 +109,10 @@ public class Wave
 					bField.setAccessible(true);
 					Field cField = PathfinderGoalSelector.class.getDeclaredField("c");
 					cField.setAccessible(true);
-					Set bGoal = (Set) bField.get(ec.goalSelector);
-					bGoal.clear();
-					Set cGoal = (Set) cField.get(ec.goalSelector);
-					cGoal.clear();
-					Set bTarget = (Set) bField.get(ec.targetSelector);
-					bTarget.clear();
-					Set cTarget = (Set) cField.get(ec.targetSelector);
-					cTarget.clear();
+					((Set) bField.get(ec.goalSelector)).clear();
+					((Set) cField.get(ec.goalSelector)).clear();
+					((Set) bField.get(ec.targetSelector)).clear();
+					((Set) cField.get(ec.targetSelector)).clear();
 				}
 				catch (Throwable t)
 				{
@@ -164,7 +160,7 @@ public class Wave
 
 						update(c);
 					}
-				}.runTaskTimer(MobDefense.instance(), 5L, 5L);
+				}.runTaskTimer(MobDefense.instance(), 0L, 5L);
 			}
 		}.runTaskTimer(MobDefense.instance(), 0, 20L);
 
