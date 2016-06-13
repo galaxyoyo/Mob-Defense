@@ -3,19 +3,19 @@ package fr.galaxyoyo.mobdefense.towers;
 import com.google.common.collect.Maps;
 import com.google.common.collect.Sets;
 import fr.galaxyoyo.mobdefense.MobDefense;
+import net.minecraft.server.v1_10_R1.BlockPosition;
+import net.minecraft.server.v1_10_R1.DispenseBehaviorItem;
+import net.minecraft.server.v1_10_R1.Items;
+import net.minecraft.server.v1_10_R1.SourceBlock;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.Material;
-import org.bukkit.block.BlockFace;
-import org.bukkit.entity.Arrow;
-import org.bukkit.entity.TippedArrow;
+import org.bukkit.craftbukkit.v1_10_R1.CraftWorld;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
 import org.bukkit.material.Dispenser;
-import org.bukkit.potion.PotionData;
 import org.bukkit.potion.PotionType;
 import org.bukkit.scheduler.BukkitTask;
-import org.bukkit.util.Vector;
 
 import java.util.Map;
 import java.util.Set;
@@ -151,6 +151,7 @@ public abstract class Tower
 
 	public void launchArrow(int range, PotionType type)
 	{
+		/*((CraftDispenser) getLocation().getBlock().getState()).dispense();
 		Vector vec;
 		if (getDispenser().getFacing() == BlockFace.NORTH)
 			vec = new Vector(range, 0, 0);
@@ -160,15 +161,18 @@ public abstract class Tower
 			vec = new Vector(-range, 0, 0);
 		else
 			vec = new Vector(0, 0, range);
+		Arrow arrow;
 		if (type == null)
-		{
-			Arrow arrow = getLocation().getWorld().spawnArrow(getLocation(), vec, 1.0F, 12.0F);
-		}
+			arrow = getLocation().getWorld().spawnArrow(getLocation(), vec, 1.0F, 12.0F);
 		else
 		{
-			TippedArrow arrow = getLocation().getWorld().spawnArrow(getLocation().add(new Vector(vec.getX() / range, 0, vec.getZ() / range)), vec, 1.0F, 12.0F, TippedArrow.class);
-			arrow.setBasePotionData(new PotionData(type));
-		}
+			arrow = getLocation().getWorld().spawnArrow(getLocation().add(new Vector(vec.getX() / range, 0, vec.getZ() / range)), vec, 1.0F, 12.0F, TippedArrow.class);
+			((TippedArrow) arrow).setBasePotionData(new PotionData(type));
+		}*/
+
+		DispenseBehaviorItem item = new DispenseBehaviorItem();
+		item.a(new SourceBlock(((CraftWorld) getLocation().getWorld()).getHandle(), new BlockPosition(getLocation().getBlockX(), getLocation().getBlockY(), getLocation().getBlockZ())),
+				new net.minecraft.server.v1_10_R1.ItemStack(Items.ARROW));
 	}
 
 	public Dispenser getDispenser()
