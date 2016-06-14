@@ -108,7 +108,7 @@ public class Wave implements Serializable
 				wavesByCreature.put(c, Wave.this);
 
 				EntityCreature ec = ((CraftCreature) c).getHandle();
-				ec.getAttributeInstance(GenericAttributes.c).setValue(1.0D);
+				ec.getAttributeInstance(GenericAttributes.c).setValue(0.5D);
 
 				try
 				{
