@@ -44,6 +44,8 @@ public class MobDefenseListener implements Listener
 		pickaxe.setItemMeta(meta);
 		event.getPlayer().getInventory().clear();
 		event.getPlayer().getInventory().addItem(pickaxe);
+		//noinspection deprecation
+		event.getPlayer().spigot().setCollidesWithEntities(true);
 	}
 
 	@EventHandler
