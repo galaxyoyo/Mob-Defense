@@ -45,7 +45,7 @@ public class MobDefenseListener implements Listener
 		event.getPlayer().getInventory().clear();
 		event.getPlayer().getInventory().addItem(pickaxe);
 		//noinspection deprecation
-		event.getPlayer().spigot().setCollidesWithEntities(true);
+		event.getPlayer().spigot().setCollidesWithEntities(false);
 	}
 
 	@EventHandler
@@ -143,7 +143,7 @@ public class MobDefenseListener implements Listener
 	@EventHandler
 	public void onEntityDamage(EntityDamageEvent event)
 	{
-		if (event.getEntity() instanceof Player)
+		if (event.getEntityType() == EntityType.PLAYER)
 			event.setCancelled(true);
 	}
 
