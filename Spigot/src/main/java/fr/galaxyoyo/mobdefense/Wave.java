@@ -15,6 +15,7 @@ import org.bukkit.entity.*;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.scheduler.BukkitRunnable;
 
+import java.io.Serializable;
 import java.lang.reflect.Field;
 import java.util.List;
 import java.util.Map;
@@ -22,13 +23,12 @@ import java.util.Set;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.concurrent.atomic.AtomicReference;
 
-public class Wave
+public class Wave implements Serializable
 {
 	private static Map<Creature, MobClass> creatureClasses = Maps.newHashMap();
 	private static Map<Wave, Set<Creature>> waves = Maps.newHashMap();
 	private static Map<Creature, Wave> wavesByCreature = Maps.newHashMap();
-	private static Map<Integer, Wave> wavesByNumber = Maps.newHashMap();
-	private int number;
+	private int number = -1;
 	private Map<MobClass, Integer> spawns = Maps.newHashMap();
 	private Map<Creature, List<Tile>> creatureTiles = Maps.newHashMap();
 	private Map<Creature, Integer> creatureCurrentTile = Maps.newHashMap();
@@ -53,8 +53,6 @@ public class Wave
 
 	public void start()
 	{
-		number = wavesByNumber.size() + 1;
-		wavesByNumber.put(number, this);
 		Bukkit.broadcastMessage("Démarrage de la vague #" + getNumber());
 
 		Set<Creature> creatures = Sets.newHashSet();
@@ -181,6 +179,11 @@ public class Wave
 		return number;
 	}
 
+	public void setNumber(int number)
+	{
+		this.number = number;
+	}
+
 	public static boolean recalculate(Creature c)
 	{
 		try
@@ -216,6 +219,6 @@ public class Wave
 				next = creatureTiles.get(c).get(tileId);
 			}
 		}
-		((CraftCreature) c).getHandle().getNavigation().a(next.getX(start), next.getY(start) + 1, next.getZ(start), 1.0D);
+		((CraftCreature) c).getHandle().getNavigation().a(next.getX(start), next.getY(start) + 1, next.getZ(start), creatureClasses.get(c).getSpeed());
 	}
 }

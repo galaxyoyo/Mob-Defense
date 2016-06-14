@@ -70,9 +70,11 @@ public abstract class Tower
 
 		try
 		{
-			byte data = ((Dispenser) loc.getBlock().getState().getData()).getData();
+			//noinspection deprecation
+			byte data = loc.getBlock().getState().getData().getData();
 			Class<? extends Tower> finalClazz = clazz;
 			Bukkit.getScheduler().runTask(MobDefense.instance(), () -> {
+				//noinspection deprecation
 				towerLoc.getBlock().setTypeIdAndData(Material.DISPENSER.getId(), data, true);
 				Tower tower = null;
 				try

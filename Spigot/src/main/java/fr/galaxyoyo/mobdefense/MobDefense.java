@@ -1,6 +1,7 @@
 package fr.galaxyoyo.mobdefense;
 
 import com.google.common.collect.Lists;
+import com.google.common.collect.Maps;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.google.gson.reflect.TypeToken;
@@ -28,15 +29,16 @@ import java.io.IOException;
 import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 import java.util.Random;
 
 public class MobDefense extends JavaPlugin
 {
 	private static MobDefense instance;
 	private Gson gson;
-	private List<MobClass> mobClasses = Lists.newArrayList();
+	private Map<String, MobClass> mobClasses = Maps.newHashMap();
 	private Location spawn, end;
-	private Location npcTowerLoc, npcUpgradesLoc, npcExchangeLoc;
+	private List<Wave> waves = Lists.newArrayList();
 
 	public static MobDefense instance()
 	{
@@ -50,7 +52,7 @@ public class MobDefense extends JavaPlugin
 
 		getServer().getPluginManager().registerEvents(new MobDefenseListener(), this);
 
-		gson = new GsonBuilder().registerTypeAdapter(ItemStack.class, new ItemStackTypeAdapter()).setPrettyPrinting().create();
+		gson = new GsonBuilder().registerTypeAdapter(ItemStack.class, new ItemStackTypeAdapter()).registerTypeAdapter(Wave.class, new WaveTypeAdapter()).setPrettyPrinting().create();
 
 		try
 		{
@@ -64,18 +66,20 @@ public class MobDefense extends JavaPlugin
 			end = LocationConverter.instance().fromString(endStr);
 			String towerLoc = config.getString("npc-tower-loc", LocationConverter.instance().toString(world.getSpawnLocation()));
 			config.set("npc-tower-loc", towerLoc);
-			npcTowerLoc = LocationConverter.instance().fromString(towerLoc);
+			Location npcTowerLoc = LocationConverter.instance().fromString(towerLoc);
 			String upgradesLoc = config.getString("npc-upgrades-loc", LocationConverter.instance().toString(world.getSpawnLocation()));
 			config.set("npc-upgrades-loc", upgradesLoc);
-			npcUpgradesLoc = LocationConverter.instance().fromString(upgradesLoc);
+			Location npcUpgradesLoc = LocationConverter.instance().fromString(upgradesLoc);
 			String exchangeLoc = config.getString("npc-exchange-loc", LocationConverter.instance().toString(world.getSpawnLocation()));
 			config.set("npc-exchange-loc", exchangeLoc);
-			npcExchangeLoc = LocationConverter.instance().fromString(exchangeLoc);
+			Location npcExchangeLoc = LocationConverter.instance().fromString(exchangeLoc);
 			saveConfig();
 
 			File file = new File(getDataFolder(), "mobs.json");
 			if (file.exists())
-				mobClasses.addAll(gson.fromJson(FileUtils.readFileToString(file, StandardCharsets.UTF_8), new TypeToken<ArrayList<MobClass>>() {}.getType()));
+				//noinspection unchecked
+				((List<MobClass>) getGson().fromJson(FileUtils.readFileToString(file, StandardCharsets.UTF_8), new TypeToken<ArrayList<MobClass>>() {}.getType())).stream()
+						.forEach(mobClass -> mobClasses.put(mobClass.getName(), mobClass));
 			else
 			{
 				//noinspection ResultOfMethodCallIgnored
@@ -94,8 +98,28 @@ public class MobDefense extends JavaPlugin
 				ItemStack shield = new ItemStack(Material.SHIELD);
 				shield.addUnsafeEnchantment(Enchantment.ARROW_KNOCKBACK, 42);
 				MobClass sample = new MobClass("sample", "Sample Zombie", 42, 42.0F, EntityType.ZOMBIE, new ItemStack[]{helmet, chestplate, leggings, boots, sword, shield}, 42);
-				mobClasses.add(sample);
-				FileUtils.writeStringToFile(file, gson.toJson(mobClasses), StandardCharsets.UTF_8);
+				mobClasses.put(sample.getName(), sample);
+				FileUtils.writeStringToFile(file, getGson().toJson(mobClasses), StandardCharsets.UTF_8);
+			}
+
+			file = new File(getDataFolder(), "waves.json");
+			if (file.exists())
+				waves.addAll(getGson().fromJson(FileUtils.readFileToString(file, StandardCharsets.UTF_8), new TypeToken<ArrayList<Wave>>() {}.getType()));
+			else
+			{
+				Wave wave1 = new Wave();
+				wave1.setNumber(1);
+				//noinspection OptionalGetWithoutIsPresent
+				wave1.getSpawns().put(mobClasses.values().stream().findAny().get(), 5);
+				waves.add(wave1);
+
+				Wave wave2 = new Wave();
+				wave2.setNumber(2);
+				//noinspection OptionalGetWithoutIsPresent
+				wave2.getSpawns().put(mobClasses.values().stream().findAny().get(), 10);
+				waves.add(wave2);
+
+				FileUtils.writeStringToFile(file, getGson().toJson(waves), StandardCharsets.UTF_8);
 			}
 
 			world.getEntities().stream().filter(entity -> !(entity instanceof Player)).forEach(Entity::remove);
@@ -186,8 +210,8 @@ public class MobDefense extends JavaPlugin
 		return end;
 	}
 
-	public List<MobClass> getMobClasses()
+	public MobClass getMobClass(String name)
 	{
-		return mobClasses;
+		return mobClasses.get(name);
 	}
 }

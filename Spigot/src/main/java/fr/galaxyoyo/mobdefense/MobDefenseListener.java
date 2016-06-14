@@ -37,10 +37,6 @@ public class MobDefenseListener implements Listener
 	@EventHandler
 	public void onJoin(PlayerJoinEvent event)
 	{
-		Wave w = new Wave();
-		w.getSpawns().put(MobDefense.instance().getMobClasses().get(0), 15);
-		w.start();
-
 		ItemStack pickaxe = new ItemStack(Material.DIAMOND_PICKAXE);
 		ItemMeta meta = pickaxe.getItemMeta();
 		meta.spigot().setUnbreakable(true);
