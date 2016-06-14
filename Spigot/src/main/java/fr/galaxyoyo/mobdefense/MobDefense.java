@@ -83,7 +83,7 @@ public class MobDefense extends JavaPlugin
 			Location npcExchangeLoc = LocationConverter.instance().fromString(exchangeLoc);
 			startMoney = config.getInt("start-money", 50);
 			config.set("start-money", startMoney);
-			waveTime = config.getInt("wave-time", 30);
+			waveTime = config.getInt("wave-time", 60);
 			config.set("wave-time", waveTime);
 			maxMobs = config.getInt("max-mobs", 10);
 			config.set("max-mobs", maxMobs);
@@ -144,8 +144,9 @@ public class MobDefense extends JavaPlugin
 
 			for (int i = 0; i < 3; ++i)
 			{
-				Villager npcTower = (Villager) world.spawnEntity(npcTowerLoc.clone().add(random.nextDouble() * 2.0D - 1.0D, 0, random.nextDouble() * 2.0D - 1.0D),
-						EntityType.VILLAGER);
+				Location loc = npcTowerLoc.clone().add(random.nextDouble() * 4.0D - 2.0D, 0, random.nextDouble() * 4.0D - 2.0D);
+				Villager npcTower = (Villager) world.spawnEntity(loc, EntityType.VILLAGER);
+				npcTower.teleport(loc);
 				npcTower.setCollidable(false);
 				npcTower.setAI(false);
 				npcTower.setProfession(Villager.Profession.FARMER);
@@ -166,8 +167,8 @@ public class MobDefense extends JavaPlugin
 
 			for (int i = 0; i < 3; ++i)
 			{
-				Villager npcUpgrades = (Villager) world.spawnEntity(npcUpgradesLoc.clone().add(random.nextDouble() * 2.0D - 1.0D, 0, random.nextDouble() * 2.0D - 1.0D),
-						EntityType.VILLAGER);
+				Location loc = npcUpgradesLoc.clone().add(random.nextDouble() * 2.0D - 1.0D, 0, random.nextDouble() * 2.0D - 1.0D);
+				Villager npcUpgrades = (Villager) world.spawnEntity(loc, EntityType.VILLAGER);
 				npcUpgrades.setCollidable(false);
 				npcUpgrades.setAI(false);
 				npcUpgrades.setProfession(Villager.Profession.LIBRARIAN);
@@ -177,8 +178,9 @@ public class MobDefense extends JavaPlugin
 
 			for (int i = 0; i < 3; ++i)
 			{
-				Villager npcExchange = (Villager) world.spawnEntity(npcExchangeLoc.clone().add(random.nextDouble() * 2.0D - 1.0D, 0, random.nextDouble() * 2.0D - 1.0D),
-						EntityType.VILLAGER);
+				Location loc = npcExchangeLoc.clone().add(random.nextDouble() * 2.0D - 1.0D, 0, random.nextDouble() * 2.0D - 1.0D);
+				System.out.println(loc);
+				Villager npcExchange = (Villager) world.spawnEntity(loc, EntityType.VILLAGER);
 				npcExchange.setCollidable(false);
 				npcExchange.setAI(false);
 				npcExchange.setProfession(Villager.Profession.BLACKSMITH);
