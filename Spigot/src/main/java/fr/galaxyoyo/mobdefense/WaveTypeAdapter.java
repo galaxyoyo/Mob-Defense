@@ -53,15 +53,18 @@ public class WaveTypeAdapter extends TypeAdapter<Wave>
 					MobClass mobClass = null;
 					int number = -1;
 					r.beginObject();
-					name = r.nextName();
-					if (name.equalsIgnoreCase("class"))
-						mobClass = MobDefense.instance().getMobClass(r.nextString());
-					else if (name.equalsIgnoreCase("number"))
-						number = r.nextInt();
-					else
+					while (r.peek() != JsonToken.END_OBJECT)
 					{
-						MobDefense.instance().getLogger().warning("Unrecognized name: '" + name + "'");
-						r.skipValue();
+						name = r.nextName();
+						if (name.equalsIgnoreCase("class"))
+							mobClass = MobDefense.instance().getMobClass(r.nextString());
+						else if (name.equalsIgnoreCase("number"))
+							number = r.nextInt();
+						else
+						{
+							MobDefense.instance().getLogger().warning("Unrecognized name: '" + name + "'");
+							r.skipValue();
+						}
 					}
 					r.endObject();
 					wave.getSpawns().put(mobClass, number);
