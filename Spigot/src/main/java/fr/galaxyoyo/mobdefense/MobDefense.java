@@ -247,6 +247,7 @@ public class MobDefense extends JavaPlugin
 				currentWave = waves.get(index + 1);
 			else
 				currentWave.setNumber(index + 1);
+			Bukkit.broadcastMessage("" + currentWave.getNumber());
 		}
 
 		currentWave.start();

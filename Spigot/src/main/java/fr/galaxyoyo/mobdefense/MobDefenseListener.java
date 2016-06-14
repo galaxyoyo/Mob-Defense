@@ -213,6 +213,7 @@ public class MobDefenseListener implements Listener
 			for (Tower tower : Tower.getAllTowers())
 				Tower.breakAt(tower.getLocation());
 			Bukkit.getWorlds().get(0).getEntities().stream().filter(entity -> entity.getType() != EntityType.PLAYER && entity.getType() != EntityType.VILLAGER).forEach(Entity::remove);
+			Bukkit.getOnlinePlayers().forEach(player -> player.getInventory().clear());
 			MobDefense.instance().setCurrentWave(null);
 			Bukkit.getScheduler().cancelTasks(MobDefense.instance());
 		}

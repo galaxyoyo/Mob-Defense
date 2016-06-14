@@ -54,7 +54,7 @@ public class Wave implements Serializable
 
 	public void start()
 	{
-		Bukkit.broadcastMessage("Démarrage de la vague #" + getNumber());
+		Bukkit.broadcastMessage("Démarrage de la vague #" + number);
 
 		Set<Creature> creatures = Sets.newHashSet();
 		Set<Map.Entry<MobClass, Integer>> entries = Sets.newHashSet(spawns.entrySet());
@@ -108,7 +108,7 @@ public class Wave implements Serializable
 				wavesByCreature.put(c, Wave.this);
 
 				EntityCreature ec = ((CraftCreature) c).getHandle();
-				ec.getAttributeInstance(GenericAttributes.c).setValue(Double.MAX_VALUE);
+				ec.getAttributeInstance(GenericAttributes.c).setValue(1.0D);
 
 				try
 				{
@@ -177,16 +177,6 @@ public class Wave implements Serializable
 		waves.put(this, creatures);
 	}
 
-	public int getNumber()
-	{
-		return number;
-	}
-
-	public void setNumber(int number)
-	{
-		this.number = number;
-	}
-
 	public static boolean recalculate(Creature c)
 	{
 		try
@@ -223,5 +213,15 @@ public class Wave implements Serializable
 			}
 		}
 		((CraftCreature) c).getHandle().getNavigation().a(next.getX(start), next.getY(start) + 1, next.getZ(start), creatureClasses.get(c).getSpeed());
+	}
+
+	public int getNumber()
+	{
+		return number;
+	}
+
+	public void setNumber(int number)
+	{
+		this.number = number;
 	}
 }
