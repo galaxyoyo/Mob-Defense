@@ -83,7 +83,7 @@ public class MobDefense extends JavaPlugin
 			Location npcExchangeLoc = LocationConverter.instance().fromString(exchangeLoc);
 			startMoney = config.getInt("start-money", 50);
 			config.set("start-money", startMoney);
-			waveTime = config.getInt("wave-time", 60);
+			waveTime = config.getInt("wave-time", 30);
 			config.set("wave-time", waveTime);
 			maxMobs = config.getInt("max-mobs", 10);
 			config.set("max-mobs", maxMobs);
@@ -114,7 +114,7 @@ public class MobDefense extends JavaPlugin
 				ItemMeta meta = shield.getItemMeta();
 				meta.spigot().setUnbreakable(true);
 				shield.setItemMeta(meta);
-				MobClass sample = new MobClass("sample", "Sample Zombie", 42, 42.0F, EntityType.ZOMBIE, new ItemStack[]{helmet, chestplate, leggings, boots, sword, shield}, 42);
+				MobClass sample = new MobClass("sample", "Sample Zombie", 42, 1.0F, EntityType.ZOMBIE, new ItemStack[]{helmet, chestplate, leggings, boots, sword, shield}, 42);
 				mobClasses.put(sample.getName(), sample);
 				FileUtils.writeStringToFile(file, getGson().toJson(mobClasses), StandardCharsets.UTF_8);
 			}

@@ -56,7 +56,7 @@ public class Wave implements Serializable
 		Bukkit.broadcastMessage("Démarrage de la vague #" + getNumber());
 
 		Set<Creature> creatures = Sets.newHashSet();
-		Set<Map.Entry<MobClass, Integer>> entries = spawns.entrySet();
+		Set<Map.Entry<MobClass, Integer>> entries = Sets.newHashSet(spawns.entrySet());
 		AtomicReference<Map.Entry<MobClass, Integer>> entry = new AtomicReference<>(null);
 		AtomicInteger current = new AtomicInteger(0);
 		new BukkitRunnable()
@@ -80,6 +80,7 @@ public class Wave implements Serializable
 				c.setMaxHealth(entry.get().getKey().getHP());
 				c.setHealth(entry.get().getKey().getHP());
 				c.setCanPickupItems(false);
+				c.setCollidable(false);
 				if (c instanceof Ageable)
 					((Ageable) c).setAdult();
 				if (c instanceof Zombie)

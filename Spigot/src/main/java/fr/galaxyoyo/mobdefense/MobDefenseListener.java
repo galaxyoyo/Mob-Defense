@@ -5,18 +5,12 @@ import net.md_5.bungee.api.ChatColor;
 import org.bukkit.Bukkit;
 import org.bukkit.GameMode;
 import org.bukkit.Material;
-import org.bukkit.entity.Creature;
-import org.bukkit.entity.Entity;
-import org.bukkit.entity.EntityType;
-import org.bukkit.entity.Player;
+import org.bukkit.entity.*;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.block.BlockBreakEvent;
 import org.bukkit.event.block.BlockPlaceEvent;
-import org.bukkit.event.entity.CreatureSpawnEvent;
-import org.bukkit.event.entity.EntityCombustEvent;
-import org.bukkit.event.entity.EntityDamageByEntityEvent;
-import org.bukkit.event.entity.EntityDeathEvent;
+import org.bukkit.event.entity.*;
 import org.bukkit.event.player.PlayerInteractEntityEvent;
 import org.bukkit.event.player.PlayerJoinEvent;
 import org.bukkit.event.player.PlayerQuitEvent;
@@ -129,7 +123,17 @@ public class MobDefenseListener implements Listener
 	@EventHandler
 	public void onEntityDamageByEntity(EntityDamageByEntityEvent event)
 	{
-		if (event.getDamager() instanceof Player)
+		event.setCancelled(true);
+		if (event.getDamager().getType() != EntityType.PLAYER && event.getEntityType() != EntityType.PLAYER && event.getEntity() instanceof Creature)
+			((Creature) event.getEntity()).damage(event.getDamage(), event.getDamager());
+		if (event.getDamager() instanceof Projectile)
+			((Projectile) event.getDamager()).setBounce(event.getEntityType() != EntityType.PLAYER);
+	}
+
+	@EventHandler
+	public void onEntityDamage(EntityDamageEvent event)
+	{
+		if (event.getEntity() instanceof Player)
 			event.setCancelled(true);
 	}
 
@@ -198,6 +202,12 @@ public class MobDefenseListener implements Listener
 			Bukkit.broadcastMessage("[MobDefense] " + event.getEntity().getCustomName() + " a réussi à passer ! " + ChatColor.RED + "Partie terminée ! Bravo à vous !");
 			Bukkit.getScheduler().cancelTasks(MobDefense.instance());
 		}
+	}
+
+	@EventHandler
+	public void onFoodLevelChange(FoodLevelChangeEvent event)
+	{
+		event.setCancelled(true);
 	}
 
 	@EventHandler
