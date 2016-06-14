@@ -116,8 +116,8 @@ public class MobDefense extends JavaPlugin
 				shield.setItemMeta(meta);
 				MobClass sample = new MobClass("sample", "Sample Zombie", 42, 1.0F, EntityType.ZOMBIE, new ItemStack[]{helmet, chestplate, leggings, boots, sword, shield}, 42);
 				mobClasses.put(sample.getName(), sample);
-				FileUtils.writeStringToFile(file, getGson().toJson(mobClasses), StandardCharsets.UTF_8);
 			}
+			FileUtils.writeStringToFile(file, getGson().toJson(mobClasses.values()), StandardCharsets.UTF_8);
 
 			file = new File(getDataFolder(), "waves.json");
 			if (file.exists())
@@ -135,9 +135,8 @@ public class MobDefense extends JavaPlugin
 				//noinspection OptionalGetWithoutIsPresent
 				wave2.getSpawns().put(mobClasses.values().stream().findAny().get(), 10);
 				waves.add(wave2);
-
-				FileUtils.writeStringToFile(file, getGson().toJson(waves), StandardCharsets.UTF_8);
 			}
+			FileUtils.writeStringToFile(file, getGson().toJson(waves), StandardCharsets.UTF_8);
 
 			world.getEntities().stream().filter(entity -> !(entity instanceof Player)).forEach(Entity::remove);
 
