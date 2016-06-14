@@ -40,31 +40,34 @@ public class WaveTypeAdapter extends TypeAdapter<Wave>
 			return null;
 		r.beginObject();
 		Wave wave = new Wave();
-		String name = r.nextName();
-		if (name.equalsIgnoreCase("number"))
-			wave.setNumber(r.nextInt());
-		else if (name.equalsIgnoreCase("spawns"))
+		while (r.peek() != JsonToken.END_OBJECT)
 		{
-			r.beginArray();
-			while (r.peek() != JsonToken.END_ARRAY)
+			String name = r.nextName();
+			if (name.equalsIgnoreCase("number"))
+				wave.setNumber(r.nextInt());
+			else if (name.equalsIgnoreCase("spawns"))
 			{
-				MobClass mobClass = null;
-				int number = -1;
-				r.beginObject();
-				name = r.nextName();
-				if (name.equalsIgnoreCase("class"))
-					mobClass = MobDefense.instance().getMobClass(r.nextString());
-				else if (name.equalsIgnoreCase("number"))
-					number = r.nextInt();
-				else
+				r.beginArray();
+				while (r.peek() != JsonToken.END_ARRAY)
 				{
-					MobDefense.instance().getLogger().warning("Unrecognized name: '" + name + "'");
-					r.skipValue();
+					MobClass mobClass = null;
+					int number = -1;
+					r.beginObject();
+					name = r.nextName();
+					if (name.equalsIgnoreCase("class"))
+						mobClass = MobDefense.instance().getMobClass(r.nextString());
+					else if (name.equalsIgnoreCase("number"))
+						number = r.nextInt();
+					else
+					{
+						MobDefense.instance().getLogger().warning("Unrecognized name: '" + name + "'");
+						r.skipValue();
+					}
+					r.endObject();
+					wave.getSpawns().put(mobClass, number);
 				}
-				r.endObject();
-				wave.getSpawns().put(mobClass, number);
+				r.endArray();
 			}
-			r.endArray();
 		}
 		r.endObject();
 		return wave;
