@@ -81,7 +81,6 @@ public class Wave implements Serializable
 				c.setMaxHealth(entry.get().getKey().getHP());
 				c.setHealth(entry.get().getKey().getHP());
 				c.setCanPickupItems(false);
-				c.setCollidable(false);
 				if (c instanceof Ageable)
 					((Ageable) c).setAdult();
 				if (c instanceof Zombie)
@@ -108,7 +107,7 @@ public class Wave implements Serializable
 				wavesByCreature.put(c, Wave.this);
 
 				EntityCreature ec = ((CraftCreature) c).getHandle();
-				ec.getAttributeInstance(GenericAttributes.c).setValue(0.5D);
+				ec.getAttributeInstance(GenericAttributes.c).setValue(1.0D);
 
 				try
 				{
