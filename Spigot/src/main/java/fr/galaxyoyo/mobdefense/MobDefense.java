@@ -6,11 +6,13 @@ import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.google.gson.reflect.TypeToken;
 import fr.galaxyoyo.mobdefense.towers.Tower;
+import net.md_5.bungee.api.ChatColor;
 import org.apache.commons.io.FileUtils;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.World;
+import org.bukkit.command.CommandSender;
 import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.craftbukkit.v1_10_R1.CraftWorld;
 import org.bukkit.enchantments.Enchantment;
@@ -38,7 +40,10 @@ public class MobDefense extends JavaPlugin
 	private Gson gson;
 	private Map<String, MobClass> mobClasses = Maps.newHashMap();
 	private Location spawn, end;
+	private int startMoney;
+	private int waveTime;
 	private List<Wave> waves = Lists.newArrayList();
+	private Wave currentWave;
 
 	public static MobDefense instance()
 	{
@@ -51,6 +56,8 @@ public class MobDefense extends JavaPlugin
 		instance = this;
 
 		getServer().getPluginManager().registerEvents(new MobDefenseListener(), this);
+
+		getCommand("mobdefense").setExecutor(new MobDefenseExecutor());
 
 		gson = new GsonBuilder().registerTypeAdapter(ItemStack.class, new ItemStackTypeAdapter()).registerTypeAdapter(Wave.class, new WaveTypeAdapter()).setPrettyPrinting().create();
 
@@ -73,6 +80,10 @@ public class MobDefense extends JavaPlugin
 			String exchangeLoc = config.getString("npc-exchange-loc", LocationConverter.instance().toString(world.getSpawnLocation()));
 			config.set("npc-exchange-loc", exchangeLoc);
 			Location npcExchangeLoc = LocationConverter.instance().fromString(exchangeLoc);
+			startMoney = config.getInt("start-money", 50);
+			config.set("start-money", startMoney);
+			waveTime = config.getInt("wave-time", 60);
+			config.set("wave-time", waveTime);
 			saveConfig();
 
 			File file = new File(getDataFolder(), "mobs.json");
@@ -97,6 +108,9 @@ public class MobDefense extends JavaPlugin
 				sword.addUnsafeEnchantment(Enchantment.FIRE_ASPECT, 42);
 				ItemStack shield = new ItemStack(Material.SHIELD);
 				shield.addUnsafeEnchantment(Enchantment.ARROW_KNOCKBACK, 42);
+				ItemMeta meta = shield.getItemMeta();
+				meta.spigot().setUnbreakable(true);
+				shield.setItemMeta(meta);
 				MobClass sample = new MobClass("sample", "Sample Zombie", 42, 42.0F, EntityType.ZOMBIE, new ItemStack[]{helmet, chestplate, leggings, boots, sword, shield}, 42);
 				mobClasses.put(sample.getName(), sample);
 				FileUtils.writeStringToFile(file, getGson().toJson(mobClasses), StandardCharsets.UTF_8);
@@ -213,5 +227,56 @@ public class MobDefense extends JavaPlugin
 	public MobClass getMobClass(String name)
 	{
 		return mobClasses.get(name);
+	}
+
+	public void startNextWave()
+	{
+		if (currentWave == null)
+			currentWave = waves.get(0);
+		else
+		{
+			int index = waves.indexOf(currentWave);
+			if (index != waves.size() - 1)
+				currentWave = waves.get(index + 1);
+			else
+				currentWave.setNumber(index + 1);
+		}
+
+		currentWave.start();
+	}
+
+	public void start(CommandSender sender)
+	{
+		if (currentWave != null)
+		{
+			sender.sendMessage(ChatColor.RED + "A game is already started!");
+			return;
+		}
+
+		Player giveTo;
+		if (sender instanceof Player)
+			giveTo = (Player) sender;
+		else
+		{
+			List<Player> players = Lists.newArrayList(Bukkit.getOnlinePlayers());
+			if (players.isEmpty())
+			{
+				sender.sendMessage(ChatColor.RED + "Any player is connected to start the game!");
+				return;
+			}
+			else
+				giveTo = players.get(((CraftWorld) Bukkit.getWorlds().get(0)).getHandle().random.nextInt(players.size()));
+		}
+
+		int remainingMoney = startMoney;
+		while (remainingMoney > 0)
+		{
+			giveTo.getInventory().addItem(new ItemStack(Material.GOLD_NUGGET, Math.min(remainingMoney, 64)));
+			remainingMoney -= 64;
+		}
+
+		Bukkit.broadcastMessage("[MobDefense] Game started!");
+
+		Bukkit.getScheduler().runTaskTimer(this, this::startNextWave, waveTime * 20L, waveTime * 20L);
 	}
 }

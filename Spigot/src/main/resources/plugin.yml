@@ -5,8 +5,13 @@ author: galaxyoyo
 
 commands:
   mobdefense:
+    permission: mobdefense.command
     aliases:
     - mobdef
     - mdef
     - mobd
     - md
+
+permissions:
+  mobdefense.command:
+    default: op
