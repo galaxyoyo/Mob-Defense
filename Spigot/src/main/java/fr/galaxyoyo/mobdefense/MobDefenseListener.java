@@ -30,7 +30,7 @@ public class MobDefenseListener implements Listener
 	@EventHandler
 	public void onCreatureSpawn(CreatureSpawnEvent event)
 	{
-		if (event.getSpawnReason() != CreatureSpawnEvent.SpawnReason.CUSTOM)
+		if (event.getSpawnReason() != CreatureSpawnEvent.SpawnReason.CUSTOM && event.getSpawnReason() != CreatureSpawnEvent.SpawnReason.SPAWNER_EGG)
 			event.setCancelled(true);
 	}
 
@@ -44,8 +44,7 @@ public class MobDefenseListener implements Listener
 		pickaxe.setItemMeta(meta);
 		event.getPlayer().getInventory().clear();
 		event.getPlayer().getInventory().addItem(pickaxe);
-		//noinspection deprecation
-		event.getPlayer().spigot().setCollidesWithEntities(false);
+		event.getPlayer().setCollidable(false);
 	}
 
 	@EventHandler
@@ -145,6 +144,12 @@ public class MobDefenseListener implements Listener
 	{
 		if (event.getEntityType() == EntityType.PLAYER)
 			event.setCancelled(true);
+	}
+
+	@EventHandler
+	public void onProjectileHit(ProjectileHitEvent event)
+	{
+		event.getEntity().remove();
 	}
 
 	@EventHandler
