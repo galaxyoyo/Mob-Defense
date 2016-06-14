@@ -42,6 +42,7 @@ public class MobDefense extends JavaPlugin
 	private Location spawn, end;
 	private int startMoney;
 	private int waveTime;
+	private int maxMobs;
 	private List<Wave> waves = Lists.newArrayList();
 	private Wave currentWave;
 
@@ -84,6 +85,8 @@ public class MobDefense extends JavaPlugin
 			config.set("start-money", startMoney);
 			waveTime = config.getInt("wave-time", 60);
 			config.set("wave-time", waveTime);
+			maxMobs = config.getInt("max-mobs", 10);
+			config.set("max-mobs", maxMobs);
 			saveConfig();
 
 			File file = new File(getDataFolder(), "mobs.json");
@@ -222,6 +225,11 @@ public class MobDefense extends JavaPlugin
 	public Location getEnd()
 	{
 		return end;
+	}
+
+	public int getMaxMobs()
+	{
+		return maxMobs;
 	}
 
 	public MobClass getMobClass(String name)

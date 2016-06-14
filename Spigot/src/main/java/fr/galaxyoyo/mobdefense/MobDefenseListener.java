@@ -1,6 +1,7 @@
 package fr.galaxyoyo.mobdefense;
 
 import fr.galaxyoyo.mobdefense.towers.Tower;
+import net.md_5.bungee.api.ChatColor;
 import org.bukkit.Bukkit;
 import org.bukkit.GameMode;
 import org.bukkit.Material;
@@ -27,6 +28,8 @@ import org.bukkit.inventory.meta.ItemMeta;
 
 public class MobDefenseListener implements Listener
 {
+	private int goneMobs = 0;
+
 	@EventHandler
 	public void onCreatureSpawn(CreatureSpawnEvent event)
 	{
@@ -186,7 +189,15 @@ public class MobDefenseListener implements Listener
 	@EventHandler
 	public void onEntityGone(EntityGoneEvent event)
 	{
-		Bukkit.broadcastMessage(event.getEntity().getCustomName() + " a réussi à passer !");
+		++goneMobs;
+		if (goneMobs < MobDefense.instance().getMaxMobs())
+			Bukkit.broadcastMessage("[MobDefense] " + event.getEntity().getCustomName() + " a réussi à passer ! " + (MobDefense.instance().getMaxMobs() - goneMobs) + " restant" +
+					(MobDefense.instance().getMaxMobs() - goneMobs > 1 ? "s" : ""));
+		else
+		{
+			Bukkit.broadcastMessage("[MobDefense] " + event.getEntity().getCustomName() + " a réussi à passer ! " + ChatColor.RED + "Partie terminée ! Bravo à vous !");
+			Bukkit.getScheduler().cancelTasks(MobDefense.instance());
+		}
 	}
 
 	@EventHandler
