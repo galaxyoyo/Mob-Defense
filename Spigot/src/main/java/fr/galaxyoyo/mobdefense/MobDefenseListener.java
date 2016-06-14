@@ -123,11 +123,13 @@ public class MobDefenseListener implements Listener
 	@EventHandler
 	public void onEntityDamageByEntity(EntityDamageByEntityEvent event)
 	{
-		event.setCancelled(true);
-		if (event.getDamager().getType() != EntityType.PLAYER && event.getEntityType() != EntityType.PLAYER && event.getEntity() instanceof Creature)
-			((Creature) event.getEntity()).damage(event.getDamage(), event.getDamager());
-		if (event.getDamager() instanceof Projectile)
-			((Projectile) event.getDamager()).setBounce(event.getEntityType() != EntityType.PLAYER);
+		if (event.getDamager().getType() == EntityType.PLAYER)
+			event.setCancelled(true);
+		else if (event.getDamager() instanceof Projectile)
+		{
+			Projectile p = (Projectile) event.getDamager();
+			p.setBounce(event.getEntityType() != EntityType.PLAYER);
+		}
 	}
 
 	@EventHandler

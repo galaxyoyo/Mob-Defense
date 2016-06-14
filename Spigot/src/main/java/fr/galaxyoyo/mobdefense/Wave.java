@@ -7,6 +7,7 @@ import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
 import com.google.common.collect.Sets;
 import net.minecraft.server.v1_10_R1.EntityCreature;
+import net.minecraft.server.v1_10_R1.GenericAttributes;
 import net.minecraft.server.v1_10_R1.PathfinderGoalSelector;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
@@ -107,6 +108,7 @@ public class Wave implements Serializable
 				wavesByCreature.put(c, Wave.this);
 
 				EntityCreature ec = ((CraftCreature) c).getHandle();
+				ec.getAttributeInstance(GenericAttributes.c).setValue(Double.MAX_VALUE);
 
 				try
 				{
