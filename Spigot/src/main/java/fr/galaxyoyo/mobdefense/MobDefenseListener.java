@@ -5,7 +5,10 @@ import net.md_5.bungee.api.ChatColor;
 import org.bukkit.Bukkit;
 import org.bukkit.GameMode;
 import org.bukkit.Material;
-import org.bukkit.entity.*;
+import org.bukkit.entity.Creature;
+import org.bukkit.entity.Entity;
+import org.bukkit.entity.EntityType;
+import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.block.BlockBreakEvent;
@@ -46,6 +49,14 @@ public class MobDefenseListener implements Listener
 	@EventHandler
 	public void onQuit(PlayerQuitEvent event)
 	{
+		for (ItemStack stack : event.getPlayer().getInventory().getContents())
+		{
+			if (stack == null || stack.getType() == Material.DIAMOND_PICKAXE)
+				continue;
+			event.getPlayer().getWorld().dropItem(event.getPlayer().getLocation(), stack);
+		}
+
+		event.getPlayer().getInventory().clear();
 	}
 
 	@EventHandler
@@ -125,11 +136,6 @@ public class MobDefenseListener implements Listener
 	{
 		if (event.getDamager().getType() == EntityType.PLAYER)
 			event.setCancelled(true);
-		else if (event.getDamager() instanceof Projectile)
-		{
-			Projectile p = (Projectile) event.getDamager();
-			p.setBounce(event.getEntityType() != EntityType.PLAYER);
-		}
 	}
 
 	@EventHandler
@@ -202,6 +208,10 @@ public class MobDefenseListener implements Listener
 		else
 		{
 			Bukkit.broadcastMessage("[MobDefense] " + event.getEntity().getCustomName() + " a réussi à passer ! " + ChatColor.RED + "Partie terminée ! Bravo à vous !");
+			for (Tower tower : Tower.getAllTowers())
+				Tower.breakAt(tower.getLocation());
+			Bukkit.getWorlds().get(0).getEntities().stream().filter(entity -> entity.getType() != EntityType.PLAYER && entity.getType() != EntityType.VILLAGER).forEach(Entity::remove);
+			MobDefense.instance().setCurrentWave(null);
 			Bukkit.getScheduler().cancelTasks(MobDefense.instance());
 		}
 	}

@@ -148,6 +148,11 @@ public abstract class Tower
 		return towerClasses;
 	}
 
+	public static List<Tower> getAllTowers()
+	{
+		return Lists.newArrayList(towersByLocation.values());
+	}
+
 	public abstract void onTick();
 
 	public Arrow launchArrow(int range)

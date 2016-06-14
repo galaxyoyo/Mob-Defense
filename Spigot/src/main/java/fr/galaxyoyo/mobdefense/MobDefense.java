@@ -286,4 +286,9 @@ public class MobDefense extends JavaPlugin
 
 		Bukkit.getScheduler().runTaskTimer(this, this::startNextWave, waveTime * 20L, waveTime * 20L);
 	}
+
+	public void setCurrentWave(Wave currentWave)
+	{
+		this.currentWave = currentWave;
+	}
 }
