@@ -7,6 +7,7 @@ import com.google.gson.GsonBuilder;
 import com.google.gson.reflect.TypeToken;
 import fr.galaxyoyo.mobdefense.towers.Tower;
 import net.md_5.bungee.api.ChatColor;
+import net.minecraft.server.v1_10_R1.PacketPlayOutEntity;
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.io.IOUtils;
 import org.bukkit.Bukkit;
@@ -16,7 +17,7 @@ import org.bukkit.World;
 import org.bukkit.command.CommandSender;
 import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.craftbukkit.v1_10_R1.CraftWorld;
-import org.bukkit.craftbukkit.v1_10_R1.entity.CraftVillager;
+import org.bukkit.craftbukkit.v1_10_R1.entity.CraftPlayer;
 import org.bukkit.enchantments.Enchantment;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.EntityType;
@@ -295,7 +296,12 @@ public class MobDefense extends JavaPlugin
 		Bukkit.getScheduler().runTaskLater(this, () -> {
 			for (Map.Entry<Villager, Location> entry : map.entrySet())
 			{
-				Bukkit.broadcastMessage("" + ((CraftVillager) entry.getKey()).teleport(entry.getValue()));
+				for (Player player : Bukkit.getOnlinePlayers())
+				{
+					PacketPlayOutEntity.PacketPlayOutEntityLook pkt = new PacketPlayOutEntity.PacketPlayOutEntityLook(entry.getKey().getEntityId(),
+							(byte) (entry.getValue().getYaw() / 360.0F * 256), (byte) (entry.getValue().getPitch() / 360.0F * 256), entry.getKey().isOnGround());
+					((CraftPlayer) player).getHandle().playerConnection.networkManager.sendPacket(pkt);
+				}
 			}
 		}, 20L);
 
