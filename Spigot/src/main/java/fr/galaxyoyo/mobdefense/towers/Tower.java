@@ -48,11 +48,11 @@ public abstract class Tower
 		towerClasses.add(clazz);
 	}
 
-	public static boolean placeAt(Location loc, ItemStack stack)
+	public static Tower placeAt(Location loc, ItemStack stack)
 	{
 		Location towerLoc = loc.clone().add(0, 1, 0);
 		if (towerLoc.getBlock().getType() != Material.AIR)
-			return false;
+			return null;
 
 		Class<? extends Tower> clazz = null;
 		for (Class<? extends Tower> towerClass : towerClasses)
@@ -66,35 +66,32 @@ public abstract class Tower
 		}
 
 		if (clazz == null)
-			return false;
+			return null;
 
 		try
 		{
 			//noinspection deprecation
 			byte data = loc.getBlock().getState().getData().getData();
-			Class<? extends Tower> finalClazz = clazz;
-			Bukkit.getScheduler().runTask(MobDefense.instance(), () -> {
-				//noinspection deprecation
-				towerLoc.getBlock().setTypeIdAndData(Material.DISPENSER.getId(), data, true);
-				Tower tower = null;
-				try
-				{
-					tower = finalClazz.getConstructor(Location.class).newInstance(towerLoc);
-				}
-				catch (Exception ex)
-				{
-					ex.printStackTrace();
-					return;
-				}
-				loc.getBlock().setType(tower.getMaterial());
-				towersByLocation.put(towerLoc, tower);
-			});
-			return true;
+			//noinspection deprecation
+			towerLoc.getBlock().setTypeIdAndData(Material.DISPENSER.getId(), data, true);
+			Tower tower;
+			try
+			{
+				tower = clazz.getConstructor(Location.class).newInstance(towerLoc);
+			}
+			catch (Exception ex)
+			{
+				ex.printStackTrace();
+				return null;
+			}
+			loc.getBlock().setType(tower.getMaterial());
+			towersByLocation.put(towerLoc, tower);
+			return tower;
 		}
 		catch (Exception ex)
 		{
 			ex.printStackTrace();
-			return false;
+			return null;
 		}
 	}
 

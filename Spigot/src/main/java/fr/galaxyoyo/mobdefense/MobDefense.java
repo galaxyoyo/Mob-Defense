@@ -8,6 +8,8 @@ import com.google.gson.reflect.TypeToken;
 import fr.galaxyoyo.mobdefense.events.GameStartedEvent;
 import fr.galaxyoyo.mobdefense.events.GameStoppedEvent;
 import fr.galaxyoyo.mobdefense.towers.Tower;
+import fr.galaxyoyo.spigot.nbtapi.ItemStackUtils;
+import fr.galaxyoyo.spigot.nbtapi.NBTAPI;
 import net.md_5.bungee.api.ChatColor;
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.io.IOUtils;
@@ -35,10 +37,9 @@ import org.mcstats.Metrics;
 import java.io.File;
 import java.io.IOException;
 import java.nio.charset.StandardCharsets;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Map;
-import java.util.Random;
+import java.util.*;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 public class MobDefense extends JavaPlugin
 {
@@ -69,6 +70,7 @@ public class MobDefense extends JavaPlugin
 		instance = this;
 
 		getServer().getPluginManager().registerEvents(new MobDefenseListener(), this);
+		getServer().getPluginManager().enablePlugin(new NBTAPI());
 
 		getCommand("mobdefense").setExecutor(new MobDefenseExecutor());
 
@@ -285,6 +287,8 @@ public class MobDefense extends JavaPlugin
 				ItemMeta meta = result.getItemMeta();
 				meta.setDisplayName(Tower.getTowerName(clazz));
 				result.setItemMeta(meta);
+				Stream<Material> stream = Arrays.stream(Material.values()).filter(Material::isBlock);
+				ItemStackUtils.setCanPlaceOn(result, stream.collect(Collectors.toList()).toArray(new Material[(int) stream.count()]));
 				MerchantRecipe recipe = new MerchantRecipe(result, Integer.MAX_VALUE);
 				recipe.setIngredients(Lists.newArrayList(Tower.getTowerPrice(clazz)));
 				recipes.add(recipe);

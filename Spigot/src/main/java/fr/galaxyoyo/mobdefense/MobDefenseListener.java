@@ -2,6 +2,7 @@ package fr.galaxyoyo.mobdefense;
 
 import fr.galaxyoyo.mobdefense.events.EntityGoneEvent;
 import fr.galaxyoyo.mobdefense.towers.Tower;
+import fr.galaxyoyo.spigot.nbtapi.ItemStackUtils;
 import net.md_5.bungee.api.ChatColor;
 import org.bukkit.Bukkit;
 import org.bukkit.GameMode;
@@ -25,6 +26,8 @@ import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
 import org.bukkit.scoreboard.Score;
 
+import java.util.List;
+
 public class MobDefenseListener implements Listener
 {
 	@EventHandler
@@ -42,10 +45,12 @@ public class MobDefenseListener implements Listener
 		meta.spigot().setUnbreakable(true);
 		meta.addItemFlags(ItemFlag.values());
 		pickaxe.setItemMeta(meta);
+		ItemStackUtils.setCanDestroy(pickaxe, Material.DISPENSER);
 		event.getPlayer().getInventory().clear();
 		event.getPlayer().getInventory().addItem(pickaxe);
 		event.getPlayer().setCollidable(false);
 		event.getPlayer().teleport(MobDefense.instance().getPlayerSpawn());
+		event.getPlayer().setGameMode(GameMode.ADVENTURE);
 	}
 
 	@EventHandler
@@ -68,11 +73,20 @@ public class MobDefenseListener implements Listener
 		{
 			event.setCancelled(true);
 			event.setBuild(true);
-			if (!Tower.placeAt(event.getBlockPlaced().getLocation(), event.getItemInHand()))
+			Tower t;
+			if ((t = Tower.placeAt(event.getBlockPlaced().getLocation(), event.getItemInHand())) == null)
 			{
 				event.setBuild(false);
 				return;
 			}
+			event.getPlayer().getInventory().all(Material.DIAMOND_PICKAXE).values().stream().forEach(stack -> {
+				List<Material> canDestroy = ItemStackUtils.getCanDestroy(stack);
+				if (!canDestroy.contains(t.getMaterial()))
+				{
+					canDestroy.add(t.getMaterial());
+					ItemStackUtils.setCanDestroy(stack, canDestroy.toArray(new Material[canDestroy.size()]));
+				}
+			});
 		}
 
 		for (Creature c : Wave.getAllCreatures())

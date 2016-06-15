@@ -25,6 +25,9 @@ repositories {
     maven {
         url 'http://repo.mcstats.org/content/repositories/public/'
     }
+    maven {
+        url 'http://arathia.fr/maven/'
+    }
 }
 
 //noinspection GroovyAssignabilityCheck
@@ -38,6 +41,7 @@ dependencies {
     testCompile group: 'junit', name: 'junit', version: '4.11'
     compile 'org.spigotmc:spigot:1.10-R0.1-SNAPSHOT'
     included 'org.mcstats.bukkit:metrics:R8-SNAPSHOT'
+    included 'fr.galaxyoyo.spigot:nbtapi:1.0'
 }
 
 task fatjar(type: Jar) {
