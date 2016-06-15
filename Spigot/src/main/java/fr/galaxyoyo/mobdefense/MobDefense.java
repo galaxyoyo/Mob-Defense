@@ -16,7 +16,6 @@ import org.bukkit.World;
 import org.bukkit.command.CommandSender;
 import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.craftbukkit.v1_10_R1.CraftWorld;
-import org.bukkit.craftbukkit.v1_10_R1.entity.CraftVillager;
 import org.bukkit.enchantments.Enchantment;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.EntityType;
@@ -230,10 +229,8 @@ public class MobDefense extends JavaPlugin
 		{
 			Location loc = npcTowerLoc.clone().add(random.nextDouble() * 4.0D - 2.0D, 0, random.nextDouble() * 4.0D - 2.0D);
 			Villager npcTower = (Villager) world.spawnEntity(loc, EntityType.VILLAGER);
-			((CraftVillager) npcTower).getHandle().yaw = loc.getYaw();
-			((CraftVillager) npcTower).getHandle().pitch = loc.getPitch();
 			npcTower.setCollidable(false);
-			npcTower.setAI(false);
+			//	npcTower.setAI(false);
 			npcTower.setProfession(Villager.Profession.FARMER);
 			List<MerchantRecipe> recipes = Lists.newArrayList();
 			for (Class<? extends Tower> clazz : Tower.getTowerClasses())
@@ -254,10 +251,8 @@ public class MobDefense extends JavaPlugin
 		{
 			Location loc = npcUpgradesLoc.clone().add(random.nextDouble() * 4.0D - 2.0D, 0, random.nextDouble() * 4.0D - 2.0D);
 			Villager npcUpgrades = (Villager) world.spawnEntity(loc, EntityType.VILLAGER);
-			((CraftVillager) npcUpgrades).getHandle().yaw = loc.getYaw();
-			((CraftVillager) npcUpgrades).getHandle().pitch = loc.getPitch();
 			npcUpgrades.setCollidable(false);
-			npcUpgrades.setAI(false);
+			//	npcUpgrades.setAI(false);
 			npcUpgrades.setProfession(Villager.Profession.LIBRARIAN);
 			npcUpgrades.setRecipes(Lists.newArrayList());
 			npcUpgrades.setCustomName("Upgrades (Soon ...)");
@@ -268,8 +263,7 @@ public class MobDefense extends JavaPlugin
 			Location loc = npcExchangeLoc.clone().add(random.nextDouble() * 4.0D - 1.0D, 0, random.nextDouble() * 4.0D - 2.0D);
 			Villager npcExchange = (Villager) world.spawnEntity(loc, EntityType.VILLAGER);
 			npcExchange.setCollidable(false);
-			npcExchange.setAI(false);
-			((CraftVillager) npcExchange).getHandle().getControllerLook().a(loc.getX(), loc.getY(), loc.getZ(), loc.getYaw(), loc.getPitch());
+			//	npcExchange.setAI(false);
 			npcExchange.setProfession(Villager.Profession.BLACKSMITH);
 			MerchantRecipe nuggetToIngot = new MerchantRecipe(new ItemStack(Material.GOLD_INGOT), Integer.MAX_VALUE);
 			MerchantRecipe ingotToNugget = new MerchantRecipe(new ItemStack(Material.GOLD_NUGGET, 9), Integer.MAX_VALUE);
