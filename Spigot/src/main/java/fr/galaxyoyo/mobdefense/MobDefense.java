@@ -36,6 +36,7 @@ import org.mcstats.Metrics;
 
 import java.io.File;
 import java.io.IOException;
+import java.lang.reflect.InvocationTargetException;
 import java.nio.charset.StandardCharsets;
 import java.util.*;
 import java.util.stream.Collectors;
@@ -70,7 +71,14 @@ public class MobDefense extends JavaPlugin
 		instance = this;
 
 		getServer().getPluginManager().registerEvents(new MobDefenseListener(), this);
-		getServer().getPluginManager().enablePlugin(new NBTAPI());
+		try
+		{
+			NBTAPI.class.getDeclaredMethod("setEnabled", boolean.class).invoke(new NBTAPI(), true);
+		}
+		catch (IllegalAccessException | NoSuchMethodException | InvocationTargetException e)
+		{
+			e.printStackTrace();
+		}
 
 		getCommand("mobdefense").setExecutor(new MobDefenseExecutor());
 
