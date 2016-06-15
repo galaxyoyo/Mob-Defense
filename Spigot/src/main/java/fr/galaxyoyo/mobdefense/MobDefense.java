@@ -16,6 +16,7 @@ import org.bukkit.World;
 import org.bukkit.command.CommandSender;
 import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.craftbukkit.v1_10_R1.CraftWorld;
+import org.bukkit.craftbukkit.v1_10_R1.entity.CraftVillager;
 import org.bukkit.enchantments.Enchantment;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.EntityType;
@@ -294,8 +295,7 @@ public class MobDefense extends JavaPlugin
 		Bukkit.getScheduler().runTaskLater(this, () -> {
 			for (Map.Entry<Villager, Location> entry : map.entrySet())
 			{
-				Bukkit.broadcastMessage(entry.getKey().getLocation() + ", " + entry.getValue());
-				entry.getKey().teleport(entry.getValue());
+				Bukkit.broadcastMessage("" + ((CraftVillager) entry.getKey()).teleport(entry.getValue()));
 			}
 		}, 20L);
 
