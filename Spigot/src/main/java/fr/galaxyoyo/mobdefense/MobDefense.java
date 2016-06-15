@@ -225,12 +225,15 @@ public class MobDefense extends JavaPlugin
 		World world = Bukkit.getWorlds().get(0);
 		Random random = ((CraftWorld) world).getHandle().random;
 
+		Map<Villager, Location> map = Maps.newHashMap();
+
 		for (int i = 0; i < 3; ++i)
 		{
 			Location loc = npcTowerLoc.clone().add(random.nextDouble() * 4.0D - 2.0D, 0, random.nextDouble() * 4.0D - 2.0D);
 			Villager npcTower = (Villager) world.spawnEntity(loc, EntityType.VILLAGER);
+			map.put(npcTower, loc);
 			npcTower.setCollidable(false);
-			//	npcTower.setAI(false);
+			npcTower.setAI(false);
 			npcTower.setProfession(Villager.Profession.FARMER);
 			List<MerchantRecipe> recipes = Lists.newArrayList();
 			for (Class<? extends Tower> clazz : Tower.getTowerClasses())
@@ -251,8 +254,9 @@ public class MobDefense extends JavaPlugin
 		{
 			Location loc = npcUpgradesLoc.clone().add(random.nextDouble() * 4.0D - 2.0D, 0, random.nextDouble() * 4.0D - 2.0D);
 			Villager npcUpgrades = (Villager) world.spawnEntity(loc, EntityType.VILLAGER);
+			map.put(npcUpgrades, loc);
 			npcUpgrades.setCollidable(false);
-			//	npcUpgrades.setAI(false);
+			npcUpgrades.setAI(false);
 			npcUpgrades.setProfession(Villager.Profession.LIBRARIAN);
 			npcUpgrades.setRecipes(Lists.newArrayList());
 			npcUpgrades.setCustomName("Upgrades (Soon ...)");
@@ -262,7 +266,8 @@ public class MobDefense extends JavaPlugin
 		{
 			Location loc = npcExchangeLoc.clone().add(random.nextDouble() * 4.0D - 1.0D, 0, random.nextDouble() * 4.0D - 2.0D);
 			Villager npcExchange = (Villager) world.spawnEntity(loc, EntityType.VILLAGER);
-		/*	npcExchange.setCollidable(false);
+			map.put(npcExchange, loc);
+			npcExchange.setCollidable(false);
 			npcExchange.setAI(false);
 			npcExchange.setProfession(Villager.Profession.BLACKSMITH);
 			MerchantRecipe nuggetToIngot = new MerchantRecipe(new ItemStack(Material.GOLD_INGOT), Integer.MAX_VALUE);
@@ -283,8 +288,16 @@ public class MobDefense extends JavaPlugin
 			eBlockToEmerald.addIngredient(new ItemStack(Material.EMERALD_BLOCK));
 			npcExchange
 					.setRecipes(Lists.newArrayList(nuggetToIngot, ingotToNugget, ingotToBlock, blockToIngot, blockToEmerald, emeraldToBlock, emeraldToEBlock, eBlockToEmerald));
-			npcExchange.setCustomName("Exchange");*/
+			npcExchange.setCustomName("Exchange");
 		}
+
+		Bukkit.getScheduler().runTaskLater(this, () -> {
+			for (Map.Entry<Villager, Location> entry : map.entrySet())
+			{
+				Bukkit.broadcastMessage(entry.getKey().getLocation() + ", " + entry.getValue());
+				entry.getKey().teleport(entry.getValue());
+			}
+		}, 20L);
 
 		Bukkit.broadcastMessage("[MobDefense] Game started!");
 
