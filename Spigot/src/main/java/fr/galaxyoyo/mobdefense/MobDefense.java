@@ -16,6 +16,7 @@ import org.bukkit.World;
 import org.bukkit.command.CommandSender;
 import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.craftbukkit.v1_10_R1.CraftWorld;
+import org.bukkit.craftbukkit.v1_10_R1.entity.CraftVillager;
 import org.bukkit.enchantments.Enchantment;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.EntityType;
@@ -229,7 +230,8 @@ public class MobDefense extends JavaPlugin
 		{
 			Location loc = npcTowerLoc.clone().add(random.nextDouble() * 4.0D - 2.0D, 0, random.nextDouble() * 4.0D - 2.0D);
 			Villager npcTower = (Villager) world.spawnEntity(loc, EntityType.VILLAGER);
-			npcTower.teleport(loc);
+			((CraftVillager) npcTower).getHandle().yaw = loc.getYaw();
+			((CraftVillager) npcTower).getHandle().pitch = loc.getPitch();
 			npcTower.setCollidable(false);
 			npcTower.setAI(false);
 			npcTower.setProfession(Villager.Profession.FARMER);
@@ -252,6 +254,8 @@ public class MobDefense extends JavaPlugin
 		{
 			Location loc = npcUpgradesLoc.clone().add(random.nextDouble() * 4.0D - 2.0D, 0, random.nextDouble() * 4.0D - 2.0D);
 			Villager npcUpgrades = (Villager) world.spawnEntity(loc, EntityType.VILLAGER);
+			((CraftVillager) npcUpgrades).getHandle().yaw = loc.getYaw();
+			((CraftVillager) npcUpgrades).getHandle().pitch = loc.getPitch();
 			npcUpgrades.setCollidable(false);
 			npcUpgrades.setAI(false);
 			npcUpgrades.setProfession(Villager.Profession.LIBRARIAN);
@@ -263,6 +267,8 @@ public class MobDefense extends JavaPlugin
 		{
 			Location loc = npcExchangeLoc.clone().add(random.nextDouble() * 4.0D - 1.0D, 0, random.nextDouble() * 4.0D - 2.0D);
 			Villager npcExchange = (Villager) world.spawnEntity(loc, EntityType.VILLAGER);
+			((CraftVillager) npcExchange).getHandle().yaw = loc.getYaw();
+			((CraftVillager) npcExchange).getHandle().pitch = loc.getPitch();
 			npcExchange.setCollidable(false);
 			npcExchange.setAI(false);
 			npcExchange.setProfession(Villager.Profession.BLACKSMITH);
