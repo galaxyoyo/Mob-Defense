@@ -7,7 +7,6 @@ import com.google.gson.GsonBuilder;
 import com.google.gson.reflect.TypeToken;
 import fr.galaxyoyo.mobdefense.towers.Tower;
 import net.md_5.bungee.api.ChatColor;
-import net.minecraft.server.v1_10_R1.PacketPlayOutEntity;
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.io.IOUtils;
 import org.bukkit.Bukkit;
@@ -17,7 +16,7 @@ import org.bukkit.World;
 import org.bukkit.command.CommandSender;
 import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.craftbukkit.v1_10_R1.CraftWorld;
-import org.bukkit.craftbukkit.v1_10_R1.entity.CraftPlayer;
+import org.bukkit.craftbukkit.v1_10_R1.entity.CraftVillager;
 import org.bukkit.enchantments.Enchantment;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.EntityType;
@@ -227,15 +226,14 @@ public class MobDefense extends JavaPlugin
 		World world = Bukkit.getWorlds().get(0);
 		Random random = ((CraftWorld) world).getHandle().random;
 
-		Map<Villager, Location> map = Maps.newHashMap();
-
 		for (int i = 0; i < 3; ++i)
 		{
 			Location loc = npcTowerLoc.clone().add(random.nextDouble() * 4.0D - 2.0D, 0, random.nextDouble() * 4.0D - 2.0D);
 			Villager npcTower = (Villager) world.spawnEntity(loc, EntityType.VILLAGER);
-			map.put(npcTower, loc);
 			npcTower.setCollidable(false);
 			npcTower.setAI(false);
+			((CraftVillager) npcTower).getHandle().h(loc.getYaw());
+			((CraftVillager) npcTower).getHandle().i(loc.getYaw());
 			npcTower.setProfession(Villager.Profession.FARMER);
 			List<MerchantRecipe> recipes = Lists.newArrayList();
 			for (Class<? extends Tower> clazz : Tower.getTowerClasses())
@@ -256,9 +254,10 @@ public class MobDefense extends JavaPlugin
 		{
 			Location loc = npcUpgradesLoc.clone().add(random.nextDouble() * 4.0D - 2.0D, 0, random.nextDouble() * 4.0D - 2.0D);
 			Villager npcUpgrades = (Villager) world.spawnEntity(loc, EntityType.VILLAGER);
-			map.put(npcUpgrades, loc);
 			npcUpgrades.setCollidable(false);
 			npcUpgrades.setAI(false);
+			((CraftVillager) npcUpgrades).getHandle().h(loc.getYaw());
+			((CraftVillager) npcUpgrades).getHandle().i(loc.getYaw());
 			npcUpgrades.setProfession(Villager.Profession.LIBRARIAN);
 			npcUpgrades.setRecipes(Lists.newArrayList());
 			npcUpgrades.setCustomName("Upgrades (Soon ...)");
@@ -268,9 +267,10 @@ public class MobDefense extends JavaPlugin
 		{
 			Location loc = npcExchangeLoc.clone().add(random.nextDouble() * 4.0D - 1.0D, 0, random.nextDouble() * 4.0D - 2.0D);
 			Villager npcExchange = (Villager) world.spawnEntity(loc, EntityType.VILLAGER);
-			map.put(npcExchange, loc);
 			npcExchange.setCollidable(false);
 			npcExchange.setAI(false);
+			((CraftVillager) npcExchange).getHandle().h(loc.getYaw());
+			((CraftVillager) npcExchange).getHandle().i(loc.getYaw());
 			npcExchange.setProfession(Villager.Profession.BLACKSMITH);
 			MerchantRecipe nuggetToIngot = new MerchantRecipe(new ItemStack(Material.GOLD_INGOT), Integer.MAX_VALUE);
 			MerchantRecipe ingotToNugget = new MerchantRecipe(new ItemStack(Material.GOLD_NUGGET, 9), Integer.MAX_VALUE);
@@ -292,18 +292,6 @@ public class MobDefense extends JavaPlugin
 					.setRecipes(Lists.newArrayList(nuggetToIngot, ingotToNugget, ingotToBlock, blockToIngot, blockToEmerald, emeraldToBlock, emeraldToEBlock, eBlockToEmerald));
 			npcExchange.setCustomName("Exchange");
 		}
-
-		Bukkit.getScheduler().runTaskLater(this, () -> {
-			for (Map.Entry<Villager, Location> entry : map.entrySet())
-			{
-				for (Player player : Bukkit.getOnlinePlayers())
-				{
-					PacketPlayOutEntity.PacketPlayOutEntityLook pkt = new PacketPlayOutEntity.PacketPlayOutEntityLook(entry.getKey().getEntityId(),
-							(byte) (entry.getValue().getYaw() / 360.0F * 256), (byte) (entry.getValue().getPitch() / 360.0F * 256), entry.getKey().isOnGround());
-					((CraftPlayer) player).getHandle().playerConnection.networkManager.sendPacket(pkt);
-				}
-			}
-		}, 20L);
 
 		Bukkit.broadcastMessage("[MobDefense] Game started!");
 
