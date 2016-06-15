@@ -8,6 +8,7 @@ import com.google.gson.reflect.TypeToken;
 import fr.galaxyoyo.mobdefense.towers.Tower;
 import net.md_5.bungee.api.ChatColor;
 import org.apache.commons.io.FileUtils;
+import org.apache.commons.io.IOUtils;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.Material;
@@ -64,30 +65,28 @@ public class MobDefense extends JavaPlugin
 
 		try
 		{
+			if (!getDataFolder().isDirectory())
+				//noinspection ResultOfMethodCallIgnored
+				getDataFolder().mkdir();
+			File configFile = new File(getDataFolder(), "config.yml");
+			if (!configFile.exists())
+				IOUtils.copy(getClass().getResourceAsStream("/config.yml"), FileUtils.openOutputStream(configFile));
+
 			World world = Bukkit.getWorlds().get(0);
 			YamlConfiguration config = (YamlConfiguration) getConfig();
 			String spawnStr = config.getString("spawn-loc", LocationConverter.instance().toString(world.getSpawnLocation()));
-			config.set("spawn-loc", spawnStr);
 			spawn = LocationConverter.instance().fromString(spawnStr);
 			String endStr = config.getString("end-loc", LocationConverter.instance().toString(world.getSpawnLocation()));
-			config.set("end-loc", endStr);
 			end = LocationConverter.instance().fromString(endStr);
 			String towerLoc = config.getString("npc-tower-loc", LocationConverter.instance().toString(world.getSpawnLocation()));
-			config.set("npc-tower-loc", towerLoc);
 			Location npcTowerLoc = LocationConverter.instance().fromString(towerLoc);
 			String upgradesLoc = config.getString("npc-upgrades-loc", LocationConverter.instance().toString(world.getSpawnLocation()));
-			config.set("npc-upgrades-loc", upgradesLoc);
 			Location npcUpgradesLoc = LocationConverter.instance().fromString(upgradesLoc);
 			String exchangeLoc = config.getString("npc-exchange-loc", LocationConverter.instance().toString(world.getSpawnLocation()));
-			config.set("npc-exchange-loc", exchangeLoc);
 			Location npcExchangeLoc = LocationConverter.instance().fromString(exchangeLoc);
 			startMoney = config.getInt("start-money", 50);
-			config.set("start-money", startMoney);
 			waveTime = config.getInt("wave-time", 60);
-			config.set("wave-time", waveTime);
 			maxMobs = config.getInt("max-mobs", 10);
-			config.set("max-mobs", maxMobs);
-			saveConfig();
 
 			File file = new File(getDataFolder(), "mobs.json");
 			if (file.exists())
