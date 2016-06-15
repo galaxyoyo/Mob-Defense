@@ -73,7 +73,7 @@ public class MobDefense extends JavaPlugin
 		getServer().getPluginManager().registerEvents(new MobDefenseListener(), this);
 		try
 		{
-			NBTAPI.class.getDeclaredMethod("setEnabled", boolean.class).invoke(new NBTAPI(), true);
+			JavaPlugin.class.getDeclaredMethod("setEnabled", boolean.class).invoke(new NBTAPI(), true);
 		}
 		catch (IllegalAccessException | NoSuchMethodException | InvocationTargetException e)
 		{
