@@ -269,7 +269,7 @@ public class MobDefense extends JavaPlugin
 			Villager npcExchange = (Villager) world.spawnEntity(loc, EntityType.VILLAGER);
 			npcExchange.setCollidable(false);
 			npcExchange.setAI(false);
-			npcExchange.teleport(loc);
+			((CraftVillager) npcExchange).getHandle().getControllerLook().a(loc.getX(), loc.getY(), loc.getZ(), loc.getYaw(), loc.getPitch());
 			npcExchange.setProfession(Villager.Profession.BLACKSMITH);
 			MerchantRecipe nuggetToIngot = new MerchantRecipe(new ItemStack(Material.GOLD_INGOT), Integer.MAX_VALUE);
 			MerchantRecipe ingotToNugget = new MerchantRecipe(new ItemStack(Material.GOLD_NUGGET, 9), Integer.MAX_VALUE);
