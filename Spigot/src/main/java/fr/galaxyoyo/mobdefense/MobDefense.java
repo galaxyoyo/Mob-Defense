@@ -57,6 +57,12 @@ public class MobDefense extends JavaPlugin
 	private Objective objective;
 
 	@Override
+	public void onDisable()
+	{
+		stop(null);
+	}
+
+	@Override
 	public void onEnable()
 	{
 		instance = this;
@@ -155,6 +161,33 @@ public class MobDefense extends JavaPlugin
 	public Gson getGson()
 	{
 		return gson;
+	}
+
+	public void stop(CommandSender sender)
+	{
+		if (objective == null)
+		{
+			if (sender != null)
+				sender.sendMessage("No game is running!");
+			return;
+		}
+
+		Bukkit.broadcastMessage("[MobDefense] Game ended.");
+
+		for (Tower tower : Tower.getAllTowers())
+			Tower.breakAt(tower.getLocation());
+		Bukkit.getWorlds().get(0).getEntities().stream().filter(entity -> entity.getType() != EntityType.PLAYER && entity.getType() != EntityType.VILLAGER).forEach(Entity::remove);
+		Bukkit.getOnlinePlayers().forEach(player -> player.getInventory().clear());
+		getServer().getPluginManager().callEvent(new GameStoppedEvent(currentWave == null ? 0 : currentWave.getNumber()));
+		currentWave = null;
+		objective.unregister();
+		objective = null;
+		Bukkit.getScheduler().cancelTasks(MobDefense.instance());
+	}
+
+	public static MobDefense instance()
+	{
+		return instance;
 	}
 
 	public Location getSpawn()
@@ -307,29 +340,8 @@ public class MobDefense extends JavaPlugin
 		Bukkit.getScheduler().runTaskTimer(this, this::startNextWave, waveTime * 20L, waveTime * 20L);
 	}
 
-	public void stop(CommandSender sender)
+	public Wave getCurrentWave()
 	{
-		if (objective == null)
-		{
-			sender.sendMessage("No game is running!");
-			return;
-		}
-
-		Bukkit.broadcastMessage("[MobDefense] Game ended.");
-
-		for (Tower tower : Tower.getAllTowers())
-			Tower.breakAt(tower.getLocation());
-		Bukkit.getWorlds().get(0).getEntities().stream().filter(entity -> entity.getType() != EntityType.PLAYER && entity.getType() != EntityType.VILLAGER).forEach(Entity::remove);
-		Bukkit.getOnlinePlayers().forEach(player -> player.getInventory().clear());
-		getServer().getPluginManager().callEvent(new GameStoppedEvent(currentWave == null ? 0 : currentWave.getNumber()));
-		currentWave = null;
-		objective.unregister();
-		objective = null;
-		Bukkit.getScheduler().cancelTasks(MobDefense.instance());
-	}
-
-	public static MobDefense instance()
-	{
-		return instance;
+		return currentWave;
 	}
 }

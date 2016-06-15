@@ -211,11 +211,13 @@ public class MobDefenseListener implements Listener
 		Score score = Bukkit.getScoreboardManager().getMainScoreboard().getObjective("mobdefense").getScore("Lives");
 		score.setScore(score.getScore() - 1);
 		if (score.getScore() <= 0)
-			Bukkit.broadcastMessage("[MobDefense] " + event.getEntity().getCustomName() + " a réussi à passer ! " + score.getScore()
-					+ (score.getScore() > 1 ? "vies restantes" : "vie restante"));
+			Bukkit.broadcastMessage("[MobDefense] " + event.getEntity().getCustomName() + " bypassed the towers! " + score.getScore()
+					+ (score.getScore() > 1 ? "lives" : "life") + " left");
 		else
 		{
-			Bukkit.broadcastMessage("[MobDefense] " + event.getEntity().getCustomName() + " a réussi à passer ! " + ChatColor.RED + "Partie terminée ! Bravo à vous !");
+			Wave currentWave = MobDefense.instance().getCurrentWave();
+			Bukkit.broadcastMessage("[MobDefense] " + event.getEntity().getCustomName() + " bypassed the towers! " + ChatColor.RED + "You survived "
+					+ currentWave.getNumber() + " wave" + (currentWave.getNumber() > 1 ? "s." : "."));
 			MobDefense.instance().stop(null);
 		}
 	}
