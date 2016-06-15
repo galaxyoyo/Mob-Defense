@@ -1,5 +1,6 @@
 package fr.galaxyoyo.mobdefense;
 
+import fr.galaxyoyo.mobdefense.events.EntityGoneEvent;
 import fr.galaxyoyo.mobdefense.towers.Tower;
 import net.md_5.bungee.api.ChatColor;
 import org.bukkit.Bukkit;
@@ -215,12 +216,7 @@ public class MobDefenseListener implements Listener
 		else
 		{
 			Bukkit.broadcastMessage("[MobDefense] " + event.getEntity().getCustomName() + " a réussi à passer ! " + ChatColor.RED + "Partie terminée ! Bravo à vous !");
-			for (Tower tower : Tower.getAllTowers())
-				Tower.breakAt(tower.getLocation());
-			Bukkit.getWorlds().get(0).getEntities().stream().filter(entity -> entity.getType() != EntityType.PLAYER && entity.getType() != EntityType.VILLAGER).forEach(Entity::remove);
-			Bukkit.getOnlinePlayers().forEach(player -> player.getInventory().clear());
-			MobDefense.instance().setCurrentWave(null);
-			Bukkit.getScheduler().cancelTasks(MobDefense.instance());
+			MobDefense.instance().stop(null);
 		}
 	}
 

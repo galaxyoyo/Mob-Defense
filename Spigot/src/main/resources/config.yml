@@ -20,8 +20,8 @@ npc-exchange-loc: 0.5:0.0:0.5:0.0:0.0
 # The amount of gold nuggets you start with
 start-money: 50
 
-# The time (in seconds) between each wave
-wave-time: 60
+# The time (in seconds) between each finalWave
+finalWave-time: 60
 
 # The number of mobs that can reach the end point before you loose
 max-mobs: 10

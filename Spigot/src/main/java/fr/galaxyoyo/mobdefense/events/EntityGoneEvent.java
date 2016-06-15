@@ -1,4 +1,4 @@
-package fr.galaxyoyo.mobdefense;
+package fr.galaxyoyo.mobdefense.events;
 
 import org.bukkit.entity.Creature;
 import org.bukkit.event.HandlerList;

@@ -6,6 +6,7 @@ import com.adamki11s.pathing.Tile;
 import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
 import com.google.common.collect.Sets;
+import fr.galaxyoyo.mobdefense.events.EntityGoneEvent;
 import net.minecraft.server.v1_10_R1.EntityCreature;
 import net.minecraft.server.v1_10_R1.GenericAttributes;
 import net.minecraft.server.v1_10_R1.PathfinderGoalSelector;

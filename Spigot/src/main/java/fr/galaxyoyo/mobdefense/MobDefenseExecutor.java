@@ -21,6 +21,11 @@ public class MobDefenseExecutor implements CommandExecutor
 			MobDefense.instance().start(sender);
 			return true;
 		}
+		else if (args[0].equalsIgnoreCase("stop"))
+		{
+			MobDefense.instance().stop(sender);
+			return true;
+		}
 
 		printUsage(sender);
 		return true;
@@ -28,6 +33,6 @@ public class MobDefenseExecutor implements CommandExecutor
 
 	public void printUsage(CommandSender sender)
 	{
-		sender.sendMessage(ChatColor.RED + "Usage : /mobdefense start");
+		sender.sendMessage(ChatColor.RED + "Usage : /mobdefense <start | stop>");
 	}
 }
