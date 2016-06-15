@@ -262,8 +262,8 @@ public class MobDefense extends JavaPlugin
 		{
 			Location loc = npcExchangeLoc.clone().add(random.nextDouble() * 4.0D - 1.0D, 0, random.nextDouble() * 4.0D - 2.0D);
 			Villager npcExchange = (Villager) world.spawnEntity(loc, EntityType.VILLAGER);
-			npcExchange.setCollidable(false);
-			//	npcExchange.setAI(false);
+		/*	npcExchange.setCollidable(false);
+			npcExchange.setAI(false);
 			npcExchange.setProfession(Villager.Profession.BLACKSMITH);
 			MerchantRecipe nuggetToIngot = new MerchantRecipe(new ItemStack(Material.GOLD_INGOT), Integer.MAX_VALUE);
 			MerchantRecipe ingotToNugget = new MerchantRecipe(new ItemStack(Material.GOLD_NUGGET, 9), Integer.MAX_VALUE);
@@ -283,7 +283,7 @@ public class MobDefense extends JavaPlugin
 			eBlockToEmerald.addIngredient(new ItemStack(Material.EMERALD_BLOCK));
 			npcExchange
 					.setRecipes(Lists.newArrayList(nuggetToIngot, ingotToNugget, ingotToBlock, blockToIngot, blockToEmerald, emeraldToBlock, emeraldToEBlock, eBlockToEmerald));
-			npcExchange.setCustomName("Exchange");
+			npcExchange.setCustomName("Exchange");*/
 		}
 
 		Bukkit.broadcastMessage("[MobDefense] Game started!");
