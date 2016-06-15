@@ -45,6 +45,7 @@ public class MobDefenseListener implements Listener
 		event.getPlayer().getInventory().clear();
 		event.getPlayer().getInventory().addItem(pickaxe);
 		event.getPlayer().setCollidable(false);
+		event.getPlayer().teleport(MobDefense.instance().getPlayerSpawn());
 	}
 
 	@EventHandler

@@ -45,6 +45,7 @@ public class MobDefense extends JavaPlugin
 	private static MobDefense instance;
 	private Gson gson;
 	private Map<String, MobClass> mobClasses = Maps.newHashMap();
+	private Location playerSpawn;
 	private Location spawn, end;
 	private int startMoney;
 	private int waveTime;
@@ -84,6 +85,8 @@ public class MobDefense extends JavaPlugin
 
 			World world = Bukkit.getWorlds().get(0);
 			YamlConfiguration config = (YamlConfiguration) getConfig();
+			String playerSpawnStr = config.getString("player-spawn-loc", LocationConverter.instance().toString(world.getSpawnLocation()));
+			playerSpawn = LocationConverter.instance().fromString(playerSpawnStr);
 			String spawnStr = config.getString("spawn-loc", LocationConverter.instance().toString(world.getSpawnLocation()));
 			spawn = LocationConverter.instance().fromString(spawnStr);
 			String endStr = config.getString("end-loc", LocationConverter.instance().toString(world.getSpawnLocation()));
@@ -188,6 +191,11 @@ public class MobDefense extends JavaPlugin
 	public static MobDefense instance()
 	{
 		return instance;
+	}
+
+	public Location getPlayerSpawn()
+	{
+		return playerSpawn;
 	}
 
 	public Location getSpawn()
