@@ -96,7 +96,7 @@ public class MobDefense extends JavaPlugin
 			npcExchangeLoc = LocationConverter.instance().fromString(exchangeLoc);
 			startMoney = config.getInt("start-money", 50);
 			waveTime = config.getInt("wave-time", 60);
-			baseLives = config.getInt("max-mobs", 10);
+			baseLives = config.getInt("lives", 10);
 
 			File file = new File(getDataFolder(), "mobs.json");
 			if (file.exists())

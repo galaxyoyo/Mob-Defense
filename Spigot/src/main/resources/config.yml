@@ -24,4 +24,4 @@ start-money: 50
 finalWave-time: 60
 
 # The number of mobs that can reach the end point before you loose
-max-mobs: 10
+lives: 10
