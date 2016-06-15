@@ -228,7 +228,7 @@ public class MobDefense extends JavaPlugin
 
 		for (int i = 0; i < 3; ++i)
 		{
-			Location loc = npcTowerLoc.clone().add(random.nextDouble() * 4.0D - 2.0D, 0, random.nextDouble() * 4.0D - 2.0D);
+			Location loc = npcTowerLoc.clone().add(random.nextDouble() * 3.0D - 1.5D, 0, random.nextDouble() * 3.0D - 1.5D);
 			Villager npcTower = (Villager) world.spawnEntity(loc, EntityType.VILLAGER);
 			npcTower.setCollidable(false);
 			npcTower.setAI(false);
@@ -252,7 +252,7 @@ public class MobDefense extends JavaPlugin
 
 		for (int i = 0; i < 3; ++i)
 		{
-			Location loc = npcUpgradesLoc.clone().add(random.nextDouble() * 4.0D - 2.0D, 0, random.nextDouble() * 4.0D - 2.0D);
+			Location loc = npcUpgradesLoc.clone().add(random.nextDouble() * 3.0D - 1.5D, 0, random.nextDouble() * 3.0D - 1.5D);
 			Villager npcUpgrades = (Villager) world.spawnEntity(loc, EntityType.VILLAGER);
 			npcUpgrades.setCollidable(false);
 			npcUpgrades.setAI(false);
@@ -265,7 +265,7 @@ public class MobDefense extends JavaPlugin
 
 		for (int i = 0; i < 3; ++i)
 		{
-			Location loc = npcExchangeLoc.clone().add(random.nextDouble() * 4.0D - 1.0D, 0, random.nextDouble() * 4.0D - 2.0D);
+			Location loc = npcExchangeLoc.clone().add(random.nextDouble() * 4.0D - 1.0D, 0, random.nextDouble() * 3.0D - 1.5D);
 			Villager npcExchange = (Villager) world.spawnEntity(loc, EntityType.VILLAGER);
 			npcExchange.setCollidable(false);
 			npcExchange.setAI(false);
