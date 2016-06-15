@@ -28,6 +28,8 @@ import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.MerchantRecipe;
 import org.bukkit.inventory.meta.ItemMeta;
 import org.bukkit.plugin.java.JavaPlugin;
+import org.bukkit.scoreboard.DisplaySlot;
+import org.bukkit.scoreboard.Objective;
 import org.mcstats.Metrics;
 
 import java.io.File;
@@ -46,13 +48,13 @@ public class MobDefense extends JavaPlugin
 	private Location spawn, end;
 	private int startMoney;
 	private int waveTime;
-	private int maxMobs;
+	private int baseLives;
 	private Location npcTowerLoc;
 	private Location npcUpgradesLoc;
 	private Location npcExchangeLoc;
 	private List<Wave> waves = Lists.newArrayList();
 	private Wave currentWave;
-	private boolean started = false;
+	private Objective objective;
 
 	@Override
 	public void onEnable()
@@ -88,7 +90,7 @@ public class MobDefense extends JavaPlugin
 			npcExchangeLoc = LocationConverter.instance().fromString(exchangeLoc);
 			startMoney = config.getInt("start-money", 50);
 			waveTime = config.getInt("wave-time", 60);
-			maxMobs = config.getInt("max-mobs", 10);
+			baseLives = config.getInt("max-mobs", 10);
 
 			File file = new File(getDataFolder(), "mobs.json");
 			if (file.exists())
@@ -165,9 +167,10 @@ public class MobDefense extends JavaPlugin
 		return end;
 	}
 
-	public int getMaxMobs()
+	@SuppressWarnings("unused")
+	public int getBaseLives()
 	{
-		return maxMobs;
+		return baseLives;
 	}
 
 	public MobClass getMobClass(String name)
@@ -188,12 +191,13 @@ public class MobDefense extends JavaPlugin
 				currentWave.setNumber(currentWave.getNumber() + 1);
 		}
 
+		objective.getScore("Wave").setScore(currentWave.getNumber());
 		currentWave.start();
 	}
 
 	public void start(CommandSender sender)
 	{
-		if (started)
+		if (objective != null)
 		{
 			sender.sendMessage(ChatColor.RED + "A game is already started!");
 			return;
@@ -291,7 +295,13 @@ public class MobDefense extends JavaPlugin
 			npcExchange.setCustomName("Exchange");
 		}
 
-		started = true;
+		objective = Bukkit.getScoreboardManager().getMainScoreboard().registerNewObjective("mobdefense", "dummy");
+		objective.setDisplayName("[MobDefense]");
+		objective.setDisplaySlot(DisplaySlot.SIDEBAR);
+		objective.getScore(ChatColor.RED.toString()).setScore(999);
+		objective.getScore("Lives").setScore(baseLives);
+		objective.getScore("Wave").setScore(0);
+
 		getServer().getPluginManager().callEvent(new GameStartedEvent());
 		Bukkit.broadcastMessage("[MobDefense] Game started!");
 		Bukkit.getScheduler().runTaskTimer(this, this::startNextWave, waveTime * 20L, waveTime * 20L);
@@ -299,7 +309,7 @@ public class MobDefense extends JavaPlugin
 
 	public void stop(CommandSender sender)
 	{
-		if (!started)
+		if (objective == null)
 		{
 			sender.sendMessage("No game is running!");
 			return;
@@ -313,6 +323,8 @@ public class MobDefense extends JavaPlugin
 		Bukkit.getOnlinePlayers().forEach(player -> player.getInventory().clear());
 		getServer().getPluginManager().callEvent(new GameStoppedEvent(currentWave == null ? 0 : currentWave.getNumber()));
 		currentWave = null;
+		objective.unregister();
+		objective = null;
 		Bukkit.getScheduler().cancelTasks(MobDefense.instance());
 	}
 

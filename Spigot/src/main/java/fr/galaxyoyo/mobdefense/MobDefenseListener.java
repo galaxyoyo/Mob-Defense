@@ -23,11 +23,10 @@ import org.bukkit.event.world.WorldLoadEvent;
 import org.bukkit.inventory.ItemFlag;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
+import org.bukkit.scoreboard.Score;
 
 public class MobDefenseListener implements Listener
 {
-	private int goneMobs = 0;
-
 	@EventHandler
 	public void onCreatureSpawn(CreatureSpawnEvent event)
 	{
@@ -209,10 +208,11 @@ public class MobDefenseListener implements Listener
 	@EventHandler
 	public void onEntityGone(EntityGoneEvent event)
 	{
-		++goneMobs;
-		if (goneMobs < MobDefense.instance().getMaxMobs())
-			Bukkit.broadcastMessage("[MobDefense] " + event.getEntity().getCustomName() + " a réussi à passer ! " + (MobDefense.instance().getMaxMobs() - goneMobs) + " restant" +
-					(MobDefense.instance().getMaxMobs() - goneMobs > 1 ? "s" : ""));
+		Score score = Bukkit.getScoreboardManager().getMainScoreboard().getObjective("mobdefense").getScore("Lives");
+		score.setScore(score.getScore() - 1);
+		if (score.getScore() <= 0)
+			Bukkit.broadcastMessage("[MobDefense] " + event.getEntity().getCustomName() + " a réussi à passer ! " + score.getScore()
+					+ (score.getScore() > 1 ? "vies restantes" : "vie restante"));
 		else
 		{
 			Bukkit.broadcastMessage("[MobDefense] " + event.getEntity().getCustomName() + " a réussi à passer ! " + ChatColor.RED + "Partie terminée ! Bravo à vous !");
