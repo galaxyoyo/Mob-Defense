@@ -41,7 +41,6 @@ import java.net.URL;
 import java.nio.charset.StandardCharsets;
 import java.util.*;
 import java.util.stream.Collectors;
-import java.util.stream.Stream;
 
 public class MobDefense extends JavaPlugin
 {
@@ -310,8 +309,8 @@ public class MobDefense extends JavaPlugin
 				ItemMeta meta = result.getItemMeta();
 				meta.setDisplayName(Tower.getTowerName(clazz));
 				result.setItemMeta(meta);
-				Stream<Material> stream = Arrays.stream(Material.values()).filter(Material::isBlock);
-				ItemStackUtils.setCanPlaceOn(result, stream.collect(Collectors.toList()).toArray(new Material[(int) stream.count()]));
+				List<Material> list = Arrays.stream(Material.values()).filter(Material::isBlock).collect(Collectors.toList());
+				ItemStackUtils.setCanPlaceOn(result, list.toArray(new Material[list.size()]));
 				MerchantRecipe recipe = new MerchantRecipe(result, Integer.MAX_VALUE);
 				recipe.setIngredients(Lists.newArrayList(Tower.getTowerPrice(clazz)));
 				recipes.add(recipe);
