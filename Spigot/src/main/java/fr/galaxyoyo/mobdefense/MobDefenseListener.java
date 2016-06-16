@@ -165,7 +165,8 @@ public class MobDefenseListener implements Listener
 	@EventHandler
 	public void onProjectileHit(ProjectileHitEvent event)
 	{
-		event.getEntity().remove();
+		Bukkit.getScheduler().runTaskLater(MobDefense.instance(), () -> event.getEntity().remove(), 10L);
+		event.getEntity().setBounce(false);
 	}
 
 	@EventHandler
@@ -227,6 +228,7 @@ public class MobDefenseListener implements Listener
 		Score score = Bukkit.getScoreboardManager().getMainScoreboard().getObjective(DisplaySlot.SIDEBAR).getScore("Lives");
 		System.out.println(score.getScore());
 		score.setScore(score.getScore() - 1);
+		System.out.println(score.getScore());
 		if (score.getScore() <= 0)
 			Bukkit.broadcastMessage("[MobDefense] " + event.getEntity().getCustomName() + " bypassed the towers! " + score.getScore()
 					+ (score.getScore() > 1 ? "lives" : "life") + " left");
