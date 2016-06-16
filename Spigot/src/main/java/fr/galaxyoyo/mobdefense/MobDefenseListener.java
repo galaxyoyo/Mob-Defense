@@ -22,6 +22,7 @@ import org.bukkit.event.world.WorldLoadEvent;
 import org.bukkit.inventory.ItemFlag;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
+import org.bukkit.potion.PotionData;
 import org.bukkit.scoreboard.DisplaySlot;
 import org.bukkit.scoreboard.Score;
 
@@ -155,12 +156,15 @@ public class MobDefenseListener implements Listener
 	@EventHandler
 	public void onEntityDamageByEntity(EntityDamageByEntityEvent event)
 	{
-		if (event.getDamager().getType() == EntityType.PLAYER)
+		if (event.getDamager().getType() == EntityType.PLAYER || event.getEntityType() == EntityType.PLAYER)
 			event.setCancelled(true);
 		else if (event.getEntity() instanceof Creature)
 		{
 			if (event.getDamager() instanceof TippedArrow)
 			{
+				TippedArrow arrow = (TippedArrow) event.getDamager();
+				PotionData data = arrow.getBasePotionData();
+				System.out.println(data);
 				Object arrowHandle = ReflectionUtils.invokeBukkitMethod("getHandle", event.getDamager());
 				Object entityHandle = ReflectionUtils.invokeBukkitMethod("getHandle", event.getEntity());
 				ReflectionUtils.invokeNMSMethod("a", arrowHandle, new Class<?>[]{ReflectionUtils.getNMSClass("EntityLiving")}, entityHandle);
