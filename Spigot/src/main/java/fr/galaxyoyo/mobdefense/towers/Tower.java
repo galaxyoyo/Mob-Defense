@@ -170,7 +170,6 @@ public abstract class Tower
 				(range - 1) * face.getModZ()), 1, -2, clazz);
 		if (type != null)
 			((TippedArrow) arrow).setBasePotionData(new PotionData(type));
-		arrow.setBounce(false);
 		return arrow;
 	}
 

@@ -3,14 +3,12 @@ package fr.galaxyoyo.mobdefense;
 import fr.galaxyoyo.mobdefense.events.EntityGoneEvent;
 import fr.galaxyoyo.mobdefense.towers.Tower;
 import fr.galaxyoyo.spigot.nbtapi.ItemStackUtils;
+import fr.galaxyoyo.spigot.nbtapi.ReflectionUtils;
 import net.md_5.bungee.api.ChatColor;
 import org.bukkit.Bukkit;
 import org.bukkit.GameMode;
 import org.bukkit.Material;
-import org.bukkit.entity.Creature;
-import org.bukkit.entity.Entity;
-import org.bukkit.entity.EntityType;
-import org.bukkit.entity.Player;
+import org.bukkit.entity.*;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.block.BlockBreakEvent;
@@ -159,6 +157,15 @@ public class MobDefenseListener implements Listener
 	{
 		if (event.getDamager().getType() == EntityType.PLAYER)
 			event.setCancelled(true);
+		else if (event.getEntity() instanceof Creature)
+		{
+			if (event.getDamager() instanceof TippedArrow)
+			{
+				Object arrowHandle = ReflectionUtils.invokeBukkitMethod("getHandle", event.getDamager());
+				Object entityHandle = ReflectionUtils.invokeBukkitMethod("getHandle", event.getEntity());
+				ReflectionUtils.invokeNMSMethod("a", arrowHandle, new Class<?>[]{ReflectionUtils.getNMSClass("EntityLiving")}, entityHandle);
+			}
+		}
 	}
 
 	@EventHandler
@@ -171,8 +178,7 @@ public class MobDefenseListener implements Listener
 	@EventHandler
 	public void onProjectileHit(ProjectileHitEvent event)
 	{
-		Bukkit.getScheduler().runTaskLater(MobDefense.instance(), () -> event.getEntity().remove(), 300L);
-		event.getEntity().setBounce(false);
+		event.getEntity().remove();
 	}
 
 	@EventHandler
