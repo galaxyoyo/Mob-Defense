@@ -84,8 +84,8 @@ public abstract class Tower
 				ex.printStackTrace();
 				return null;
 			}
-			loc.getBlock().setType(tower.getMaterial());
 			towersByLocation.put(towerLoc, tower);
+			Bukkit.getScheduler().runTask(MobDefense.instance(), () -> loc.getBlock().setType(tower.getMaterial()));
 			return tower;
 		}
 		catch (Exception ex)
