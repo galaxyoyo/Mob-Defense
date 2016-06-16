@@ -234,7 +234,7 @@ public class MobDefenseListener implements Listener
 		Score score = Bukkit.getScoreboardManager().getMainScoreboard().getObjective(DisplaySlot.SIDEBAR).getScore("Lives");
 		score.setScore(score.getScore() - 1);
 		if (score.getScore() > 0)
-			Bukkit.broadcastMessage("[MobDefense] " + event.getEntity().getCustomName() + " bypassed the towers! " + score.getScore()
+			Bukkit.broadcastMessage("[MobDefense] " + event.getEntity().getCustomName() + " bypassed the towers! " + score.getScore() + " "
 					+ (score.getScore() > 1 ? "lives" : "life") + " left");
 		else
 		{
