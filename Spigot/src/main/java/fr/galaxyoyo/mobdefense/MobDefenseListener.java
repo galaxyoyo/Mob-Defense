@@ -24,6 +24,7 @@ import org.bukkit.event.world.WorldLoadEvent;
 import org.bukkit.inventory.ItemFlag;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
+import org.bukkit.scoreboard.DisplaySlot;
 import org.bukkit.scoreboard.Score;
 
 import java.util.List;
@@ -223,7 +224,8 @@ public class MobDefenseListener implements Listener
 	@EventHandler
 	public void onEntityGone(EntityGoneEvent event)
 	{
-		Score score = Bukkit.getScoreboardManager().getMainScoreboard().getObjective("mobdefense").getScore("Lives");
+		Score score = Bukkit.getScoreboardManager().getMainScoreboard().getObjective(DisplaySlot.SIDEBAR).getScore("Lives");
+		System.out.println(score);
 		score.setScore(score.getScore() - 1);
 		if (score.getScore() <= 0)
 			Bukkit.broadcastMessage("[MobDefense] " + event.getEntity().getCustomName() + " bypassed the towers! " + score.getScore()
