@@ -104,7 +104,7 @@ public class MobDefenseListener implements Listener
 		{
 			if (!event.canBuild())
 				Tower.breakAt(event.getBlockPlaced().getLocation());
-			else
+			else if (event.getPlayer().getGameMode() != GameMode.CREATIVE)
 			{
 				ItemStack stack = event.getItemInHand();
 				if (stack.getAmount() > 1)
