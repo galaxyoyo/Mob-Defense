@@ -63,7 +63,7 @@ public class MobDefense extends JavaPlugin
 	public void onDisable()
 	{
 		stop(null);
-		nbtapi.disable();
+		nbtapi.onDisable();
 	}
 
 	@Override
@@ -73,7 +73,7 @@ public class MobDefense extends JavaPlugin
 
 		getServer().getPluginManager().registerEvents(new MobDefenseListener(), this);
 		nbtapi = new NBTAPI();
-		nbtapi.enable();
+		nbtapi.onEnable();
 
 		getCommand("mobdefense").setExecutor(new MobDefenseExecutor());
 
