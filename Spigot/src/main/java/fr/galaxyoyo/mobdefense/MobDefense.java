@@ -36,7 +36,6 @@ import org.mcstats.Metrics;
 
 import java.io.File;
 import java.io.IOException;
-import java.lang.reflect.InvocationTargetException;
 import java.nio.charset.StandardCharsets;
 import java.util.*;
 import java.util.stream.Collectors;
@@ -45,6 +44,7 @@ import java.util.stream.Stream;
 public class MobDefense extends JavaPlugin
 {
 	private static MobDefense instance;
+	private NBTAPI nbtapi;
 	private Gson gson;
 	private Map<String, MobClass> mobClasses = Maps.newHashMap();
 	private Location playerSpawn;
@@ -63,6 +63,7 @@ public class MobDefense extends JavaPlugin
 	public void onDisable()
 	{
 		stop(null);
+		nbtapi.disable();
 	}
 
 	@Override
@@ -71,14 +72,8 @@ public class MobDefense extends JavaPlugin
 		instance = this;
 
 		getServer().getPluginManager().registerEvents(new MobDefenseListener(), this);
-		try
-		{
-			JavaPlugin.class.getDeclaredMethod("setEnabled", boolean.class).invoke(new NBTAPI(), true);
-		}
-		catch (IllegalAccessException | NoSuchMethodException | InvocationTargetException e)
-		{
-			e.printStackTrace();
-		}
+		nbtapi = new NBTAPI();
+		nbtapi.enable();
 
 		getCommand("mobdefense").setExecutor(new MobDefenseExecutor());
 
