@@ -55,7 +55,7 @@ public class Wave implements Serializable
 
 	public void start()
 	{
-		Bukkit.broadcastMessage("Démarrage de la vague #" + number);
+		Bukkit.broadcastMessage("Starting wave #" + number);
 
 		Set<Creature> creatures = Sets.newHashSet();
 		Set<Map.Entry<MobClass, Integer>> entries = Sets.newHashSet(spawns.entrySet());
