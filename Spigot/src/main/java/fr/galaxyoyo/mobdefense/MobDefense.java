@@ -90,7 +90,7 @@ public class MobDefense extends JavaPlugin
 			try
 			{
 				File file = new File("plugins", "NBTAPI.jar");
-				FileUtils.copyURLToFile(getLatestDownload("nbtapi", 24908), file);
+				FileUtils.copyURLToFile(getLatestDownloadURL("nbtapi", 24908), file);
 				getServer().getPluginManager().loadPlugin(file);
 			}
 			catch (IOException e)
@@ -227,12 +227,19 @@ public class MobDefense extends JavaPlugin
 		return null;
 	}
 
-	public URL getLatestDownload(String resourceName, int resourceId)
+	public URL getLatestDownloadURL(String resourceName, int resourceId)
 	{
 		try
 		{
 			String url = "https://www.spigotmc.org/resources/" + (resourceName != null ? resourceName + "." : "") + resourceId + "/";
-			Document doc = DocumentBuilderFactory.newInstance().newDocumentBuilder().parse(url);
+			URL u = new URL(url);
+			HttpURLConnection co = (HttpURLConnection) u.openConnection();
+			co.setRequestMethod("GET");
+			co.setRequestProperty("User-Agent", "Mozilla/5.0");
+			co.connect();
+			System.out.println(co.getResponseCode());
+			Document doc = DocumentBuilderFactory.newInstance().newDocumentBuilder().parse(co.getInputStream());
+			co.disconnect();
 			Element downloadLink = (Element) ((Element) doc.getElementsByTagName("label.downloadButton").item(0)).getElementsByTagName("a.inner").item(0);
 			return new URL(downloadLink.getTextContent());
 		}
