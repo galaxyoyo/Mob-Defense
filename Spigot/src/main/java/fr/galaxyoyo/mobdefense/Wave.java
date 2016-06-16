@@ -151,7 +151,7 @@ public class Wave implements Serializable
 							return;
 						}
 
-						if (c.getLocation().distanceSquared(MobDefense.instance().getEnd()) < 4)
+						if (c.getLocation().distanceSquared(MobDefense.instance().getEnd()) < 2)
 						{
 							c.remove();
 							Wave w = Wave.this;
