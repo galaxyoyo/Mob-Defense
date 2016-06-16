@@ -110,11 +110,14 @@ public class MobDefenseListener implements Listener
 				if (stack.getAmount() > 1)
 				{
 					stack.setAmount(stack.getAmount() - 1);
-					event.getPlayer().getInventory().setItemInMainHand(stack);
+					if (event.getPlayer().getInventory().getItemInMainHand() != null && event.getPlayer().getInventory().getItemInMainHand().getType() == Material.DISPENSER)
+						event.getPlayer().getInventory().setItemInMainHand(stack);
+					else
+						event.getPlayer().getInventory().setItemInOffHand(stack);
 				}
 				else
 				{
-					ItemStack[] items = event.getPlayer().getInventory().getStorageContents();
+					ItemStack[] items = event.getPlayer().getInventory().getContents();
 
 					for (int i = 0; i < items.length; ++i)
 					{
