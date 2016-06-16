@@ -71,7 +71,7 @@ public class MobDefense extends JavaPlugin
 	{
 		instance = this;
 
-		if (!getServer().getPluginManager().isPluginEnabled("NBTAPI"))
+		if (getServer().getPluginManager().getPlugin("NBTAPI") == null)
 		{
 			try
 			{
