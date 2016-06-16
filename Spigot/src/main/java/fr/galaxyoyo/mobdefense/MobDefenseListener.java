@@ -108,7 +108,10 @@ public class MobDefenseListener implements Listener
 			{
 				ItemStack stack = event.getItemInHand();
 				if (stack.getAmount() > 1)
+				{
 					stack.setAmount(stack.getAmount() - 1);
+					event.getPlayer().getInventory().setItemInMainHand(stack);
+				}
 				else
 				{
 					ItemStack[] items = event.getPlayer().getInventory().getStorageContents();
@@ -165,7 +168,7 @@ public class MobDefenseListener implements Listener
 	@EventHandler
 	public void onProjectileHit(ProjectileHitEvent event)
 	{
-		Bukkit.getScheduler().runTaskLater(MobDefense.instance(), () -> event.getEntity().remove(), 10L);
+		Bukkit.getScheduler().runTaskLater(MobDefense.instance(), () -> event.getEntity().remove(), 300L);
 		event.getEntity().setBounce(false);
 	}
 
@@ -226,10 +229,8 @@ public class MobDefenseListener implements Listener
 	public void onEntityGone(EntityGoneEvent event)
 	{
 		Score score = Bukkit.getScoreboardManager().getMainScoreboard().getObjective(DisplaySlot.SIDEBAR).getScore("Lives");
-		System.out.println(score.getScore());
 		score.setScore(score.getScore() - 1);
-		System.out.println(score.getScore());
-		if (score.getScore() <= 0)
+		if (score.getScore() > 0)
 			Bukkit.broadcastMessage("[MobDefense] " + event.getEntity().getCustomName() + " bypassed the towers! " + score.getScore()
 					+ (score.getScore() > 1 ? "lives" : "life") + " left");
 		else
