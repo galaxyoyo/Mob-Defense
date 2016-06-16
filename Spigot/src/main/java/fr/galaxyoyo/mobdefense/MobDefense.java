@@ -309,7 +309,7 @@ public class MobDefense extends JavaPlugin
 				ItemMeta meta = result.getItemMeta();
 				meta.setDisplayName(Tower.getTowerName(clazz));
 				result.setItemMeta(meta);
-				List<Material> list = Arrays.stream(Material.values()).filter(Material::isBlock).collect(Collectors.toList());
+				List<Material> list = Arrays.stream(Material.values()).filter(Material::isSolid).collect(Collectors.toList());
 				ItemStackUtils.setCanPlaceOn(result, list.toArray(new Material[list.size()]));
 				MerchantRecipe recipe = new MerchantRecipe(result, Integer.MAX_VALUE);
 				recipe.setIngredients(Lists.newArrayList(Tower.getTowerPrice(clazz)));
