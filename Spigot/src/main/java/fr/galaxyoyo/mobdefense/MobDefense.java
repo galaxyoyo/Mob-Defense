@@ -9,7 +9,6 @@ import fr.galaxyoyo.mobdefense.events.GameStartedEvent;
 import fr.galaxyoyo.mobdefense.events.GameStoppedEvent;
 import fr.galaxyoyo.mobdefense.towers.Tower;
 import fr.galaxyoyo.spigot.nbtapi.ItemStackUtils;
-import fr.galaxyoyo.spigot.nbtapi.NBTAPI;
 import net.md_5.bungee.api.ChatColor;
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.io.IOUtils;
@@ -29,6 +28,8 @@ import org.bukkit.entity.Villager;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.MerchantRecipe;
 import org.bukkit.inventory.meta.ItemMeta;
+import org.bukkit.plugin.InvalidDescriptionException;
+import org.bukkit.plugin.InvalidPluginException;
 import org.bukkit.plugin.java.JavaPlugin;
 import org.bukkit.scoreboard.DisplaySlot;
 import org.bukkit.scoreboard.Objective;
@@ -36,6 +37,7 @@ import org.mcstats.Metrics;
 
 import java.io.File;
 import java.io.IOException;
+import java.net.URL;
 import java.nio.charset.StandardCharsets;
 import java.util.*;
 import java.util.stream.Collectors;
@@ -44,7 +46,6 @@ import java.util.stream.Stream;
 public class MobDefense extends JavaPlugin
 {
 	private static MobDefense instance;
-	private NBTAPI nbtapi;
 	private Gson gson;
 	private Map<String, MobClass> mobClasses = Maps.newHashMap();
 	private Location playerSpawn;
@@ -63,7 +64,6 @@ public class MobDefense extends JavaPlugin
 	public void onDisable()
 	{
 		stop(null);
-		nbtapi.onDisable();
 	}
 
 	@Override
@@ -71,9 +71,29 @@ public class MobDefense extends JavaPlugin
 	{
 		instance = this;
 
+		if (!getServer().getPluginManager().isPluginEnabled("NBTAPI"))
+		{
+			try
+			{
+				File file = new File("plugins", "NBTAPI.jar");
+				FileUtils.copyURLToFile(new URL("http://arathia.fr/maven/fr/galaxyoyo/spigot/nbtapi/1.0.1/nbtapi-1.0.1.jar"), file);
+				getServer().getPluginManager().loadPlugin(file);
+			}
+			catch (IOException e)
+			{
+				getLogger().severe("Unable to download NBTAPI library. Make sure you have the latest version of MobDefense and have an Internet connection.");
+				getLogger().severe("Plugin will disable now.");
+				e.printStackTrace();
+				getServer().getPluginManager().disablePlugin(this);
+				return;
+			}
+			catch (InvalidPluginException | InvalidDescriptionException e)
+			{
+				e.printStackTrace();
+			}
+		}
+
 		getServer().getPluginManager().registerEvents(new MobDefenseListener(), this);
-		nbtapi = new NBTAPI();
-		nbtapi.onEnable();
 
 		getCommand("mobdefense").setExecutor(new MobDefenseExecutor());
 

@@ -2,6 +2,7 @@ name: MobDefense
 main: fr.galaxyoyo.mobdefense.MobDefense
 version: 1.0
 author: galaxyoyo
+after: NBTAPI
 
 commands:
   mobdefense:
