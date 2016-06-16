@@ -35,9 +35,15 @@ import org.bukkit.plugin.java.JavaPlugin;
 import org.bukkit.scoreboard.DisplaySlot;
 import org.bukkit.scoreboard.Objective;
 import org.mcstats.Metrics;
+import org.w3c.dom.Document;
+import org.w3c.dom.Element;
 
+import javax.xml.parsers.DocumentBuilderFactory;
+import java.io.BufferedReader;
 import java.io.File;
 import java.io.IOException;
+import java.io.InputStreamReader;
+import java.net.HttpURLConnection;
 import java.net.URL;
 import java.nio.charset.StandardCharsets;
 import java.util.*;
@@ -46,6 +52,7 @@ import java.util.stream.Collectors;
 public class MobDefense extends JavaPlugin
 {
 	private static MobDefense instance;
+	private String latestVersion;
 	private Gson gson;
 	private Map<String, MobClass> mobClasses = Maps.newHashMap();
 	private Location playerSpawn;
@@ -71,12 +78,19 @@ public class MobDefense extends JavaPlugin
 	{
 		instance = this;
 
-		if (getServer().getPluginManager().getPlugin("NBTAPI") == null)
+		JavaPlugin nbtapi = (JavaPlugin) getServer().getPluginManager().getPlugin("NBTAPI");
+		boolean needToUpdate = nbtapi == null;
+		if (nbtapi != null && new Version(nbtapi.getDescription().getVersion()).compareTo(new Version(getLatestSpigotVersion(24908))) < 0)
+		{
+			needToUpdate = true;
+			getServer().getPluginManager().disablePlugin(nbtapi);
+		}
+		if (needToUpdate)
 		{
 			try
 			{
 				File file = new File("plugins", "NBTAPI.jar");
-				FileUtils.copyURLToFile(new URL("http://arathia.fr/maven/fr/galaxyoyo/spigot/nbtapi/1.0.1/nbtapi-1.0.1.jar"), file);
+				FileUtils.copyURLToFile(getLatestDownload(24908), file);
 				getServer().getPluginManager().loadPlugin(file);
 			}
 			catch (IOException e)
@@ -91,6 +105,13 @@ public class MobDefense extends JavaPlugin
 			{
 				e.printStackTrace();
 			}
+		}
+
+		String version = getLatestSpigotVersion(24908);
+		if (new Version(getDescription().getVersion()).compareTo(new Version(version)) < 0)
+		{
+			getLogger().warning("This plugin is latestVersion. The last version is " + version + ", please update, there're maybe some fixes or new features.");
+			latestVersion = version;
 		}
 
 		getServer().getPluginManager().registerEvents(new MobDefenseListener(), this);
@@ -186,6 +207,43 @@ public class MobDefense extends JavaPlugin
 		}
 	}
 
+	private String getLatestSpigotVersion(int resourceId)
+	{
+		try
+		{
+			HttpURLConnection con = (HttpURLConnection) new URL("http://www.spigotmc.org/api/general.php").openConnection();
+			con.setDoOutput(true);
+			con.setRequestMethod("POST");
+			con.getOutputStream().write(
+					("key=98BE0FE67F88AB82B4C197FAF1DC3B69206EFDCC4D3B80FC83A00037510B99B4&resource=" + resourceId).getBytes("UTF-8"));
+			String version = new BufferedReader(new InputStreamReader(con.getInputStream())).readLine();
+			if (version.length() <= 7)
+				return version;
+		}
+		catch (Exception ex)
+		{
+			getLogger().warning("Failed to check for a update on spigot.");
+		}
+		return null;
+	}
+
+	public URL getLatestDownload(int resourceId)
+	{
+		try
+		{
+			String url = "https://www.spigotmc.org/resources/" + resourceId;
+			Document doc = DocumentBuilderFactory.newInstance().newDocumentBuilder().parse(url);
+			Element downloadLink = (Element) ((Element) doc.getElementsByTagName("label.downloadButton").item(0)).getElementsByTagName("a.inner").item(0);
+			return new URL(downloadLink.getTextContent());
+		}
+		catch (Exception ex)
+		{
+			ex.printStackTrace();
+		}
+
+		return null;
+	}
+
 	public Gson getGson()
 	{
 		return gson;
@@ -216,6 +274,11 @@ public class MobDefense extends JavaPlugin
 	public static MobDefense instance()
 	{
 		return instance;
+	}
+
+	public String getLatestVersion()
+	{
+		return latestVersion;
 	}
 
 	public Location getPlayerSpawn()

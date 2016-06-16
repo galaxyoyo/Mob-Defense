@@ -22,7 +22,6 @@ import org.bukkit.event.world.WorldLoadEvent;
 import org.bukkit.inventory.ItemFlag;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
-import org.bukkit.potion.PotionData;
 import org.bukkit.scoreboard.DisplaySlot;
 import org.bukkit.scoreboard.Score;
 
@@ -51,6 +50,10 @@ public class MobDefenseListener implements Listener
 		event.getPlayer().setCollidable(false);
 		event.getPlayer().teleport(MobDefense.instance().getPlayerSpawn());
 		event.getPlayer().setGameMode(GameMode.ADVENTURE);
+
+		if (event.getPlayer().isOp() && MobDefense.instance().getLatestVersion() != null)
+			event.getPlayer().sendMessage(ChatColor.RED + "[MobDefense] You're running an outdated version of MobDefense (" + MobDefense.instance().getDescription().getVersion()
+					+ "). Please update to " + MobDefense.instance().getLatestVersion() + ".");
 	}
 
 	@EventHandler
@@ -162,9 +165,6 @@ public class MobDefenseListener implements Listener
 		{
 			if (event.getDamager() instanceof TippedArrow)
 			{
-				TippedArrow arrow = (TippedArrow) event.getDamager();
-				PotionData data = arrow.getBasePotionData();
-				System.out.println(data);
 				Object arrowHandle = ReflectionUtils.invokeBukkitMethod("getHandle", event.getDamager());
 				Object entityHandle = ReflectionUtils.invokeBukkitMethod("getHandle", event.getEntity());
 				ReflectionUtils.invokeNMSMethod("a", arrowHandle, new Class<?>[]{ReflectionUtils.getNMSClass("EntityLiving")}, entityHandle);
