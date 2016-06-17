@@ -71,8 +71,6 @@ public abstract class Tower
 		{
 			//noinspection deprecation
 			byte data = loc.getBlock().getState().getData().getData();
-			//noinspection deprecation
-			towerLoc.getBlock().setTypeIdAndData(Material.DISPENSER.getId(), data, true);
 			Tower tower;
 			try
 			{
@@ -85,6 +83,8 @@ public abstract class Tower
 			}
 			towersByLocation.put(towerLoc, tower);
 			Bukkit.getScheduler().runTask(MobDefense.instance(), () -> {
+				//noinspection deprecation
+				towerLoc.getBlock().setTypeIdAndData(Material.DISPENSER.getId(), data, true);
 				loc.getBlock().setType(tower.getMaterial());
 				tower.dispenser = (Dispenser) tower.getLocation().getBlock().getState().getData();
 				tower.loop = Bukkit.getScheduler().runTaskTimer(MobDefense.instance(), tower::onTick, 20L, 20L);
