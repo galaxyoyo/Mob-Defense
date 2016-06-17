@@ -240,8 +240,9 @@ public class MobDefense extends JavaPlugin
 			co.disconnect();
 			String innerLabel = content.substring(content.indexOf("<label class=\"downloadButton \">"));
 			innerLabel = innerLabel.substring(0, innerLabel.indexOf("</label>"));
-			String downloadURL = innerLabel.substring(innerLabel.indexOf("<a href=\""));
+			String downloadURL = innerLabel.substring(innerLabel.indexOf("<a href=\"") + 9);
 			downloadURL = downloadURL.substring(0, downloadURL.indexOf("\" class=\"inner\">"));
+			downloadURL = "https://www.spigotmc.org/" + downloadURL;
 			return new URL(downloadURL);
 		}
 		catch (Exception ex)
