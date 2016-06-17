@@ -52,6 +52,7 @@ public abstract class Tower
 	public static Tower placeAt(Location loc, ItemStack stack)
 	{
 		Location towerLoc = loc.clone().add(0, 1, 0);
+		System.out.println(towerLoc.getBlock().getType());
 		if (towerLoc.getBlock().getType() != Material.AIR)
 			return null;
 
