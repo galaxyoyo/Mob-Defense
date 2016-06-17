@@ -47,7 +47,7 @@ public class MobDefenseListener implements Listener
 		ItemStackUtils.setCanDestroy(pickaxe, Material.DISPENSER);
 		event.getPlayer().getInventory().clear();
 		event.getPlayer().getInventory().addItem(pickaxe);
-		event.getPlayer().setCollidable(false);
+		event.getPlayer().setCollidable(true);
 		event.getPlayer().teleport(MobDefense.instance().getPlayerSpawn());
 		event.getPlayer().setGameMode(GameMode.ADVENTURE);
 
