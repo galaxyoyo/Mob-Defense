@@ -56,8 +56,8 @@ public class MobDefenseExecutor implements CommandExecutor, TabCompleter
 			loc.setX(loc.getBlockX() + 0.5D);
 			loc.setY(loc.getBlockY());
 			loc.setZ(loc.getBlockZ() + 0.5D);
-			loc.setYaw(NumberConversions.floor((loc.getYaw() - 20) / 45) * 45);
-			loc.setPitch(NumberConversions.floor((loc.getPitch() - 20) / 45) * 45);
+			loc.setYaw(NumberConversions.floor(loc.getYaw() / 45) * 45);
+			loc.setPitch(NumberConversions.floor(loc.getPitch() / 45) * 45);
 
 			if (args[1].equalsIgnoreCase("spawn"))
 				MobDefense.instance().setSpawn(loc);
