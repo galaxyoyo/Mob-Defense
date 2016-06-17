@@ -118,7 +118,9 @@ public class MobDefense extends JavaPlugin
 
 		getServer().getPluginManager().registerEvents(new MobDefenseListener(), this);
 
-		getCommand("mobdefense").setExecutor(new MobDefenseExecutor());
+		MobDefenseExecutor executor = new MobDefenseExecutor();
+		getCommand("mobdefense").setExecutor(executor);
+		getCommand("mobdefense").setTabCompleter(executor);
 
 		gson = new GsonBuilder().registerTypeAdapter(ItemStack.class, new ItemStackTypeAdapter()).registerTypeAdapter(Wave.class, new WaveTypeAdapter()).setPrettyPrinting().create();
 
@@ -308,14 +310,32 @@ public class MobDefense extends JavaPlugin
 		return playerSpawn;
 	}
 
+	protected void setPlayerSpawn(Location location)
+	{
+		this.playerSpawn = location;
+		getConfig().set("player-spawn-loc", LocationConverter.instance().toString(location));
+	}
+
 	public Location getSpawn()
 	{
 		return spawn;
 	}
 
+	protected void setSpawn(Location location)
+	{
+		this.spawn = location;
+		getConfig().set("spawn-loc", LocationConverter.instance().toString(location));
+	}
+
 	public Location getEnd()
 	{
 		return end;
+	}
+
+	protected void setEnd(Location location)
+	{
+		this.end = location;
+		getConfig().set("end-loc", LocationConverter.instance().toString(location));
 	}
 
 	@SuppressWarnings("unused")
@@ -341,7 +361,7 @@ public class MobDefense extends JavaPlugin
 			else
 			{
 				currentWave.setNumber(currentWave.getNumber() + 1);
-				currentWave.getSpawns().entrySet().forEach(entry -> entry.setValue(entry.getValue() * 2));
+				currentWave.getSpawns().entrySet().forEach(entry -> entry.setValue((int) (entry.getValue() * 1.2D)));
 			}
 		}
 
@@ -473,5 +493,23 @@ public class MobDefense extends JavaPlugin
 	public int getWaveTime()
 	{
 		return waveTime;
+	}
+
+	protected void setNpcTowerLoc(Location location)
+	{
+		this.npcTowerLoc = location;
+		getConfig().set("npc-tower-loc", LocationConverter.instance().toString(location));
+	}
+
+	protected void setNpcUpgradesLoc(Location location)
+	{
+		this.npcUpgradesLoc = location;
+		getConfig().set("npc-upgrades-loc", LocationConverter.instance().toString(location));
+	}
+
+	protected void setNpcExchangeLoc(Location location)
+	{
+		this.npcExchangeLoc = location;
+		getConfig().set("npc-exchange-loc", LocationConverter.instance().toString(location));
 	}
 }
