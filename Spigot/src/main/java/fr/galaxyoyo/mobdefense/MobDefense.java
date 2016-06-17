@@ -31,6 +31,7 @@ import org.bukkit.inventory.MerchantRecipe;
 import org.bukkit.inventory.meta.ItemMeta;
 import org.bukkit.plugin.InvalidDescriptionException;
 import org.bukkit.plugin.InvalidPluginException;
+import org.bukkit.plugin.SimplePluginManager;
 import org.bukkit.plugin.java.JavaPlugin;
 import org.bukkit.scoreboard.DisplaySlot;
 import org.bukkit.scoreboard.Objective;
@@ -65,22 +66,14 @@ public class MobDefense extends JavaPlugin
 	private Objective objective;
 
 	@Override
-	public void onDisable()
+	public void onLoad()
 	{
-		stop(null);
-	}
-
-	@Override
-	public void onEnable()
-	{
-		instance = this;
-
 		JavaPlugin nbtapi = (JavaPlugin) getServer().getPluginManager().getPlugin("NBTAPI");
 		boolean needToUpdate = nbtapi == null;
 		if (nbtapi != null && new Version(nbtapi.getDescription().getVersion()).compareTo(new Version(getLatestSpigotVersion(24908))) < 0)
 		{
 			needToUpdate = true;
-			getServer().getPluginManager().disablePlugin(nbtapi);
+			((SimplePluginManager) getServer().getPluginManager()).disablePlugin(nbtapi);
 		}
 		if (needToUpdate)
 		{
@@ -103,18 +96,31 @@ public class MobDefense extends JavaPlugin
 				getLogger().severe("Plugin will disable now.");
 				e.printStackTrace();
 				getServer().getPluginManager().disablePlugin(this);
-				return;
 			}
 			catch (InvalidPluginException | InvalidDescriptionException e)
 			{
 				e.printStackTrace();
 			}
 		}
+	}
+
+	@Override
+	public void onDisable()
+	{
+		stop(null);
+	}
+
+	@Override
+	public void onEnable()
+	{
+		instance = this;
 
 		String version = getLatestSpigotVersion(24908);
 		if (new Version(getDescription().getVersion()).compareTo(new Version(version)) < 0)
 		{
-			getLogger().warning("This plugin is latestVersion. The last version is " + version + ", please update, there're maybe some fixes or new features.");
+			getLogger().warning(
+					"This plugin is outdated. The last version is " + version + " and you're running " + getDescription().getVersion() + ". Please update, there're maybe some " +
+							"fixes or new features.");
 			latestVersion = version;
 		}
 
@@ -211,6 +217,38 @@ public class MobDefense extends JavaPlugin
 		}
 	}
 
+	public Gson getGson()
+	{
+		return gson;
+	}
+
+	public void stop(CommandSender sender)
+	{
+		if (objective == null)
+		{
+			if (sender != null)
+				sender.sendMessage("No game is running!");
+			return;
+		}
+
+		Bukkit.broadcastMessage("[MobDefense] Game ended.");
+
+		for (Tower tower : Tower.getAllTowers())
+			Tower.breakAt(tower.getLocation());
+		Bukkit.getWorlds().get(0).getEntities().stream().filter(entity -> entity.getType() != EntityType.PLAYER && entity.getType() != EntityType.VILLAGER).forEach(Entity::remove);
+		Bukkit.getOnlinePlayers().forEach(player -> player.getInventory().clear());
+		getServer().getPluginManager().callEvent(new GameStoppedEvent(currentWave == null ? 0 : currentWave.getNumber()));
+		currentWave = null;
+		objective.unregister();
+		objective = null;
+		Bukkit.getScheduler().cancelTasks(MobDefense.instance());
+	}
+
+	public static MobDefense instance()
+	{
+		return instance;
+	}
+
 	private String getLatestSpigotVersion(int resourceId)
 	{
 		try
@@ -257,38 +295,6 @@ public class MobDefense extends JavaPlugin
 		}
 
 		return null;
-	}
-
-	public Gson getGson()
-	{
-		return gson;
-	}
-
-	public void stop(CommandSender sender)
-	{
-		if (objective == null)
-		{
-			if (sender != null)
-				sender.sendMessage("No game is running!");
-			return;
-		}
-
-		Bukkit.broadcastMessage("[MobDefense] Game ended.");
-
-		for (Tower tower : Tower.getAllTowers())
-			Tower.breakAt(tower.getLocation());
-		Bukkit.getWorlds().get(0).getEntities().stream().filter(entity -> entity.getType() != EntityType.PLAYER && entity.getType() != EntityType.VILLAGER).forEach(Entity::remove);
-		Bukkit.getOnlinePlayers().forEach(player -> player.getInventory().clear());
-		getServer().getPluginManager().callEvent(new GameStoppedEvent(currentWave == null ? 0 : currentWave.getNumber()));
-		currentWave = null;
-		objective.unregister();
-		objective = null;
-		Bukkit.getScheduler().cancelTasks(MobDefense.instance());
-	}
-
-	public static MobDefense instance()
-	{
-		return instance;
 	}
 
 	public String getLatestVersion()
