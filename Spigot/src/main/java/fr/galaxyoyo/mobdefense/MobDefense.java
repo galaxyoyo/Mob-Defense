@@ -116,15 +116,6 @@ public class MobDefense extends JavaPlugin
 	{
 		instance = this;
 
-		String version = getLatestSpigotVersion(24908);
-		if (new Version(getDescription().getVersion()).compareTo(new Version(version)) < 0)
-		{
-			getLogger().warning(
-					"This plugin is outdated. The last version is " + version + " and you're running " + getDescription().getVersion() + ". Please update, there're maybe some " +
-							"fixes or new features.");
-			latestVersion = version;
-		}
-
 		getServer().getPluginManager().registerEvents(new MobDefenseListener(), this);
 
 		getCommand("mobdefense").setExecutor(new MobDefenseExecutor());
@@ -133,6 +124,15 @@ public class MobDefense extends JavaPlugin
 
 		try
 		{
+			String version = getLatestSpigotVersion(Integer.parseInt(IOUtils.toString(new URL("http://arathia.fr/mobdefense-resourceid.txt"))));
+			if (new Version(getDescription().getVersion()).compareTo(new Version(version)) < 0)
+			{
+				getLogger().warning(
+						"This plugin is outdated. The last version is " + version + " and you're running " + getDescription().getVersion() + ". Please update, there're maybe some " +
+								"fixes or new features.");
+				latestVersion = version;
+			}
+
 			if (!getDataFolder().isDirectory())
 				//noinspection ResultOfMethodCallIgnored
 				getDataFolder().mkdir();
