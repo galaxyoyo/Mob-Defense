@@ -482,7 +482,7 @@ public class MobDefense extends JavaPlugin
 
 		getServer().getPluginManager().callEvent(new GameStartedEvent());
 		Bukkit.broadcastMessage("[MobDefense] Game started!");
-		Bukkit.getScheduler().runTaskLater(this, this::startNextWave, waveTime);
+		Bukkit.getScheduler().runTaskLater(this, this::startNextWave, waveTime * 20L);
 	}
 
 	public Wave getCurrentWave()
