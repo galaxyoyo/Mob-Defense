@@ -339,7 +339,10 @@ public class MobDefense extends JavaPlugin
 			if (index != waves.size() - 1)
 				currentWave = waves.get(index + 1);
 			else
+			{
 				currentWave.setNumber(currentWave.getNumber() + 1);
+				currentWave.getSpawns().entrySet().forEach(entry -> entry.setValue(entry.getValue() * 2));
+			}
 		}
 
 		objective.getScore("Wave").setScore(currentWave.getNumber());

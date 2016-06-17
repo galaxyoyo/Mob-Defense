@@ -69,7 +69,9 @@ public class Wave implements Serializable
 
 	public void start()
 	{
-		Bukkit.broadcastMessage("Starting wave #" + number);
+		AtomicInteger totalMobs = new AtomicInteger(0);
+		spawns.values().forEach(totalMobs::addAndGet);
+		Bukkit.broadcastMessage("Starting wave #" + number + " (" + totalMobs.get() + (totalMobs.get() > 1 ? " mobs)" : " mob)"));
 
 		Set<Creature> creatures = Sets.newHashSet();
 		Set<Map.Entry<MobClass, Integer>> entries = Sets.newHashSet(spawns.entrySet());
