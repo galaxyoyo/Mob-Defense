@@ -66,6 +66,8 @@ public abstract class Tower
 			}
 		}
 
+		System.out.println(clazz);
+
 		if (clazz == null)
 			return null;
 
