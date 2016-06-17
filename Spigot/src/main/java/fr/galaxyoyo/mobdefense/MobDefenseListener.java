@@ -159,9 +159,10 @@ public class MobDefenseListener implements Listener
 	@EventHandler
 	public void onEntityDamageByEntity(EntityDamageByEntityEvent event)
 	{
-		if (event.getDamager().getType() == EntityType.PLAYER || event.getEntityType() == EntityType.PLAYER)
-			event.setCancelled(true);
-		else if (event.getEntity() instanceof Creature)
+		//	if (event.getDamager().getType() == EntityType.PLAYER || event.getEntityType() == EntityType.PLAYER)
+		//		event.setCancelled(true);
+		//	else
+		if (event.getEntity() instanceof Creature)
 		{
 			if (event.getDamager() instanceof TippedArrow)
 			{
@@ -175,8 +176,8 @@ public class MobDefenseListener implements Listener
 	@EventHandler
 	public void onEntityDamage(EntityDamageEvent event)
 	{
-		if (event.getEntityType() == EntityType.PLAYER)
-			event.setCancelled(true);
+		//	if (event.getEntityType() == EntityType.PLAYER)
+		//		event.setCancelled(true);
 	}
 
 	@EventHandler
