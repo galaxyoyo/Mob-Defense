@@ -13,10 +13,12 @@ import org.bukkit.entity.EntityType;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
+import org.bukkit.event.block.Action;
 import org.bukkit.event.block.BlockBreakEvent;
 import org.bukkit.event.block.BlockPlaceEvent;
 import org.bukkit.event.entity.*;
 import org.bukkit.event.player.PlayerInteractEntityEvent;
+import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.event.player.PlayerJoinEvent;
 import org.bukkit.event.player.PlayerQuitEvent;
 import org.bukkit.event.weather.WeatherChangeEvent;
@@ -149,6 +151,13 @@ public class MobDefenseListener implements Listener
 			t.getLocation().getWorld().dropItem(t.getLocation(), stack);
 		}
 		Wave.getAllCreatures().forEach(Wave::recalculate);
+	}
+
+	@EventHandler
+	public void onPlayerInteract(PlayerInteractEvent event)
+	{
+		if (event.getAction() != Action.RIGHT_CLICK_BLOCK || event.getClickedBlock().getType() != Material.DISPENSER)
+			event.setCancelled(true);
 	}
 
 	@EventHandler

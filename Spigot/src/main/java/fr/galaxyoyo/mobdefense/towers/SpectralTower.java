@@ -3,34 +3,33 @@ package fr.galaxyoyo.mobdefense.towers;
 import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.inventory.ItemStack;
-import org.bukkit.potion.PotionType;
 
-public class DamageTower extends Tower
+public class SpectralTower extends Tower
 {
-	public DamageTower(Location location)
+	public SpectralTower(Location location)
 	{
 		super(location);
 	}
 
 	public static String getName()
 	{
-		return "Damage Tower";
+		return "Spectral Tower";
 	}
 
 	public static ItemStack[] getPrice()
 	{
-		return new ItemStack[]{new ItemStack(Material.GOLD_INGOT, 1)};
+		return new ItemStack[]{new ItemStack(Material.GOLD_INGOT, 7)};
 	}
 
 	@Override
 	public Material getMaterial()
 	{
-		return Material.NETHER_WART_BLOCK;
+		return Material.MAGMA;
 	}
 
 	@Override
 	public void onTick()
 	{
-		launchArrow(10, PotionType.INSTANT_DAMAGE);
+		launchSpectralArrow(10);
 	}
 }

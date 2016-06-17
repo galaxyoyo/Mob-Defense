@@ -8,6 +8,7 @@ import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.block.BlockFace;
 import org.bukkit.entity.Arrow;
+import org.bukkit.entity.SpectralArrow;
 import org.bukkit.entity.TippedArrow;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.material.Dispenser;
@@ -27,8 +28,8 @@ public abstract class Tower
 	static
 	{
 		registerTower(SimpleTower.class);
-		registerTower(DamageTower.class);
-		registerTower(PoisonTower.class);
+		registerTower(HealingTower.class);
+		registerTower(SpectralTower.class);
 	}
 
 	private final Location location;
@@ -152,29 +153,46 @@ public abstract class Tower
 
 	public abstract void onTick();
 
-	public Arrow launchArrow(int range)
+	public TippedArrow launchArrow(int range)
 	{
 		return launchArrow(range, null);
 	}
 
+	public TippedArrow launchArrow(int range, PotionType type)
+	{
+		return launchArrow(range, type, false, false);
+	}
+
+	public TippedArrow launchArrow(int range, PotionType type, boolean extended, boolean upgraded)
+	{
+		return launchArrow(range, type, extended, upgraded, false);
+	}
+
 	@SuppressWarnings("unchecked")
-	public <T extends Arrow> T launchArrow(int range, PotionType type)
+	public <T extends Arrow> T launchArrow(int range, PotionType type, boolean extended, boolean upgraded, boolean spectral)
 	{
 		BlockFace face = getDispenser().getFacing();
 		Class<T> clazz;
 		if (type == null)
 			clazz = (Class<T>) Arrow.class;
+		else if (spectral)
+			clazz = (Class<T>) SpectralArrow.class;
 		else
 			clazz = (Class<T>) TippedArrow.class;
 		T arrow = location.getWorld().spawnArrow(location.clone().add(face.getModX() + 0.5D, 0.5D, face.getModZ() + 0.5D), new Vector((range - 1) * face.getModX(), 0,
 				(range - 1) * face.getModZ()), 1, -2, clazz);
 		if (type != null)
-			((TippedArrow) arrow).setBasePotionData(new PotionData(type));
+			((TippedArrow) arrow).setBasePotionData(new PotionData(type, extended, upgraded));
 		return arrow;
 	}
 
 	public Dispenser getDispenser()
 	{
 		return dispenser;
+	}
+
+	public SpectralArrow launchSpectralArrow(int range)
+	{
+		return launchArrow(range, null, false, false, true);
 	}
 }
