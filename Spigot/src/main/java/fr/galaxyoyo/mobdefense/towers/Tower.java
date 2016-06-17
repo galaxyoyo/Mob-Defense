@@ -183,6 +183,8 @@ public abstract class Tower
 				(range - 1) * face.getModZ()), 1, -2, clazz);
 		if (type != null)
 			((TippedArrow) arrow).setBasePotionData(new PotionData(type, extended, upgraded));
+		else if (spectral)
+			((SpectralArrow) arrow).setGlowingTicks(280);
 		return arrow;
 	}
 
