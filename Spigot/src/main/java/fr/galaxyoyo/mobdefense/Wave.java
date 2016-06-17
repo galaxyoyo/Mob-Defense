@@ -48,6 +48,20 @@ public class Wave implements Serializable
 		return creatureClasses.get(c);
 	}
 
+	public static boolean checkForPath()
+	{
+		try
+		{
+			AStar as = new AStar(MobDefense.instance().getSpawn().clone().subtract(0, 1, 0), MobDefense.instance().getEnd().clone().subtract(0, 1, 0), 100);
+			as.iterate();
+			return as.getPathingResult() == PathingResult.SUCCESS;
+		}
+		catch (AStar.InvalidPathException e)
+		{
+			return false;
+		}
+	}
+
 	public Map<MobClass, Integer> getSpawns()
 	{
 		return spawns;
@@ -202,7 +216,7 @@ public class Wave implements Serializable
 		Location start = starts.get(c);
 		Tile currentTile = creatureTiles.get(c).get(creatureCurrentTile.get(c));
 		Tile next = currentTile;
-		if (currentTile.getLocation(starts.get(c)).distanceSquared(c.getLocation()) < 4)
+		if (currentTile.getLocation(starts.get(c)).distanceSquared(c.getLocation()) < 2)
 		{
 			int tileId = creatureCurrentTile.get(c) + 1;
 			if (tileId < creatureTiles.get(c).size())

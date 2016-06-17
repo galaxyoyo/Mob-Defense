@@ -97,13 +97,21 @@ public class MobDefenseListener implements Listener
 			});
 		}
 
-		for (Creature c : Wave.getAllCreatures())
+		if (Wave.checkForPath())
 		{
-			if (!Wave.recalculate(c))
+			event.setCancelled(true);
+			event.setBuild(false);
+		}
+		else
+		{
+			for (Creature c : Wave.getAllCreatures())
 			{
-				event.setCancelled(true);
-				event.setBuild(false);
-				break;
+				if (!Wave.recalculate(c))
+				{
+					event.setCancelled(true);
+					event.setBuild(false);
+					break;
+				}
 			}
 		}
 

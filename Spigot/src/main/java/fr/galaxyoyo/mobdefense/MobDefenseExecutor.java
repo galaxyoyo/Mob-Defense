@@ -18,6 +18,11 @@ public class MobDefenseExecutor implements CommandExecutor
 
 		if (args[0].equalsIgnoreCase("start"))
 		{
+			if (!Wave.checkForPath())
+			{
+				sender.sendMessage(ChatColor.RED + "[MobDefense] Error: no path can be found. Please update the map.");
+				return true;
+			}
 			MobDefense.instance().start(sender);
 			return true;
 		}
