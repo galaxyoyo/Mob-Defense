@@ -3,12 +3,14 @@ package fr.galaxyoyo.mobdefense;
 import fr.galaxyoyo.mobdefense.events.EntityGoneEvent;
 import fr.galaxyoyo.mobdefense.towers.Tower;
 import fr.galaxyoyo.spigot.nbtapi.ItemStackUtils;
-import fr.galaxyoyo.spigot.nbtapi.ReflectionUtils;
 import net.md_5.bungee.api.ChatColor;
 import org.bukkit.Bukkit;
 import org.bukkit.GameMode;
 import org.bukkit.Material;
-import org.bukkit.entity.*;
+import org.bukkit.entity.Creature;
+import org.bukkit.entity.Entity;
+import org.bukkit.entity.EntityType;
+import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.block.BlockBreakEvent;
@@ -47,7 +49,7 @@ public class MobDefenseListener implements Listener
 		ItemStackUtils.setCanDestroy(pickaxe, Material.DISPENSER);
 		event.getPlayer().getInventory().clear();
 		event.getPlayer().getInventory().addItem(pickaxe);
-		event.getPlayer().setCollidable(true);
+		event.getPlayer().setCollidable(false);
 		event.getPlayer().teleport(MobDefense.instance().getPlayerSpawn());
 		event.getPlayer().setGameMode(GameMode.ADVENTURE);
 
@@ -159,25 +161,15 @@ public class MobDefenseListener implements Listener
 	@EventHandler
 	public void onEntityDamageByEntity(EntityDamageByEntityEvent event)
 	{
-		//	if (event.getDamager().getType() == EntityType.PLAYER || event.getEntityType() == EntityType.PLAYER)
-		//		event.setCancelled(true);
-		//	else
-		if (event.getEntity() instanceof Creature)
-		{
-			if (event.getDamager() instanceof TippedArrow)
-			{
-				Object arrowHandle = ReflectionUtils.invokeBukkitMethod("getHandle", event.getDamager());
-				Object entityHandle = ReflectionUtils.invokeBukkitMethod("getHandle", event.getEntity());
-				ReflectionUtils.invokeNMSMethod("a", arrowHandle, new Class<?>[]{ReflectionUtils.getNMSClass("EntityLiving")}, entityHandle);
-			}
-		}
+		if (event.getDamager().getType() == EntityType.PLAYER)
+			event.setCancelled(true);
 	}
 
 	@EventHandler
 	public void onEntityDamage(EntityDamageEvent event)
 	{
-		//	if (event.getEntityType() == EntityType.PLAYER)
-		//		event.setCancelled(true);
+		if (event.getEntityType() == EntityType.PLAYER || event.getEntityType() == EntityType.VILLAGER)
+			event.setCancelled(true);
 	}
 
 	@EventHandler
