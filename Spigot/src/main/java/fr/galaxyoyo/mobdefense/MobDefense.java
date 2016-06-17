@@ -35,10 +35,7 @@ import org.bukkit.plugin.java.JavaPlugin;
 import org.bukkit.scoreboard.DisplaySlot;
 import org.bukkit.scoreboard.Objective;
 import org.mcstats.Metrics;
-import org.w3c.dom.Document;
-import org.w3c.dom.Element;
 
-import javax.xml.parsers.DocumentBuilderFactory;
 import java.io.BufferedReader;
 import java.io.File;
 import java.io.IOException;
@@ -90,7 +87,9 @@ public class MobDefense extends JavaPlugin
 			try
 			{
 				File file = new File("plugins", "NBTAPI.jar");
-				FileUtils.copyURLToFile(getLatestDownloadURL("nbtapi", 24908), file);
+				URL url = getLatestDownloadURL("nbtapi", 24908);
+				System.out.println(url);
+				FileUtils.copyURLToFile(url, file);
 				getServer().getPluginManager().loadPlugin(file);
 			}
 			catch (IOException e)
@@ -237,11 +236,13 @@ public class MobDefense extends JavaPlugin
 			co.setRequestMethod("GET");
 			co.setRequestProperty("User-Agent", "Mozilla/5.0");
 			co.connect();
-			System.out.println(co.getResponseCode());
-			Document doc = DocumentBuilderFactory.newInstance().newDocumentBuilder().parse(co.getInputStream());
+			String content = IOUtils.toString(co.getInputStream(), StandardCharsets.UTF_8);
 			co.disconnect();
-			Element downloadLink = (Element) ((Element) doc.getElementsByTagName("label.downloadButton").item(0)).getElementsByTagName("a.inner").item(0);
-			return new URL(downloadLink.getTextContent());
+			String innerLabel = content.substring(content.indexOf("<label class=\"downloadButton \">"));
+			innerLabel = innerLabel.substring(0, innerLabel.indexOf("</label>"));
+			String downloadURL = innerLabel.substring(innerLabel.indexOf("<a href=\""));
+			downloadURL = downloadURL.substring(0, downloadURL.indexOf("\" class=\"inner\">"));
+			return new URL(downloadURL);
 		}
 		catch (Exception ex)
 		{
