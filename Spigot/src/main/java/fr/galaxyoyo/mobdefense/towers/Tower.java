@@ -173,18 +173,16 @@ public abstract class Tower
 	{
 		BlockFace face = getDispenser().getFacing();
 		Class<T> clazz;
-		if (type == null)
-			clazz = (Class<T>) Arrow.class;
+		if (type != null)
+			clazz = (Class<T>) TippedArrow.class;
 		else if (spectral)
 			clazz = (Class<T>) SpectralArrow.class;
 		else
-			clazz = (Class<T>) TippedArrow.class;
+			clazz = (Class<T>) Arrow.class;
 		T arrow = location.getWorld().spawnArrow(location.clone().add(face.getModX() + 0.5D, 0.5D, face.getModZ() + 0.5D), new Vector((range - 1) * face.getModX(), 0,
 				(range - 1) * face.getModZ()), 1, -2, clazz);
 		if (type != null)
 			((TippedArrow) arrow).setBasePotionData(new PotionData(type, extended, upgraded));
-		else if (spectral)
-			((SpectralArrow) arrow).setGlowingTicks(280);
 		return arrow;
 	}
 
