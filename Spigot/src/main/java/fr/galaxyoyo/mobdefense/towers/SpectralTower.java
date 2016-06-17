@@ -18,7 +18,7 @@ public class SpectralTower extends Tower
 
 	public static ItemStack[] getPrice()
 	{
-		return new ItemStack[]{new ItemStack(Material.GOLD_INGOT, 7)};
+		return new ItemStack[]{new ItemStack(Material.GOLD_NUGGET, 7)};
 	}
 
 	@Override
