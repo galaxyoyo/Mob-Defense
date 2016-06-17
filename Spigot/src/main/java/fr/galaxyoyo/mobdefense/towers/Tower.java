@@ -33,15 +33,13 @@ public abstract class Tower
 	}
 
 	private final Location location;
-	private final Dispenser dispenser;
+	private Dispenser dispenser;
 	private BukkitTask loop;
 
 	protected Tower(Location location)
 	{
 		this.location = location;
-		dispenser = (Dispenser) location.getBlock().getState().getData();
 		towersByLocation.put(location, this);
-		loop = Bukkit.getScheduler().runTaskTimer(MobDefense.instance(), this::onTick, 20L, 20L);
 	}
 
 	public static void registerTower(Class<? extends Tower> clazz)
@@ -86,7 +84,11 @@ public abstract class Tower
 				return null;
 			}
 			towersByLocation.put(towerLoc, tower);
-			Bukkit.getScheduler().runTask(MobDefense.instance(), () -> loc.getBlock().setType(tower.getMaterial()));
+			Bukkit.getScheduler().runTask(MobDefense.instance(), () -> {
+				loc.getBlock().setType(tower.getMaterial());
+				tower.dispenser = (Dispenser) tower.getLocation().getBlock().getState().getData();
+				tower.loop = Bukkit.getScheduler().runTaskTimer(MobDefense.instance(), tower::onTick, 20L, 20L);
+			});
 			return tower;
 		}
 		catch (Exception ex)
@@ -109,6 +111,11 @@ public abstract class Tower
 	}
 
 	public abstract Material getMaterial();
+
+	public Location getLocation()
+	{
+		return location;
+	}
 
 	public static ItemStack[] getTowerPrice(Class<? extends Tower> clazz)
 	{
@@ -134,11 +141,6 @@ public abstract class Tower
 		t.getLocation().clone().subtract(0, 1, 0).getBlock().setType(Material.AIR);
 		t.loop.cancel();
 		return t;
-	}
-
-	public Location getLocation()
-	{
-		return location;
 	}
 
 	public static List<Class<? extends Tower>> getTowerClasses()
