@@ -1,10 +1,9 @@
 package fr.galaxyoyo.mobdefense;
 
-import javafx.util.StringConverter;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
 
-public class LocationConverter extends StringConverter<Location>
+public class LocationConverter
 {
 	private static LocationConverter instance = new LocationConverter();
 
@@ -17,13 +16,11 @@ public class LocationConverter extends StringConverter<Location>
 		return instance;
 	}
 
-	@Override
 	public String toString(Location loc)
 	{
 		return loc.getX() + ":" + loc.getY() + ":" + loc.getZ() + ":" + loc.getYaw() + ":" + loc.getPitch();
 	}
 
-	@Override
 	public Location fromString(String string)
 	{
 		try

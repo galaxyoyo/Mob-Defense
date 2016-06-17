@@ -10,6 +10,11 @@ public class GameStartedEvent extends Event
 	@Override
 	public HandlerList getHandlers()
 	{
+		return getHandlerList();
+	}
+
+	public static HandlerList getHandlerList()
+	{
 		return handlers;
 	}
 }

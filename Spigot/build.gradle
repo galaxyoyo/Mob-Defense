@@ -1,3 +1,5 @@
+import proguard.gradle.ProGuardTask
+
 apply plugin: 'java'
 apply plugin: 'idea'
 
@@ -15,6 +17,17 @@ tasks.withType(Zip) { task ->
         ant.checksum file: it.archivePath
     }
 }
+
+buildscript {
+    repositories {
+        mavenCentral()
+        mavenLocal()
+    }
+    dependencies {
+        classpath group: 'net.sf.proguard', name: 'proguard-gradle', version: '5.2.1'
+    }
+}
+
 
 repositories {
     mavenCentral()
@@ -55,3 +68,20 @@ task fatjar(type: Jar) {
     }
     with jar
 }
+
+task proguard(type: ProGuardTask) {
+    injars 'build/libs/MobDefense.jar'
+    outjars 'MobDefense.jar'
+    libraryjars "${System.getProperty('java.home')}/lib/rt.jar"
+    configurations.compile.each { libraryjars it }
+    printmapping 'mobdefense.map'
+    keepclasseswithmembers 'public class fr.galaxyoyo.mobdefense.MobDefense {*;}'
+    keepclassmembers 'public class * extends org.bukkit.event.Event { \
+                            org.bukkit.event.HandlerList getHandlerList();\
+                        }'
+    dontshrink()
+    dontoptimize()
+    keepattributes '*Annotation*'
+}
+
+proguard.dependsOn fatjar
