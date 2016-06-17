@@ -28,8 +28,8 @@ public abstract class Tower
 	static
 	{
 		registerTower(SimpleTower.class);
-		registerTower(HealingTower.class);
 		registerTower(SpectralTower.class);
+		registerTower(HealingTower.class);
 	}
 
 	private final Location location;
