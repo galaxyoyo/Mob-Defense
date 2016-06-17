@@ -76,6 +76,7 @@ public class MobDefenseListener implements Listener
 	@EventHandler
 	public void onBlockPlace(BlockPlaceEvent event)
 	{
+		System.out.println(event.getBlockPlaced().getType());
 		if (event.getBlockPlaced().getType() == Material.DISPENSER)
 		{
 			event.setCancelled(true);
