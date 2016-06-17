@@ -81,7 +81,7 @@ task proguard(type: ProGuardTask) {
                         }'
     dontshrink()
     dontoptimize()
-    keepattributes '*Annotation*'
+    keepattributes '*Annotation*,Signature,SourceFile,LineNumberTable'
 }
 
 proguard.dependsOn fatjar
