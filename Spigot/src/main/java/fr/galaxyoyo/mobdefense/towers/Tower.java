@@ -139,7 +139,8 @@ public abstract class Tower
 
 		t.getLocation().getBlock().setType(Material.AIR);
 		t.getLocation().clone().subtract(0, 1, 0).getBlock().setType(Material.AIR);
-		t.loop.cancel();
+		if (t.loop != null)
+			t.loop.cancel();
 		return t;
 	}
 
