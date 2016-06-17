@@ -74,7 +74,7 @@ public class MobDefenseListener implements Listener
 		event.getPlayer().getInventory().clear();
 	}
 
-	@EventHandler(priority = EventPriority.HIGHEST)
+	@EventHandler(priority = EventPriority.MONITOR)
 	public void onBlockPlace(BlockPlaceEvent event)
 	{
 		System.out.println(event.getBlockPlaced().getType());
