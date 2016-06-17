@@ -30,6 +30,8 @@ public abstract class Tower
 		registerTower(SimpleTower.class);
 		registerTower(SpectralTower.class);
 		registerTower(HealingTower.class);
+		registerTower(DamageTower.class);
+		registerTower(PoisonTower.class);
 	}
 
 	private final Location location;
