@@ -156,6 +156,7 @@ public class MobDefenseListener implements Listener
 			ItemStack stack = new ItemStack(Material.DISPENSER);
 			ItemMeta meta = stack.getItemMeta();
 			meta.setDisplayName(Tower.getTowerName(t.getClass()));
+			meta.setLore(Tower.getTowerLore(t.getClass()));
 			stack.setItemMeta(meta);
 			t.getLocation().getWorld().dropItem(t.getLocation(), stack);
 		}

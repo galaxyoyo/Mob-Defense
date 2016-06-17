@@ -394,6 +394,7 @@ public class MobDefense extends JavaPlugin
 				ItemStack result = new ItemStack(Material.DISPENSER);
 				ItemMeta meta = result.getItemMeta();
 				meta.setDisplayName(Tower.getTowerName(clazz));
+				meta.setLore(Tower.getTowerLore(clazz));
 				meta.addItemFlags(ItemFlag.HIDE_PLACED_ON);
 				result.setItemMeta(meta);
 				List<Material> list = Arrays.stream(Material.values()).filter(Material::isSolid).collect(Collectors.toList());

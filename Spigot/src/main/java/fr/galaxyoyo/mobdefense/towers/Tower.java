@@ -3,6 +3,7 @@ package fr.galaxyoyo.mobdefense.towers;
 import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
 import fr.galaxyoyo.mobdefense.MobDefense;
+import net.md_5.bungee.api.ChatColor;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.Material;
@@ -19,6 +20,7 @@ import org.bukkit.util.Vector;
 
 import java.util.List;
 import java.util.Map;
+import java.util.stream.Collectors;
 
 public abstract class Tower
 {
@@ -124,6 +126,19 @@ public abstract class Tower
 		try
 		{
 			return (ItemStack[]) clazz.getDeclaredMethod("getPrice").invoke(null);
+		}
+		catch (Exception ex)
+		{
+			throw new UnsupportedOperationException("Class '" + clazz + "' must contain a public static method named 'getPrice' with no parameter that returns an array of ItemStack.");
+		}
+	}
+
+	public static List<String> getTowerLore(Class<? extends Tower> clazz)
+	{
+		try
+		{
+			//noinspection unchecked
+			return ((List<String>) clazz.getDeclaredMethod("getLore").invoke(null)).stream().map(lore -> ChatColor.RESET + lore).collect(Collectors.toList());
 		}
 		catch (Exception ex)
 		{
