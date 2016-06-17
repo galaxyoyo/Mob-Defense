@@ -7,6 +7,7 @@ import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
 import org.bukkit.command.TabCompleter;
 import org.bukkit.entity.Player;
+import org.bukkit.util.NumberConversions;
 
 import java.util.List;
 
@@ -55,8 +56,8 @@ public class MobDefenseExecutor implements CommandExecutor, TabCompleter
 			loc.setX(loc.getBlockX() + 0.5D);
 			loc.setY(loc.getBlockY());
 			loc.setZ(loc.getBlockZ() + 0.5D);
-			loc.setYaw(((int) (loc.getYaw() - 25) / 45) * 45);
-			loc.setPitch(((int) (loc.getPitch() - 25) / 45) * 45);
+			loc.setYaw(NumberConversions.floor((loc.getYaw() - 20) / 45) * 45);
+			loc.setPitch(NumberConversions.floor((loc.getPitch() - 20) / 45) * 45);
 
 			if (args[1].equalsIgnoreCase("spawn"))
 				MobDefense.instance().setSpawn(loc);
