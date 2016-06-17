@@ -228,7 +228,7 @@ public class MobDefense extends JavaPlugin
 		if (objective == null)
 		{
 			if (sender != null)
-				sender.sendMessage("No game is running!");
+				sender.sendMessage("[MobDefense] No game is running!");
 			return;
 		}
 
@@ -236,7 +236,7 @@ public class MobDefense extends JavaPlugin
 
 		for (Tower tower : Tower.getAllTowers())
 			Tower.breakAt(tower.getLocation());
-		Bukkit.getWorlds().get(0).getEntities().stream().filter(entity -> entity.getType() != EntityType.PLAYER && entity.getType() != EntityType.VILLAGER).forEach(Entity::remove);
+		Bukkit.getWorlds().get(0).getEntities().stream().filter(entity -> entity.getType() != EntityType.PLAYER).forEach(Entity::remove);
 		Bukkit.getOnlinePlayers().forEach(player -> player.getInventory().clear());
 		getServer().getPluginManager().callEvent(new GameStoppedEvent(currentWave == null ? 0 : currentWave.getNumber()));
 		currentWave = null;
