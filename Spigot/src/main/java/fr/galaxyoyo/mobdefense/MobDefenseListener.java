@@ -12,7 +12,6 @@ import org.bukkit.entity.Entity;
 import org.bukkit.entity.EntityType;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
-import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
 import org.bukkit.event.block.Action;
 import org.bukkit.event.block.BlockBreakEvent;
@@ -74,7 +73,7 @@ public class MobDefenseListener implements Listener
 		event.getPlayer().getInventory().clear();
 	}
 
-	@EventHandler(priority = EventPriority.MONITOR)
+	@EventHandler
 	public void onBlockPlace(BlockPlaceEvent event)
 	{
 		System.out.println(event.getBlockPlaced().getType());
@@ -268,6 +267,6 @@ public class MobDefenseListener implements Listener
 	@EventHandler
 	public void onWorldLoaded(WorldLoadEvent event)
 	{
-		event.getWorld().getEntities().stream().filter(entity -> (entity instanceof Player)).forEach(Entity::remove);
+		event.getWorld().getEntities().stream().filter(entity -> !(entity instanceof Player)).forEach(Entity::remove);
 	}
 }
