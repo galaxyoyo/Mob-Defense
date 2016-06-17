@@ -88,8 +88,13 @@ public class MobDefense extends JavaPlugin
 			{
 				File file = new File("plugins", "NBTAPI.jar");
 				URL url = getLatestDownloadURL("nbtapi", 24908);
-				System.out.println(url);
-				FileUtils.copyURLToFile(url, file);
+				HttpURLConnection co = (HttpURLConnection) url.openConnection();
+				co.setRequestMethod("GET");
+				co.setRequestProperty("User-Agent", "Mozilla/5.0");
+				co.setRequestProperty("Connection", "Close");
+				co.connect();
+				FileUtils.copyInputStreamToFile(co.getInputStream(), file);
+				co.disconnect();
 				getServer().getPluginManager().loadPlugin(file);
 			}
 			catch (IOException e)
@@ -235,6 +240,7 @@ public class MobDefense extends JavaPlugin
 			HttpURLConnection co = (HttpURLConnection) u.openConnection();
 			co.setRequestMethod("GET");
 			co.setRequestProperty("User-Agent", "Mozilla/5.0");
+			co.setRequestProperty("Connection", "Keep-Alive");
 			co.connect();
 			String content = IOUtils.toString(co.getInputStream(), StandardCharsets.UTF_8);
 			co.disconnect();
