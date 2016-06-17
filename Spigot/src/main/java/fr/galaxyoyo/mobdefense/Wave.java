@@ -86,6 +86,7 @@ public class Wave implements Serializable
 				{
 					if (entries.isEmpty())
 					{
+						Bukkit.getScheduler().runTaskLater(MobDefense.instance(), () -> MobDefense.instance().startNextWave(), MobDefense.instance().getWaveTime() * 20L);
 						cancel();
 						return;
 					}
@@ -188,7 +189,7 @@ public class Wave implements Serializable
 					}
 				}.runTaskTimer(MobDefense.instance(), 0L, 5L);
 			}
-		}.runTaskTimer(MobDefense.instance(), 0, 25L);
+		}.runTaskTimer(MobDefense.instance(), 0, 20L);
 
 		waves.put(this, creatures);
 	}

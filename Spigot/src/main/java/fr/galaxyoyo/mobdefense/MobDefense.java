@@ -155,7 +155,7 @@ public class MobDefense extends JavaPlugin
 			String exchangeLoc = config.getString("npc-exchange-loc", LocationConverter.instance().toString(world.getSpawnLocation()));
 			npcExchangeLoc = LocationConverter.instance().fromString(exchangeLoc);
 			startMoney = config.getInt("start-money", 50);
-			waveTime = config.getInt("wave-time", 60);
+			waveTime = config.getInt("wave-time", 42);
 			baseLives = config.getInt("lives", 10);
 
 			File file = new File(getDataFolder(), "mobs.json");
@@ -462,11 +462,16 @@ public class MobDefense extends JavaPlugin
 
 		getServer().getPluginManager().callEvent(new GameStartedEvent());
 		Bukkit.broadcastMessage("[MobDefense] Game started!");
-		Bukkit.getScheduler().runTaskTimer(this, this::startNextWave, waveTime * 20L, waveTime * 20L);
+		Bukkit.getScheduler().runTaskLater(this, this::startNextWave, waveTime);
 	}
 
 	public Wave getCurrentWave()
 	{
 		return currentWave;
+	}
+
+	public int getWaveTime()
+	{
+		return waveTime;
 	}
 }
