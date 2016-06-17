@@ -13,6 +13,7 @@ import org.bukkit.entity.EntityType;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
+import org.bukkit.event.block.Action;
 import org.bukkit.event.block.BlockBreakEvent;
 import org.bukkit.event.block.BlockPlaceEvent;
 import org.bukkit.event.entity.*;
@@ -156,29 +157,25 @@ public class MobDefenseListener implements Listener
 	@EventHandler
 	public void onPlayerInteract(PlayerInteractEvent event)
 	{
-		if (!event.getAction().name().contains("BLOCK") || event.getClickedBlock().getType() != Material.DISPENSER)
-			event.setCancelled(true);
+		event.setCancelled(event.getAction() == Action.PHYSICAL && event.getPlayer().getGameMode() != GameMode.CREATIVE);
 	}
 
 	@EventHandler
 	public void onPlayerInteractEntity(PlayerInteractEntityEvent event)
 	{
-		if (event.getRightClicked().getType() != EntityType.VILLAGER)
-			event.setCancelled(true);
+		event.setCancelled(event.getRightClicked().getType() != EntityType.VILLAGER);
 	}
 
 	@EventHandler
 	public void onEntityDamageByEntity(EntityDamageByEntityEvent event)
 	{
-		if (event.getDamager().getType() == EntityType.PLAYER)
-			event.setCancelled(true);
+		event.setCancelled(event.getDamager().getType() == EntityType.PLAYER);
 	}
 
 	@EventHandler
 	public void onEntityDamage(EntityDamageEvent event)
 	{
-		if (event.getEntityType() == EntityType.PLAYER || event.getEntityType() == EntityType.VILLAGER)
-			event.setCancelled(true);
+		event.setCancelled(event.getEntityType() == EntityType.PLAYER || event.getEntityType() == EntityType.VILLAGER);
 	}
 
 	@EventHandler
