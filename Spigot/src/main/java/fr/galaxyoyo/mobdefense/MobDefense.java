@@ -31,7 +31,6 @@ import org.bukkit.inventory.MerchantRecipe;
 import org.bukkit.inventory.meta.ItemMeta;
 import org.bukkit.plugin.InvalidDescriptionException;
 import org.bukkit.plugin.InvalidPluginException;
-import org.bukkit.plugin.SimplePluginManager;
 import org.bukkit.plugin.java.JavaPlugin;
 import org.bukkit.scoreboard.DisplaySlot;
 import org.bukkit.scoreboard.Objective;
@@ -69,14 +68,16 @@ public class MobDefense extends JavaPlugin
 	public void onLoad()
 	{
 		JavaPlugin nbtapi = (JavaPlugin) getServer().getPluginManager().getPlugin("NBTAPI");
+		String latestNBTAPIVersion = getLatestSpigotVersion(24908);
 		boolean needToUpdate = nbtapi == null;
-		if (nbtapi != null && new Version(nbtapi.getDescription().getVersion()).compareTo(new Version(getLatestSpigotVersion(24908))) < 0)
+		if (nbtapi != null && new Version(nbtapi.getDescription().getVersion()).compareTo(new Version(latestNBTAPIVersion)) < 0)
 		{
 			needToUpdate = true;
-			((SimplePluginManager) getServer().getPluginManager()).disablePlugin(nbtapi);
+			getServer().getPluginManager().disablePlugin(nbtapi);
 		}
 		if (needToUpdate)
 		{
+			getLogger().info("Downloading version " + latestNBTAPIVersion + " of NBTAPI ...");
 			try
 			{
 				File file = new File("plugins", "NBTAPI.jar");
