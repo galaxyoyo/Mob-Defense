@@ -90,9 +90,9 @@ public class MobDefenseListener implements Listener
 			}
 			event.getPlayer().getInventory().all(Material.DIAMOND_PICKAXE).values().stream().forEach(stack -> {
 				List<Material> canDestroy = ItemStackUtils.getCanDestroy(stack);
-				if (!canDestroy.contains(t.getMaterial()))
+				if (!canDestroy.contains(t.getRegistration().getMaterial()))
 				{
-					canDestroy.add(t.getMaterial());
+					canDestroy.add(t.getRegistration().getMaterial());
 					ItemStackUtils.setCanDestroy(stack, canDestroy.toArray(new Material[canDestroy.size()]));
 				}
 			});
@@ -156,8 +156,8 @@ public class MobDefenseListener implements Listener
 		{
 			ItemStack stack = new ItemStack(Material.DISPENSER);
 			ItemMeta meta = stack.getItemMeta();
-			meta.setDisplayName(Tower.getTowerName(t.getClass()));
-			meta.setLore(Tower.getTowerLore(t.getClass()));
+			meta.setDisplayName(t.getRegistration().getDisplayName());
+			meta.setLore(t.getRegistration().getLore());
 			stack.setItemMeta(meta);
 			t.getLocation().getWorld().dropItem(t.getLocation(), stack);
 		}

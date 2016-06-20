@@ -8,6 +8,7 @@ import com.google.gson.reflect.TypeToken;
 import fr.galaxyoyo.mobdefense.events.GameStartedEvent;
 import fr.galaxyoyo.mobdefense.events.GameStoppedEvent;
 import fr.galaxyoyo.mobdefense.towers.Tower;
+import fr.galaxyoyo.mobdefense.towers.TowerRegistration;
 import fr.galaxyoyo.spigot.nbtapi.ItemStackUtils;
 import net.md_5.bungee.api.ChatColor;
 import org.apache.commons.io.FileUtils;
@@ -208,6 +209,35 @@ public class MobDefense extends JavaPlugin
 				waves.add(wave2);
 			}
 			FileUtils.writeStringToFile(file, getGson().toJson(waves), StandardCharsets.UTF_8);
+
+			file = new File(getDataFolder(), "towers.json");
+			if (file.exists())
+				//noinspection unchecked
+				((ArrayList<TowerRegistration>) getGson().fromJson(FileUtils.readFileToString(file, StandardCharsets.UTF_8), new TypeToken<ArrayList<TowerRegistration>>() {}.getType
+						())).forEach(Tower::registerTower);
+			else
+			{
+				TowerRegistration basic = new TowerRegistration("SimpleTower", "Simple Tower", Lists.newArrayList("Launches basic arrows once every 1/2 second.", "It is the most " +
+						"basic tower you can find, but not the cheapest :)"), new ItemStack[]{new ItemStack(Material.GOLD_NUGGET, 5)}, Material.WOOD);
+				Tower.registerTower(basic);
+				TowerRegistration healing = new TowerRegistration("HealingTower", "Healing Tower",
+						Lists.newArrayList("Launches Instant Healing arrows.", "Remember: Instant Healing deals damage to zombies, skeletons and pigmens!"),
+						new ItemStack[]{new ItemStack(Material.GOLD_INGOT, 1)}, Material.BEACON);
+				Tower.registerTower(healing);
+				TowerRegistration spectral =
+						new TowerRegistration("SpectralTower", "Spectral Tower", Lists.newArrayList("Launches basic spectral arrows.", "It's not very useful, but it looks cool ..."),
+								new ItemStack[]{new ItemStack(Material.GOLD_NUGGET, 7)}, Material.GLOWSTONE);
+				Tower.registerTower(spectral);
+				TowerRegistration damage = new TowerRegistration("DamageTower", "Damage Tower", Lists.newArrayList("Launches Instant Damage arrows.", "Remember: instant damage heals" +
+						" " +
+						"zombies, skeletons and pigmens!"), new ItemStack[]{new ItemStack(Material.GOLD_NUGGET, 3)}, Material.NETHER_WART_BLOCK);
+				Tower.registerTower(damage);
+				TowerRegistration poison =
+						new TowerRegistration("PoisonTower", "Poison Tower", Lists.newArrayList("Launches Poison arrows.", "Remember: poison heals zombies, skeletons and pigmens!"),
+								new ItemStack[]{new ItemStack(Material.GOLD_NUGGET, 3)}, Material.SLIME_BLOCK);
+				Tower.registerTower(poison);
+			}
+			FileUtils.writeStringToFile(file, getGson().toJson(Tower.getTowerRegistrations()), StandardCharsets.UTF_8);
 
 			world.getEntities().stream().filter(entity -> !(entity instanceof Player)).forEach(Entity::remove);
 
@@ -412,18 +442,18 @@ public class MobDefense extends JavaPlugin
 			((CraftVillager) npcTower).getHandle().i(loc.getYaw());
 			npcTower.setProfession(Villager.Profession.FARMER);
 			List<MerchantRecipe> recipes = Lists.newArrayList();
-			for (Class<? extends Tower> clazz : Tower.getTowerClasses())
+			for (TowerRegistration tr : Tower.getTowerRegistrations())
 			{
 				ItemStack result = new ItemStack(Material.DISPENSER);
 				ItemMeta meta = result.getItemMeta();
-				meta.setDisplayName(Tower.getTowerName(clazz));
-				meta.setLore(Tower.getTowerLore(clazz));
+				meta.setDisplayName(tr.getDisplayName());
+				meta.setLore(tr.getLore());
 				meta.addItemFlags(ItemFlag.HIDE_PLACED_ON);
 				result.setItemMeta(meta);
 				List<Material> list = Arrays.stream(Material.values()).filter(Material::isSolid).collect(Collectors.toList());
 				ItemStackUtils.setCanPlaceOn(result, list.toArray(new Material[list.size()]));
 				MerchantRecipe recipe = new MerchantRecipe(result, 0, Integer.MAX_VALUE, false);
-				recipe.setIngredients(Lists.newArrayList(Tower.getTowerPrice(clazz)));
+				recipe.setIngredients(Lists.newArrayList(tr.getCost()));
 				recipes.add(recipe);
 			}
 			npcTower.setRecipes(recipes);

@@ -3,7 +3,6 @@ package fr.galaxyoyo.mobdefense.towers;
 import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
 import fr.galaxyoyo.mobdefense.MobDefense;
-import net.md_5.bungee.api.ChatColor;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.Material;
@@ -20,35 +19,28 @@ import org.bukkit.util.Vector;
 
 import java.util.List;
 import java.util.Map;
-import java.util.stream.Collectors;
 
 public abstract class Tower
 {
-	private static final List<Class<? extends Tower>> towerClasses = Lists.newArrayList();
+	private static final List<TowerRegistration> towerRegistrations = Lists.newArrayList();
 	private static final Map<Location, Tower> towersByLocation = Maps.newHashMap();
 
-	static
-	{
-		registerTower(SimpleTower.class);
-		registerTower(SpectralTower.class);
-		registerTower(HealingTower.class);
-		registerTower(DamageTower.class);
-		registerTower(PoisonTower.class);
-	}
-
 	private final Location location;
+	private final TowerRegistration registration;
 	private Dispenser dispenser;
 	private BukkitTask loop;
 
-	protected Tower(Location location)
+	protected Tower(TowerRegistration registration, Location location)
 	{
+		this.registration = registration;
 		this.location = location;
 		towersByLocation.put(location, this);
 	}
 
-	public static void registerTower(Class<? extends Tower> clazz)
+	public static void registerTower(TowerRegistration registration)
 	{
-		towerClasses.add(clazz);
+		if (registration.register())
+			towerRegistrations.add(registration);
 	}
 
 	public static Tower placeAt(Location loc, ItemStack stack)
@@ -57,39 +49,29 @@ public abstract class Tower
 		if (towerLoc.getBlock().getType() != Material.AIR)
 			return null;
 
-		Class<? extends Tower> clazz = null;
-		for (Class<? extends Tower> towerClass : towerClasses)
+		TowerRegistration registration = null;
+		for (TowerRegistration tr : towerRegistrations)
 		{
-			if (getTowerName(towerClass).equals(stack.getItemMeta().getDisplayName()))
+			if (tr.getDisplayName().equals(stack.getItemMeta().getDisplayName()))
 			{
-				//noinspection unchecked
-				clazz = towerClass;
+				registration = tr;
 				break;
 			}
 		}
 
-		if (clazz == null)
+		if (registration == null)
 			return null;
 
 		try
 		{
 			//noinspection deprecation
 			byte data = loc.getBlock().getState().getData().getData();
-			Tower tower;
-			try
-			{
-				tower = clazz.getConstructor(Location.class).newInstance(towerLoc);
-			}
-			catch (Exception ex)
-			{
-				ex.printStackTrace();
-				return null;
-			}
+			Tower tower = registration.newInstance(loc);
 			towersByLocation.put(towerLoc, tower);
 			Bukkit.getScheduler().runTask(MobDefense.instance(), () -> {
 				//noinspection deprecation
 				towerLoc.getBlock().setTypeIdAndData(Material.DISPENSER.getId(), data, true);
-				loc.getBlock().setType(tower.getMaterial());
+				loc.getBlock().setType(tower.getRegistration().getMaterial());
 				tower.dispenser = (Dispenser) tower.getLocation().getBlock().getState().getData();
 				tower.loop = Bukkit.getScheduler().runTaskTimer(MobDefense.instance(), tower::onTick, 20L, 20L);
 			});
@@ -102,48 +84,14 @@ public abstract class Tower
 		}
 	}
 
-	public static String getTowerName(Class<? extends Tower> clazz)
+	public TowerRegistration getRegistration()
 	{
-		try
-		{
-			return (String) clazz.getDeclaredMethod("getName").invoke(null);
-		}
-		catch (Exception ex)
-		{
-			throw new UnsupportedOperationException("Class '" + clazz + "' must contain a public static method named 'getName' with no parameter that returns a String.");
-		}
+		return registration;
 	}
-
-	public abstract Material getMaterial();
 
 	public Location getLocation()
 	{
 		return location;
-	}
-
-	public static ItemStack[] getTowerPrice(Class<? extends Tower> clazz)
-	{
-		try
-		{
-			return (ItemStack[]) clazz.getDeclaredMethod("getPrice").invoke(null);
-		}
-		catch (Exception ex)
-		{
-			throw new UnsupportedOperationException("Class '" + clazz + "' must contain a public static method named 'getPrice' with no parameter that returns an array of ItemStack.");
-		}
-	}
-
-	public static List<String> getTowerLore(Class<? extends Tower> clazz)
-	{
-		try
-		{
-			//noinspection unchecked
-			return ((List<String>) clazz.getDeclaredMethod("getLore").invoke(null)).stream().map(lore -> ChatColor.RESET + lore).collect(Collectors.toList());
-		}
-		catch (Exception ex)
-		{
-			throw new UnsupportedOperationException("Class '" + clazz + "' must contain a public static method named 'getPrice' with no parameter that returns an array of ItemStack.");
-		}
 	}
 
 	public static Tower breakAt(Location loc)
@@ -161,9 +109,9 @@ public abstract class Tower
 		return t;
 	}
 
-	public static List<Class<? extends Tower>> getTowerClasses()
+	public static List<TowerRegistration> getTowerRegistrations()
 	{
-		return towerClasses;
+		return towerRegistrations;
 	}
 
 	public static List<Tower> getAllTowers()
