@@ -62,7 +62,7 @@ public final class TowerRegistration implements Serializable
 	{
 		try
 		{
-			return (T) clazz.getConstructor(TowerRegistration.class, Location.class).newInstance(this, loc);
+			return (T) clazz.getConstructor(Location.class, TowerRegistration.class).newInstance(loc, this);
 		}
 		catch (Exception ex)
 		{
