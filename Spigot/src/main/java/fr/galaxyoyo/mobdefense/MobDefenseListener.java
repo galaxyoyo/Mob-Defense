@@ -221,8 +221,12 @@ public class MobDefenseListener implements Listener
 				{
 					ItemStack stack = event.getCurrentItem().clone();
 					stack.setAmount(1);
-					Optional<UpgradeRegistration> optional = Upgrade.getUpgradeRegistrations().stream().filter(upgradeRegistration -> upgradeRegistration.getItem().equals(stack))
-							.findAny();
+					Optional<UpgradeRegistration> optional = Upgrade.getUpgradeRegistrations().stream().filter(upgradeRegistration ->
+					{
+						System.out.println(stack);
+						System.out.println(upgradeRegistration.getItem());
+						return upgradeRegistration.getItem().equals(stack);
+					}).findAny();
 					System.out.println(optional);
 					event.setCancelled(!optional.isPresent());
 					optional.ifPresent(upgradeRegistration -> {
@@ -273,11 +277,8 @@ public class MobDefenseListener implements Listener
 				{
 					ItemStack stack = event.getCurrentItem().clone();
 					stack.setAmount(1);
-					Optional<UpgradeRegistration> optional = Upgrade.getUpgradeRegistrations().stream().filter(upgradeRegistration -> {
-						System.out.println(upgradeRegistration.getItem());
-						System.out.println(stack + "\n");
-						return upgradeRegistration.getItem().equals(stack);
-					}).findAny();
+					Optional<UpgradeRegistration> optional = Upgrade.getUpgradeRegistrations().stream().filter(upgradeRegistration -> upgradeRegistration.getItem().equals(stack))
+							.findAny();
 					event.setCancelled(!optional.isPresent());
 					optional.ifPresent(upgradeRegistration -> {
 						try
