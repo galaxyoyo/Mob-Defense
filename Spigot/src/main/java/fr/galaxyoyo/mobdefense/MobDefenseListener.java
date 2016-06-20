@@ -18,12 +18,14 @@ import org.bukkit.event.block.Action;
 import org.bukkit.event.block.BlockBreakEvent;
 import org.bukkit.event.block.BlockPlaceEvent;
 import org.bukkit.event.entity.*;
+import org.bukkit.event.inventory.InventoryMoveItemEvent;
 import org.bukkit.event.player.PlayerInteractEntityEvent;
 import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.event.player.PlayerJoinEvent;
 import org.bukkit.event.player.PlayerQuitEvent;
 import org.bukkit.event.weather.WeatherChangeEvent;
 import org.bukkit.event.world.WorldLoadEvent;
+import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemFlag;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
@@ -167,6 +169,23 @@ public class MobDefenseListener implements Listener
 	public void onPlayerInteract(PlayerInteractEvent event)
 	{
 		event.setCancelled(event.getAction() == Action.PHYSICAL && event.getPlayer().getGameMode() != GameMode.CREATIVE);
+	}
+
+	@EventHandler
+	public void onInventoryItemMoved(InventoryMoveItemEvent event)
+	{
+		Inventory src = event.getSource();
+		Inventory dest = event.getDestination();
+		if (src.getTitle().equals("container.dispenser"))
+		{
+			System.out.println("REMOVED AN UPGRADE!");
+		}
+		else if (dest.getTitle().equals("container.dispenser"))
+		{
+			System.out.println("PUT AN UPGRADE!");
+		}
+		else
+			System.out.println(src.getTitle() + ", " + dest.getTitle());
 	}
 
 	@EventHandler
