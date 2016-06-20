@@ -2,6 +2,7 @@ package fr.galaxyoyo.mobdefense.upgrades;
 
 import com.google.common.collect.Lists;
 import fr.galaxyoyo.mobdefense.towers.Tower;
+import org.bukkit.entity.Arrow;
 
 import java.util.List;
 import java.util.Map;
@@ -41,9 +42,11 @@ public abstract class Upgrade
 
 	public abstract void read(Map<String, Object> parameters);
 
-	public abstract void applyTo(Tower t);
+	public abstract void apply();
 
-	public abstract void disapplyTo(Tower t);
+	public abstract void disapply();
 
-	public abstract void onTowerTick(Tower t);
+	public abstract void onTowerTick();
+
+	public abstract void onTowerLaunchArrow(Arrow arrow);
 }

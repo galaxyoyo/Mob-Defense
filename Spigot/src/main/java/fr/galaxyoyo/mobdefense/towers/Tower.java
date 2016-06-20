@@ -164,7 +164,7 @@ public abstract class Tower
 	{
 		if (++currentTick >= updateRate)
 		{
-			getUpgrades().stream().filter(upgrade -> upgrade != null).forEach(upgrade -> upgrade.onTowerTick(this));
+			getUpgrades().stream().filter(upgrade -> upgrade != null).forEach(Upgrade::onTowerTick);
 			onTick();
 			currentTick = 0;
 		}
@@ -220,6 +220,7 @@ public abstract class Tower
 			((TippedArrow) arrow).setBasePotionData(new PotionData(type, extended, upgraded));
 		else if (spectral && extended)
 			((SpectralArrow) arrow).setGlowingTicks((int) (((SpectralArrow) arrow).getGlowingTicks() * 2.5D));
+		getUpgrades().stream().filter(upgrade -> upgrade != null).forEach(upgrade -> upgrade.onTowerLaunchArrow(arrow));
 		return arrow;
 	}
 

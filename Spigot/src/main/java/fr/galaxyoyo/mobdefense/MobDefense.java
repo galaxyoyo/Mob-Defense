@@ -247,8 +247,7 @@ public class MobDefense extends JavaPlugin
 			if (file.exists())
 				//noinspection unchecked
 				((ArrayList<UpgradeRegistration>) getGson().fromJson(FileUtils.readFileToString(file, StandardCharsets.UTF_8), new TypeToken<ArrayList<UpgradeRegistration>>() {}
-						.getType
-								())).forEach(Upgrade::registerUpgrade);
+						.getType())).forEach(Upgrade::registerUpgrade);
 			else
 			{
 				ItemStack stack = new ItemStack(Material.BOW);
@@ -317,6 +316,20 @@ public class MobDefense extends JavaPlugin
 				UpgradeRegistration speed8 = new UpgradeRegistration("SpeedUpgrade", stack.clone(), new ItemStack[]{new ItemStack(Material.GOLD_INGOT, 3), new ItemStack(Material
 						.GOLD_NUGGET, 5)}, Collections.singletonMap("multiplier", 8.0D));
 				Upgrade.registerUpgrade(speed8);
+				stack.setType(Material.POWERED_RAIL);
+				meta = stack.getItemMeta();
+				meta.setDisplayName("Extended Potion Upgrade");
+				meta.setLore(Lists.newArrayList(ChatColor.RESET + "Extend all potion effects", ChatColor.RESET + "of arrows of potion towers"));
+				stack.setItemMeta(meta);
+				UpgradeRegistration extended = new UpgradeRegistration("ExtendedUpgrade", stack.clone(), new ItemStack[]{new ItemStack(Material.GOLD_INGOT, 2)}, Collections.emptyMap
+						());
+				Upgrade.registerUpgrade(extended);
+				meta.setDisplayName("Upgraged Potion Upgrade");
+				meta.setLore(Lists.newArrayList(ChatColor.RESET + "Upgrade all potion effects", ChatColor.RESET + "of arrows of potion towers"));
+				stack.setItemMeta(meta);
+				UpgradeRegistration upgraded = new UpgradeRegistration("UpgradedUpgrade", stack.clone(), new ItemStack[]{new ItemStack(Material.GOLD_INGOT, 2)}, Collections.emptyMap
+						());
+				Upgrade.registerUpgrade(upgraded);
 			}
 			FileUtils.writeStringToFile(file, getGson().toJson(Upgrade.getUpgradeRegistrations()), StandardCharsets.UTF_8);
 

@@ -207,7 +207,7 @@ public class MobDefenseListener implements Listener
 				if (event.getRawSlot() < 9)
 				{
 					Upgrade upgrade = t.getUpgrade(event.getRawSlot());
-					upgrade.disapplyTo(t);
+					upgrade.disapply();
 					t.getUpgrades().set(event.getRawSlot(), null);
 				}
 				break;
@@ -228,7 +228,7 @@ public class MobDefenseListener implements Listener
 						try
 						{
 							Upgrade upgrade = upgradeRegistration.newInstance(t);
-							upgrade.applyTo(t);
+							upgrade.apply();
 							t.setUpgrade(event.getRawSlot(), upgrade);
 						}
 						catch (EventException e)
@@ -254,7 +254,7 @@ public class MobDefenseListener implements Listener
 				if (event.getRawSlot() < 9)
 				{
 					Upgrade upgrade = t.getUpgrade(event.getRawSlot());
-					upgrade.disapplyTo(t);
+					upgrade.disapply();
 					t.getUpgrades().set(event.getRawSlot(), null);
 				}
 				break;
@@ -265,7 +265,7 @@ public class MobDefenseListener implements Listener
 				if (event.getRawSlot() < 9)
 				{
 					Upgrade upgrade = t.getUpgrade(event.getRawSlot());
-					upgrade.disapplyTo(t);
+					upgrade.disapply();
 					t.getUpgrades().set(event.getRawSlot(), null);
 				}
 				else if (inv.firstEmpty() >= 0)
@@ -279,8 +279,8 @@ public class MobDefenseListener implements Listener
 						try
 						{
 							Upgrade upgrade = upgradeRegistration.newInstance(t);
-							upgrade.applyTo(t);
-							t.setUpgrade(event.getRawSlot(), upgrade);
+							upgrade.apply();
+							t.setUpgrade(inv.firstEmpty(), upgrade);
 						}
 						catch (EventException e)
 						{

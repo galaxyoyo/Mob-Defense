@@ -2,14 +2,14 @@ package fr.galaxyoyo.mobdefense.upgrades;
 
 import fr.galaxyoyo.mobdefense.towers.Tower;
 import org.bukkit.entity.Arrow;
+import org.bukkit.entity.TippedArrow;
+import org.bukkit.potion.PotionData;
 
 import java.util.Map;
 
-public class RateUpgrade extends Upgrade
+public class ExtendedUpgrade extends Upgrade
 {
-	private double divider;
-
-	protected RateUpgrade(UpgradeRegistration registration, Tower tower)
+	protected ExtendedUpgrade(UpgradeRegistration registration, Tower tower)
 	{
 		super(registration, tower);
 	}
@@ -17,19 +17,16 @@ public class RateUpgrade extends Upgrade
 	@Override
 	public void read(Map<String, Object> parameters)
 	{
-		divider = ((Number) parameters.getOrDefault("divider", 1.0D)).doubleValue();
 	}
 
 	@Override
 	public void apply()
 	{
-		getTower().setUpdateRate(getTower().getUpdateRate() / divider);
 	}
 
 	@Override
 	public void disapply()
 	{
-		getTower().setUpdateRate(getTower().getUpdateRate() * divider);
 	}
 
 	@Override
@@ -40,5 +37,11 @@ public class RateUpgrade extends Upgrade
 	@Override
 	public void onTowerLaunchArrow(Arrow arrow)
 	{
+		if (arrow instanceof TippedArrow)
+		{
+			PotionData data = ((TippedArrow) arrow).getBasePotionData();
+			data = new PotionData(data.getType(), true, data.isUpgraded());
+			((TippedArrow) arrow).setBasePotionData(data);
+		}
 	}
 }

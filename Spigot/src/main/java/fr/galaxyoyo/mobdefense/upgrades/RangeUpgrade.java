@@ -1,6 +1,7 @@
 package fr.galaxyoyo.mobdefense.upgrades;
 
 import fr.galaxyoyo.mobdefense.towers.Tower;
+import org.bukkit.entity.Arrow;
 
 import java.util.Map;
 
@@ -20,19 +21,24 @@ public class RangeUpgrade extends Upgrade
 	}
 
 	@Override
-	public void applyTo(Tower t)
+	public void apply()
 	{
-		t.setRangeMultiplier(t.getRangeMultiplier() * multiplier);
+		getTower().setRangeMultiplier(getTower().getRangeMultiplier() * multiplier);
 	}
 
 	@Override
-	public void disapplyTo(Tower t)
+	public void disapply()
 	{
-		t.setRangeMultiplier(t.getRangeMultiplier() / multiplier);
+		getTower().setRangeMultiplier(getTower().getRangeMultiplier() / multiplier);
 	}
 
 	@Override
-	public void onTowerTick(Tower t)
+	public void onTowerTick()
+	{
+	}
+
+	@Override
+	public void onTowerLaunchArrow(Arrow arrow)
 	{
 	}
 }

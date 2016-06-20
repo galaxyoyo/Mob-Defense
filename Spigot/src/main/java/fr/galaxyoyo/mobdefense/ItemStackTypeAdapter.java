@@ -14,8 +14,10 @@ import org.bukkit.inventory.ItemFlag;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
 import org.bukkit.inventory.meta.PotionMeta;
+import org.bukkit.potion.PotionData;
 import org.bukkit.potion.PotionEffect;
 import org.bukkit.potion.PotionEffectType;
+import org.bukkit.potion.PotionType;
 
 import java.io.IOException;
 import java.util.List;
@@ -82,6 +84,19 @@ public class ItemStackTypeAdapter extends TypeAdapter<ItemStack>
 		if (meta instanceof PotionMeta)
 		{
 			PotionMeta potionMeta = (PotionMeta) meta;
+			if (potionMeta.getBasePotionData() != null)
+			{
+				PotionData data = potionMeta.getBasePotionData();
+				w.name("basePotionData");
+				w.beginObject();
+				w.name("potionType");
+				w.value(data.getType().name().toLowerCase());
+				w.name("extended");
+				w.value(data.isExtended());
+				w.name("upgraded");
+				w.value(data.isUpgraded());
+				w.endObject();
+			}
 			if (!potionMeta.getCustomEffects().isEmpty())
 			{
 				w.name("potionEffects");
@@ -123,10 +138,11 @@ public class ItemStackTypeAdapter extends TypeAdapter<ItemStack>
 		int durability = 0;
 		String name = null;
 		List<String> lore = Lists.newArrayList();
-		Map<Enchantment, Integer> enchantements = Maps.newHashMap();
+		Map<Enchantment, Integer> enchantments = Maps.newHashMap();
 		List<ItemFlag> flags = Lists.newArrayList();
 		boolean unbreakable = false;
 		List<PotionEffect> effects = Lists.newArrayList();
+		PotionData basePotionData = null;
 
 		r.beginObject();
 		while (r.peek() == JsonToken.NAME)
@@ -160,7 +176,7 @@ public class ItemStackTypeAdapter extends TypeAdapter<ItemStack>
 				case "enchantments":
 					r.beginObject();
 					while (r.peek() != JsonToken.END_OBJECT)
-						enchantements.put(Enchantment.getByName(r.nextName().toUpperCase()), r.nextInt());
+						enchantments.put(Enchantment.getByName(r.nextName().toUpperCase()), r.nextInt());
 					r.endObject();
 					break;
 				case "flags":
@@ -171,6 +187,31 @@ public class ItemStackTypeAdapter extends TypeAdapter<ItemStack>
 					break;
 				case "unbreakable":
 					unbreakable = r.nextBoolean();
+					break;
+				case "basePotionData":
+					r.beginObject();
+					PotionType potionType = null;
+					boolean extended = false, upgraded = false;
+					while (r.peek() != JsonToken.END_OBJECT)
+					{
+						switch (r.nextName())
+						{
+							case "potionType":
+								potionType = PotionType.valueOf(r.nextString().toUpperCase());
+								break;
+							case "extended":
+								extended = r.nextBoolean();
+								break;
+							case "upgraded":
+								upgraded = r.nextBoolean();
+								break;
+							default:
+								r.skipValue();
+								break;
+						}
+					}
+					basePotionData = new PotionData(potionType, extended, upgraded);
+					r.endObject();
 					break;
 				case "potionEffects":
 					r.beginArray();
@@ -219,7 +260,7 @@ public class ItemStackTypeAdapter extends TypeAdapter<ItemStack>
 
 		assert type != null : "type is missing!";
 		ItemStack stack = new ItemStack(type, amount, (short) durability);
-		stack.addUnsafeEnchantments(enchantements);
+		stack.addUnsafeEnchantments(enchantments);
 		ItemMeta meta = stack.getItemMeta();
 		//noinspection ConstantConditions
 		if (name != null)
@@ -228,8 +269,11 @@ public class ItemStackTypeAdapter extends TypeAdapter<ItemStack>
 		meta.addItemFlags(flags.toArray(new ItemFlag[flags.size()]));
 		//noinspection ConstantConditions
 		meta.spigot().setUnbreakable(unbreakable);
-		if (meta instanceof PotionMeta && !effects.isEmpty())
+		if (meta instanceof PotionMeta)
+		{
+			((PotionMeta) meta).setBasePotionData(basePotionData);
 			((PotionMeta) meta).getCustomEffects().addAll(effects);
+		}
 		stack.setItemMeta(meta);
 
 		return stack;
