@@ -272,7 +272,7 @@ public class ItemStackTypeAdapter extends TypeAdapter<ItemStack>
 		if (meta instanceof PotionMeta)
 		{
 			((PotionMeta) meta).setBasePotionData(basePotionData);
-			((PotionMeta) meta).getCustomEffects().addAll(effects);
+			effects.forEach(effect -> ((PotionMeta) meta).addCustomEffect(effect, false));
 		}
 		stack.setItemMeta(meta);
 
