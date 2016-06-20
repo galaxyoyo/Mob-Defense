@@ -8,6 +8,7 @@ import org.bukkit.event.EventException;
 import org.bukkit.inventory.ItemStack;
 
 import java.io.Serializable;
+import java.lang.reflect.Constructor;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -62,7 +63,10 @@ public final class TowerRegistration implements Serializable
 	{
 		try
 		{
-			return (T) clazz.getConstructor(TowerRegistration.class, Location.class).newInstance(this, loc);
+			//noinspection unchecked
+			Constructor<T> constructor = (Constructor<T>) clazz.getDeclaredConstructor(TowerRegistration.class, Location.class);
+			constructor.setAccessible(true);
+			return constructor.newInstance(this, loc);
 		}
 		catch (Exception ex)
 		{
