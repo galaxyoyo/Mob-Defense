@@ -422,7 +422,7 @@ public class MobDefense extends JavaPlugin
 				result.setItemMeta(meta);
 				List<Material> list = Arrays.stream(Material.values()).filter(Material::isSolid).collect(Collectors.toList());
 				ItemStackUtils.setCanPlaceOn(result, list.toArray(new Material[list.size()]));
-				MerchantRecipe recipe = new MerchantRecipe(result, Integer.MAX_VALUE);
+				MerchantRecipe recipe = new MerchantRecipe(result, 0, Integer.MAX_VALUE, false);
 				recipe.setIngredients(Lists.newArrayList(Tower.getTowerPrice(clazz)));
 				recipes.add(recipe);
 			}
@@ -452,14 +452,14 @@ public class MobDefense extends JavaPlugin
 			((CraftVillager) npcExchange).getHandle().h(loc.getYaw());
 			((CraftVillager) npcExchange).getHandle().i(loc.getYaw());
 			npcExchange.setProfession(Villager.Profession.BLACKSMITH);
-			MerchantRecipe nuggetToIngot = new MerchantRecipe(new ItemStack(Material.GOLD_INGOT), Integer.MAX_VALUE);
-			MerchantRecipe ingotToNugget = new MerchantRecipe(new ItemStack(Material.GOLD_NUGGET, 9), Integer.MAX_VALUE);
-			MerchantRecipe ingotToBlock = new MerchantRecipe(new ItemStack(Material.GOLD_BLOCK), Integer.MAX_VALUE);
-			MerchantRecipe blockToIngot = new MerchantRecipe(new ItemStack(Material.GOLD_INGOT, 9), Integer.MAX_VALUE);
-			MerchantRecipe blockToEmerald = new MerchantRecipe(new ItemStack(Material.EMERALD), Integer.MAX_VALUE);
-			MerchantRecipe emeraldToBlock = new MerchantRecipe(new ItemStack(Material.GOLD_BLOCK, 9), Integer.MAX_VALUE);
-			MerchantRecipe emeraldToEBlock = new MerchantRecipe(new ItemStack(Material.EMERALD_BLOCK), Integer.MAX_VALUE);
-			MerchantRecipe eBlockToEmerald = new MerchantRecipe(new ItemStack(Material.EMERALD, 9), Integer.MAX_VALUE);
+			MerchantRecipe nuggetToIngot = new MerchantRecipe(new ItemStack(Material.GOLD_INGOT), 0, Integer.MAX_VALUE, false);
+			MerchantRecipe ingotToNugget = new MerchantRecipe(new ItemStack(Material.GOLD_NUGGET, 9), 0, Integer.MAX_VALUE, false);
+			MerchantRecipe ingotToBlock = new MerchantRecipe(new ItemStack(Material.GOLD_BLOCK), 0, Integer.MAX_VALUE, false);
+			MerchantRecipe blockToIngot = new MerchantRecipe(new ItemStack(Material.GOLD_INGOT, 9), 0, Integer.MAX_VALUE, false);
+			MerchantRecipe blockToEmerald = new MerchantRecipe(new ItemStack(Material.EMERALD), 0, Integer.MAX_VALUE, false);
+			MerchantRecipe emeraldToBlock = new MerchantRecipe(new ItemStack(Material.GOLD_BLOCK, 9), 0, Integer.MAX_VALUE, false);
+			MerchantRecipe emeraldToEBlock = new MerchantRecipe(new ItemStack(Material.EMERALD_BLOCK), 0, Integer.MAX_VALUE, false);
+			MerchantRecipe eBlockToEmerald = new MerchantRecipe(new ItemStack(Material.EMERALD, 9), 0, Integer.MAX_VALUE, false);
 			nuggetToIngot.addIngredient(new ItemStack(Material.GOLD_NUGGET, 9));
 			ingotToNugget.addIngredient(new ItemStack(Material.GOLD_INGOT));
 			ingotToBlock.addIngredient(new ItemStack(Material.GOLD_INGOT, 9));
