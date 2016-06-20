@@ -219,7 +219,7 @@ public class MobDefenseListener implements Listener
 				//	System.out.println(event.getCursor());
 				if (event.getRawSlot() < 9)
 				{
-					ItemStack stack = event.getCurrentItem().clone();
+					ItemStack stack = event.getCursor().clone();
 					stack.setAmount(1);
 					Optional<UpgradeRegistration> optional = Upgrade.getUpgradeRegistrations().stream().filter(upgradeRegistration ->
 					{
