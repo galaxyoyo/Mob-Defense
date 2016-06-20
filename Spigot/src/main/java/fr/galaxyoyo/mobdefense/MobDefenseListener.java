@@ -185,6 +185,8 @@ public class MobDefenseListener implements Listener
 	public void onEntityDamage(EntityDamageEvent event)
 	{
 		event.setCancelled(event.getEntityType() == EntityType.PLAYER || event.getEntityType() == EntityType.VILLAGER);
+		if (event.isCancelled())
+			event.getEntity().setFireTicks(0);
 	}
 
 	@EventHandler
@@ -235,7 +237,7 @@ public class MobDefenseListener implements Listener
 	}
 
 	@EventHandler
-	public void onEntityBurn(EntityCombustEvent event)
+	public void onEntityCombust(EntityCombustEvent event)
 	{
 		event.setCancelled(true);
 	}
