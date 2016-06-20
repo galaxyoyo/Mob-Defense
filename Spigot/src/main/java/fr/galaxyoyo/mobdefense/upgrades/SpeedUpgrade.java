@@ -22,7 +22,7 @@ public class SpeedUpgrade extends Upgrade
 	@Override
 	protected void applyTo(Tower t)
 	{
-		t.setSpeedMultiplier(t.getRangeMultiplier() * multiplier);
+		t.setSpeedMultiplier(t.getSpeedMultiplier() * multiplier);
 	}
 
 	@Override

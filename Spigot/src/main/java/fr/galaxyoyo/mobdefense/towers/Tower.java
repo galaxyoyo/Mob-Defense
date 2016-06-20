@@ -174,17 +174,17 @@ public abstract class Tower
 
 	public abstract void onTick();
 
-	public TippedArrow launchArrow(float range)
+	public <T extends Arrow> T launchArrow(float range)
 	{
 		return launchArrow(range, null);
 	}
 
-	public TippedArrow launchArrow(float range, PotionType type)
+	public <T extends Arrow> T launchArrow(float range, PotionType type)
 	{
 		return launchArrow(range, type, false, false);
 	}
 
-	public TippedArrow launchArrow(float range, PotionType type, boolean extended, boolean upgraded)
+	public <T extends Arrow> T launchArrow(float range, PotionType type, boolean extended, boolean upgraded)
 	{
 		return launchArrow(range, type, extended, upgraded, false);
 	}
