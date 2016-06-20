@@ -18,7 +18,7 @@ import org.bukkit.event.block.Action;
 import org.bukkit.event.block.BlockBreakEvent;
 import org.bukkit.event.block.BlockPlaceEvent;
 import org.bukkit.event.entity.*;
-import org.bukkit.event.inventory.InventoryMoveItemEvent;
+import org.bukkit.event.inventory.InventoryClickEvent;
 import org.bukkit.event.player.PlayerInteractEntityEvent;
 import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.event.player.PlayerJoinEvent;
@@ -172,20 +172,24 @@ public class MobDefenseListener implements Listener
 	}
 
 	@EventHandler
-	public void onInventoryItemMoved(InventoryMoveItemEvent event)
+	public void onInventoryItemMoved(InventoryClickEvent event)
 	{
-		Inventory src = event.getSource();
-		Inventory dest = event.getDestination();
-		if (src.getTitle().equals("container.dispenser"))
+		Inventory inv = event.getInventory();
+		Inventory clicked = event.getClickedInventory();
+		if (inv.getTitle().equals("container.dispenser"))
 		{
 			System.out.println("REMOVED AN UPGRADE!");
 		}
-		else if (dest.getTitle().equals("container.dispenser"))
+		else if (clicked.getTitle().equals("container.dispenser"))
 		{
 			System.out.println("PUT AN UPGRADE!");
 		}
+		else if (inv.getTitle().equals("container.hopper"))
+		{
+			inv.getLocation().getBlock().setType(Material.AIR);
+		}
 		else
-			System.out.println(src.getTitle() + ", " + dest.getTitle());
+			System.out.println(inv.getTitle() + ", " + clicked.getTitle());
 	}
 
 	@EventHandler
