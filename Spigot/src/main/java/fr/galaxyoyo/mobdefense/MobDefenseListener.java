@@ -290,14 +290,8 @@ public class MobDefenseListener implements Listener
 				}
 				break;
 			case HOTBAR_MOVE_AND_READD:
-				System.out.println("HOTBAR_MOVE_AND_READD");
-				System.out.println(event.getCurrentItem());
-				System.out.println(event.getCursor());
 				break;
 			case HOTBAR_SWAP:
-				System.out.println("HOTBAR_SWAP");
-				System.out.println(event.getCurrentItem());
-				System.out.println(event.getCursor());
 				break;
 			case CLONE_STACK:
 				break;
