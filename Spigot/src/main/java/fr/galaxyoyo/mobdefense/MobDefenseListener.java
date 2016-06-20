@@ -12,16 +12,15 @@ import org.bukkit.entity.Creature;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.EntityType;
 import org.bukkit.entity.Player;
+import org.bukkit.event.Cancellable;
 import org.bukkit.event.EventHandler;
+import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
 import org.bukkit.event.block.Action;
 import org.bukkit.event.block.BlockBreakEvent;
 import org.bukkit.event.block.BlockPlaceEvent;
 import org.bukkit.event.entity.*;
-import org.bukkit.event.player.PlayerInteractEntityEvent;
-import org.bukkit.event.player.PlayerInteractEvent;
-import org.bukkit.event.player.PlayerJoinEvent;
-import org.bukkit.event.player.PlayerQuitEvent;
+import org.bukkit.event.player.*;
 import org.bukkit.event.weather.WeatherChangeEvent;
 import org.bukkit.event.world.WorldLoadEvent;
 import org.bukkit.inventory.ItemFlag;
@@ -281,5 +280,12 @@ public class MobDefenseListener implements Listener
 		w.setGameRuleValue("doMobSpawning", "false");
 		w.setGameRuleValue("doMobLoot", "false");
 		w.setFullTime(6000L);
+	}
+
+	@EventHandler(priority = EventPriority.HIGHEST)
+	public void creative(PlayerEvent event)
+	{
+		if (event.getPlayer().getGameMode() == GameMode.CREATIVE && event instanceof Cancellable)
+			((Cancellable) event).setCancelled(false);
 	}
 }
