@@ -14,19 +14,19 @@ public class SpeedUpgrade extends Upgrade
 	}
 
 	@Override
-	protected void read(Map<String, Object> parameters)
+	public void read(Map<String, Object> parameters)
 	{
 		multiplier = ((Number) parameters.getOrDefault("multiplier", 1.0F)).floatValue();
 	}
 
 	@Override
-	protected void applyTo(Tower t)
+	public void applyTo(Tower t)
 	{
 		t.setSpeedMultiplier(t.getSpeedMultiplier() * multiplier);
 	}
 
 	@Override
-	protected void disapplyTo(Tower t)
+	public void disapplyTo(Tower t)
 	{
 		t.setSpeedMultiplier(t.getRangeMultiplier() / multiplier);
 	}

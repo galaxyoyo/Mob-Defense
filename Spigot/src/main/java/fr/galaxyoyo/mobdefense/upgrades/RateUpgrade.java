@@ -14,19 +14,19 @@ public class RateUpgrade extends Upgrade
 	}
 
 	@Override
-	protected void read(Map<String, Object> parameters)
+	public void read(Map<String, Object> parameters)
 	{
 		divider = ((Number) parameters.getOrDefault("divider", 1.0D)).doubleValue();
 	}
 
 	@Override
-	protected void applyTo(Tower t)
+	public void applyTo(Tower t)
 	{
 		t.setUpdateRate(t.getUpdateRate() / divider);
 	}
 
 	@Override
-	protected void disapplyTo(Tower t)
+	public void disapplyTo(Tower t)
 	{
 		t.setUpdateRate(t.getUpdateRate() * divider);
 	}
