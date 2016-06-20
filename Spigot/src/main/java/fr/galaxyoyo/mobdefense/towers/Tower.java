@@ -2,7 +2,6 @@ package fr.galaxyoyo.mobdefense.towers;
 
 import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
-import com.google.common.collect.Sets;
 import fr.galaxyoyo.mobdefense.MobDefense;
 import fr.galaxyoyo.mobdefense.upgrades.Upgrade;
 import org.bukkit.Bukkit;
@@ -21,7 +20,6 @@ import org.bukkit.util.Vector;
 
 import java.util.List;
 import java.util.Map;
-import java.util.Set;
 
 public abstract class Tower
 {
@@ -36,7 +34,7 @@ public abstract class Tower
 	private double updateRate = 20;
 	private float rangeMultiplier = 1.0F;
 	private float speedMultiplier = 1.0F;
-	private Set<Upgrade> upgrades = Sets.newHashSet();
+	private List<Upgrade> upgrades = Lists.newArrayListWithCapacity(9);
 
 	protected Tower(TowerRegistration registration, Location location)
 	{
@@ -127,6 +125,11 @@ public abstract class Tower
 		return Lists.newArrayList(towersByLocation.values());
 	}
 
+	public static Tower getTowerAt(Location location)
+	{
+		return towersByLocation.get(location);
+	}
+
 	public double getUpdateRate()
 	{
 		return updateRate;
@@ -167,12 +170,22 @@ public abstract class Tower
 		}
 	}
 
-	public Set<Upgrade> getUpgrades()
+	public List<Upgrade> getUpgrades()
 	{
 		return upgrades;
 	}
 
 	public abstract void onTick();
+
+	public Upgrade getUpgrade(int slot)
+	{
+		return upgrades.get(slot);
+	}
+
+	public void setUpgrade(int slot, Upgrade upgrade)
+	{
+		upgrades.set(slot, upgrade);
+	}
 
 	public <T extends Arrow> T launchArrow(float range)
 	{

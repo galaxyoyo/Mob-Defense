@@ -55,7 +55,7 @@ public class UpgradeRegistration implements Serializable
 		return true;
 	}
 
-	protected <T extends Upgrade> T newInstance(Tower tower) throws EventException
+	public <T extends Upgrade> T newInstance(Tower tower) throws EventException
 	{
 		try
 		{

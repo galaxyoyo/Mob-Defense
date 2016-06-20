@@ -2,6 +2,8 @@ package fr.galaxyoyo.mobdefense;
 
 import fr.galaxyoyo.mobdefense.events.EntityGoneEvent;
 import fr.galaxyoyo.mobdefense.towers.Tower;
+import fr.galaxyoyo.mobdefense.upgrades.Upgrade;
+import fr.galaxyoyo.mobdefense.upgrades.UpgradeRegistration;
 import fr.galaxyoyo.spigot.nbtapi.ItemStackUtils;
 import net.md_5.bungee.api.ChatColor;
 import org.bukkit.Bukkit;
@@ -12,6 +14,7 @@ import org.bukkit.entity.Creature;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.EntityType;
 import org.bukkit.entity.Player;
+import org.bukkit.event.EventException;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.block.Action;
@@ -34,6 +37,7 @@ import org.bukkit.scoreboard.DisplaySlot;
 import org.bukkit.scoreboard.Score;
 
 import java.util.List;
+import java.util.Optional;
 
 public class MobDefenseListener implements Listener
 {
@@ -187,6 +191,8 @@ public class MobDefenseListener implements Listener
 		if (!inv.getTitle().equals("container.dispenser"))
 			return;
 
+		Tower t = Tower.getTowerAt(event.getInventory().getLocation());
+
 		switch (event.getAction())
 		{
 			case NOTHING:
@@ -198,6 +204,12 @@ public class MobDefenseListener implements Listener
 				System.out.println("PICKUP");
 				System.out.println(event.getCurrentItem());
 				System.out.println(event.getCursor());
+				if (event.getRawSlot() < 9)
+				{
+					Upgrade upgrade = t.getUpgrade(event.getRawSlot());
+					upgrade.disapplyTo(t);
+					t.getUpgrades().set(event.getRawSlot(), null);
+				}
 				break;
 			case PLACE_ALL:
 			case PLACE_SOME:
@@ -205,11 +217,31 @@ public class MobDefenseListener implements Listener
 				System.out.println("PLACE");
 				System.out.println(event.getCurrentItem());
 				System.out.println(event.getCursor());
+				if (event.getRawSlot() < 9)
+				{
+					ItemStack stack = event.getCurrentItem().clone();
+					stack.setAmount(1);
+					Optional<UpgradeRegistration> optional = Upgrade.getUpgradeRegistrations().stream().filter(upgradeRegistration -> upgradeRegistration.getItem().equals(stack))
+							.findAny();
+					event.setCancelled(!optional.isPresent());
+					optional.ifPresent(upgradeRegistration -> {
+						try
+						{
+							Upgrade upgrade = upgradeRegistration.newInstance(t);
+							upgrade.applyTo(t);
+						}
+						catch (EventException e)
+						{
+							e.printStackTrace();
+						}
+					});
+				}
 				break;
 			case SWAP_WITH_CURSOR:
 				System.out.println("SWAP");
 				System.out.println(event.getCurrentItem());
 				System.out.println(event.getCursor());
+				event.getWhoClicked().sendMessage("[MobDefense] Warning: this method to add an upgrade is unsupported. Please tell me how you have done this, I couldn't do this.");
 				break;
 			case DROP_ALL_CURSOR:
 			case DROP_ONE_CURSOR:
@@ -218,11 +250,42 @@ public class MobDefenseListener implements Listener
 				System.out.println("DROP");
 				System.out.println(event.getCurrentItem());
 				System.out.println(event.getCursor());
+				if (event.getRawSlot() < 9)
+				{
+					Upgrade upgrade = t.getUpgrade(event.getRawSlot());
+					upgrade.disapplyTo(t);
+					t.getUpgrades().set(event.getRawSlot(), null);
+				}
 				break;
 			case MOVE_TO_OTHER_INVENTORY:
 				System.out.println("MOVE");
 				System.out.println(event.getCurrentItem());
 				System.out.println(event.getCursor());
+				if (event.getRawSlot() < 9)
+				{
+					Upgrade upgrade = t.getUpgrade(event.getRawSlot());
+					upgrade.disapplyTo(t);
+					t.getUpgrades().set(event.getRawSlot(), null);
+				}
+				else if (inv.firstEmpty() >= 0)
+				{
+					ItemStack stack = event.getCurrentItem().clone();
+					stack.setAmount(1);
+					Optional<UpgradeRegistration> optional = Upgrade.getUpgradeRegistrations().stream().filter(upgradeRegistration -> upgradeRegistration.getItem().equals(stack))
+							.findAny();
+					event.setCancelled(!optional.isPresent());
+					optional.ifPresent(upgradeRegistration -> {
+						try
+						{
+							Upgrade upgrade = upgradeRegistration.newInstance(t);
+							upgrade.applyTo(t);
+						}
+						catch (EventException e)
+						{
+							e.printStackTrace();
+						}
+					});
+				}
 				break;
 			case HOTBAR_MOVE_AND_READD:
 				System.out.println("HOTBAR_MOVE_AND_READD");
@@ -237,16 +300,11 @@ public class MobDefenseListener implements Listener
 			case CLONE_STACK:
 				break;
 			case COLLECT_TO_CURSOR:
-				System.out.println("COLLECT_TO_CURSOR");
-				System.out.println(event.getCurrentItem());
-				System.out.println(event.getCursor());
+				event.setCancelled(true);
 				break;
 			case UNKNOWN:
 				break;
 		}
-		System.out.println("Slot:      " + event.getSlot());
-		System.out.println("Raw slot:  " + event.getRawSlot());
-		System.out.println("Slot type: " + event.getSlotType());
 	}
 
 	@EventHandler

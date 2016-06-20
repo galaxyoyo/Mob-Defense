@@ -39,23 +39,11 @@ public abstract class Upgrade
 		return tower;
 	}
 
-	protected abstract void read(Map<String, Object> parameters);
+	public abstract void read(Map<String, Object> parameters);
 
-	protected void applyTo0(Tower t)
-	{
-		t.getUpgrades().add(this);
-		applyTo(t);
-	}
+	public abstract void applyTo(Tower t);
 
-	protected abstract void applyTo(Tower t);
-
-	protected void disapplyTo0(Tower t)
-	{
-		t.getUpgrades().remove(this);
-		applyTo(t);
-	}
-
-	protected abstract void disapplyTo(Tower t);
+	public abstract void disapplyTo(Tower t);
 
 	public abstract void onTowerTick(Tower t);
 }
