@@ -164,7 +164,7 @@ public abstract class Tower
 	{
 		if (++currentTick >= updateRate)
 		{
-			getUpgrades().forEach(upgrade -> upgrade.onTowerTick(this));
+			getUpgrades().stream().filter(upgrade -> upgrade != null).forEach(upgrade -> upgrade.onTowerTick(this));
 			onTick();
 			currentTick = 0;
 		}
