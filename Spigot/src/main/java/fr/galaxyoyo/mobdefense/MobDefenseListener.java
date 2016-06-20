@@ -244,6 +244,9 @@ public class MobDefenseListener implements Listener
 			case UNKNOWN:
 				break;
 		}
+		System.out.println("Slot:      " + event.getSlot());
+		System.out.println("Raw slot:  " + event.getRawSlot());
+		System.out.println("Slot type: " + event.getSlotType());
 	}
 
 	@EventHandler
