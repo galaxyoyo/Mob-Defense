@@ -7,6 +7,7 @@ import net.md_5.bungee.api.ChatColor;
 import org.bukkit.Bukkit;
 import org.bukkit.GameMode;
 import org.bukkit.Material;
+import org.bukkit.World;
 import org.bukkit.entity.Creature;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.EntityType;
@@ -274,6 +275,12 @@ public class MobDefenseListener implements Listener
 	@EventHandler
 	public void onWorldLoaded(WorldLoadEvent event)
 	{
-		event.getWorld().getEntities().stream().filter(entity -> !(entity instanceof Player)).forEach(Entity::remove);
+		World w = event.getWorld();
+		w.getEntities().stream().filter(entity -> !(entity instanceof Player)).forEach(Entity::remove);
+		w.setGameRuleValue("doDaylightCycle", "false");
+		w.setGameRuleValue("doFireTick", "false");
+		w.setGameRuleValue("doMobSpawning", "false");
+		w.setGameRuleValue("doMobLoot", "false");
+		w.setFullTime(6000L);
 	}
 }
