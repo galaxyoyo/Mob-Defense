@@ -18,8 +18,7 @@ import org.bukkit.event.block.Action;
 import org.bukkit.event.block.BlockBreakEvent;
 import org.bukkit.event.block.BlockPlaceEvent;
 import org.bukkit.event.entity.*;
-import org.bukkit.event.inventory.InventoryDragEvent;
-import org.bukkit.event.inventory.InventoryMoveItemEvent;
+import org.bukkit.event.inventory.InventoryClickEvent;
 import org.bukkit.event.player.PlayerInteractEntityEvent;
 import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.event.player.PlayerJoinEvent;
@@ -173,34 +172,69 @@ public class MobDefenseListener implements Listener
 	}
 
 	@EventHandler
-	public void onInventoryItemMoved(InventoryMoveItemEvent event)
-	{
-		Inventory src = event.getSource();
-		Inventory dest = event.getDestination();
-		if (src.getTitle().equals("container.dispenser"))
-		{
-			System.out.println("REMOVED AN UPGRADE!");
-		}
-		else if (dest.getTitle().equals("container.dispenser"))
-		{
-			System.out.println("PUT AN UPGRADE!");
-		}
-
-		else if (dest.getTitle().equals("container.hopper"))
-		{
-			src.getLocation().getBlock().setType(Material.AIR);
-			dest.getLocation().getBlock().setType(Material.AIR);
-		}
-		else
-			System.out.println(src.getTitle() + ", " + dest.getTitle());
-	}
-
-	@EventHandler
-	public void onItemDragged(InventoryDragEvent event)
+	public void onInventoryClicked(InventoryClickEvent event)
 	{
 		Inventory inv = event.getInventory();
-		System.out.println(inv.getTitle());
-		System.out.println(event.getRawSlots());
+		if (!inv.getTitle().equals("container.dispenser"))
+			return;
+
+		switch (event.getAction())
+		{
+			case NOTHING:
+				break;
+			case PICKUP_ALL:
+			case PICKUP_SOME:
+			case PICKUP_HALF:
+			case PICKUP_ONE:
+				System.out.println("PICKUP");
+				System.out.println(event.getCurrentItem());
+				System.out.println(event.getCursor());
+				break;
+			case PLACE_ALL:
+			case PLACE_SOME:
+			case PLACE_ONE:
+				System.out.println("PLACE");
+				System.out.println(event.getCurrentItem());
+				System.out.println(event.getCursor());
+				break;
+			case SWAP_WITH_CURSOR:
+				System.out.println("SWAP");
+				System.out.println(event.getCurrentItem());
+				System.out.println(event.getCursor());
+				break;
+			case DROP_ALL_CURSOR:
+			case DROP_ONE_CURSOR:
+			case DROP_ALL_SLOT:
+			case DROP_ONE_SLOT:
+				System.out.println("DROP");
+				System.out.println(event.getCurrentItem());
+				System.out.println(event.getCursor());
+				break;
+			case MOVE_TO_OTHER_INVENTORY:
+				System.out.println("MOVE");
+				System.out.println(event.getCurrentItem());
+				System.out.println(event.getCursor());
+				break;
+			case HOTBAR_MOVE_AND_READD:
+				System.out.println("HOTBAR_MOVE_AND_READD");
+				System.out.println(event.getCurrentItem());
+				System.out.println(event.getCursor());
+				break;
+			case HOTBAR_SWAP:
+				System.out.println("HOTBAR_SWAP");
+				System.out.println(event.getCurrentItem());
+				System.out.println(event.getCursor());
+				break;
+			case CLONE_STACK:
+				break;
+			case COLLECT_TO_CURSOR:
+				System.out.println("COLLECT_TO_CURSOR");
+				System.out.println(event.getCurrentItem());
+				System.out.println(event.getCursor());
+				break;
+			case UNKNOWN:
+				break;
+		}
 	}
 
 	@EventHandler
