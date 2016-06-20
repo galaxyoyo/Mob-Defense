@@ -19,6 +19,7 @@ import org.bukkit.event.block.BlockBreakEvent;
 import org.bukkit.event.block.BlockPlaceEvent;
 import org.bukkit.event.entity.*;
 import org.bukkit.event.inventory.InventoryClickEvent;
+import org.bukkit.event.inventory.InventoryOpenEvent;
 import org.bukkit.event.player.PlayerInteractEntityEvent;
 import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.event.player.PlayerJoinEvent;
@@ -169,6 +170,14 @@ public class MobDefenseListener implements Listener
 	public void onPlayerInteract(PlayerInteractEvent event)
 	{
 		event.setCancelled(event.getAction() == Action.PHYSICAL && event.getPlayer().getGameMode() != GameMode.CREATIVE);
+	}
+
+	@EventHandler
+	public void onInventoryOpened(InventoryOpenEvent event)
+	{
+		Inventory inv = event.getInventory();
+		if (inv.getTitle().equals("container.dispenser"))
+			inv.setMaxStackSize(1);
 	}
 
 	@EventHandler
