@@ -66,13 +66,13 @@ public abstract class Tower
 		{
 			//noinspection deprecation
 			byte data = loc.getBlock().getState().getData().getData();
-			Tower tower = registration.newInstance(loc);
+			Tower tower = registration.newInstance(towerLoc);
 			towersByLocation.put(towerLoc, tower);
 			Bukkit.getScheduler().runTask(MobDefense.instance(), () -> {
 				//noinspection deprecation
 				towerLoc.getBlock().setTypeIdAndData(Material.DISPENSER.getId(), data, true);
 				loc.getBlock().setType(tower.getRegistration().getMaterial());
-				tower.dispenser = (Dispenser) towerLoc.getBlock().getState().getData();
+				tower.dispenser = (Dispenser) tower.getLocation().getBlock().getState().getData();
 				tower.loop = Bukkit.getScheduler().runTaskTimer(MobDefense.instance(), tower::onTick, 20L, 20L);
 			});
 			return tower;
@@ -89,6 +89,11 @@ public abstract class Tower
 		return registration;
 	}
 
+	public Location getLocation()
+	{
+		return location;
+	}
+
 	public static Tower breakAt(Location loc)
 	{
 		Tower t = towersByLocation.get(loc);
@@ -102,11 +107,6 @@ public abstract class Tower
 		if (t.loop != null)
 			t.loop.cancel();
 		return t;
-	}
-
-	public Location getLocation()
-	{
-		return location;
 	}
 
 	public static List<TowerRegistration> getTowerRegistrations()
