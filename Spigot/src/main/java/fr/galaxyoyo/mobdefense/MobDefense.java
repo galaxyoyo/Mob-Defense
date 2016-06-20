@@ -253,6 +253,8 @@ public class MobDefense extends JavaPlugin
 			{
 				ItemStack stack = new ItemStack(Material.BOW);
 				ItemMeta meta = stack.getItemMeta();
+				meta.addEnchant(Enchantment.ARROW_DAMAGE, 0, true);
+				meta.addItemFlags(ItemFlag.HIDE_ENCHANTS);
 				meta.setDisplayName("Rate upgrade");
 				meta.setLore(Lists.newArrayList(ChatColor.RESET + "Divide tower rate by 2."));
 				stack.setItemMeta(meta);
