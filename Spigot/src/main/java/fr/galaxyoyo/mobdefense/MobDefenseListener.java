@@ -201,9 +201,9 @@ public class MobDefenseListener implements Listener
 			case PICKUP_SOME:
 			case PICKUP_HALF:
 			case PICKUP_ONE:
-				System.out.println("PICKUP");
-				System.out.println(event.getCurrentItem());
-				System.out.println(event.getCursor());
+				//	System.out.println("PICKUP");
+				//	System.out.println(event.getCurrentItem());
+				//	System.out.println(event.getCursor());
 				if (event.getRawSlot() < 9)
 				{
 					Upgrade upgrade = t.getUpgrade(event.getRawSlot());
@@ -214,15 +214,16 @@ public class MobDefenseListener implements Listener
 			case PLACE_ALL:
 			case PLACE_SOME:
 			case PLACE_ONE:
-				System.out.println("PLACE");
-				System.out.println(event.getCurrentItem());
-				System.out.println(event.getCursor());
+				//	System.out.println("PLACE");
+				//	System.out.println(event.getCurrentItem());
+				//	System.out.println(event.getCursor());
 				if (event.getRawSlot() < 9)
 				{
 					ItemStack stack = event.getCurrentItem().clone();
 					stack.setAmount(1);
 					Optional<UpgradeRegistration> optional = Upgrade.getUpgradeRegistrations().stream().filter(upgradeRegistration -> upgradeRegistration.getItem().equals(stack))
 							.findAny();
+					System.out.println(optional);
 					event.setCancelled(!optional.isPresent());
 					optional.ifPresent(upgradeRegistration -> {
 						try
@@ -239,18 +240,18 @@ public class MobDefenseListener implements Listener
 				}
 				break;
 			case SWAP_WITH_CURSOR:
-				System.out.println("SWAP");
-				System.out.println(event.getCurrentItem());
-				System.out.println(event.getCursor());
+				//	System.out.println("SWAP");
+				//	System.out.println(event.getCurrentItem());
+				//	System.out.println(event.getCursor());
 				event.getWhoClicked().sendMessage("[MobDefense] Warning: this method to add an upgrade is unsupported. Please tell me how you have done this, I couldn't do this.");
 				break;
 			case DROP_ALL_CURSOR:
 			case DROP_ONE_CURSOR:
 			case DROP_ALL_SLOT:
 			case DROP_ONE_SLOT:
-				System.out.println("DROP");
-				System.out.println(event.getCurrentItem());
-				System.out.println(event.getCursor());
+				//	System.out.println("DROP");
+				//	System.out.println(event.getCurrentItem());
+				//	System.out.println(event.getCursor());
 				if (event.getRawSlot() < 9)
 				{
 					Upgrade upgrade = t.getUpgrade(event.getRawSlot());
@@ -259,9 +260,9 @@ public class MobDefenseListener implements Listener
 				}
 				break;
 			case MOVE_TO_OTHER_INVENTORY:
-				System.out.println("MOVE");
-				System.out.println(event.getCurrentItem());
-				System.out.println(event.getCursor());
+				//	System.out.println("MOVE");
+				//	System.out.println(event.getCurrentItem());
+				//	System.out.println(event.getCursor());
 				if (event.getRawSlot() < 9)
 				{
 					Upgrade upgrade = t.getUpgrade(event.getRawSlot());
