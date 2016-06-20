@@ -324,6 +324,7 @@ public class MobDefense extends JavaPlugin
 				UpgradeRegistration extended = new UpgradeRegistration("ExtendedUpgrade", stack.clone(), new ItemStack[]{new ItemStack(Material.GOLD_INGOT, 2)}, Collections.emptyMap
 						());
 				Upgrade.registerUpgrade(extended);
+				stack.setType(Material.FIREWORK);
 				meta.setDisplayName("Upgraged Potion Upgrade");
 				meta.setLore(Lists.newArrayList(ChatColor.RESET + "Upgrade all potion effects", ChatColor.RESET + "of arrows of potion towers"));
 				stack.setItemMeta(meta);

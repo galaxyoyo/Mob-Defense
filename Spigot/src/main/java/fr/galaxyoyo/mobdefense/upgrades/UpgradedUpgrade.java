@@ -40,8 +40,11 @@ public class UpgradedUpgrade extends Upgrade
 		if (arrow instanceof TippedArrow)
 		{
 			PotionData data = ((TippedArrow) arrow).getBasePotionData();
-			data = new PotionData(data.getType(), data.isExtended(), true);
-			((TippedArrow) arrow).setBasePotionData(data);
+			if (data.getType().isUpgradeable())
+			{
+				data = new PotionData(data.getType(), data.isExtended(), true);
+				((TippedArrow) arrow).setBasePotionData(data);
+			}
 		}
 	}
 }
