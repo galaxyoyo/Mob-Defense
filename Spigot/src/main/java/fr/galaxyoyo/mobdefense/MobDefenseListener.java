@@ -100,7 +100,7 @@ public class MobDefenseListener implements Listener
 			});
 		}
 
-		if (Wave.checkForPath())
+		if (!Wave.checkForPath())
 		{
 			event.setCancelled(true);
 			event.setBuild(false);
