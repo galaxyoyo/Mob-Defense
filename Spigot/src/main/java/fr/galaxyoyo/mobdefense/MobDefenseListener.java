@@ -228,6 +228,7 @@ public class MobDefenseListener implements Listener
 						try
 						{
 							Upgrade upgrade = upgradeRegistration.newInstance(t);
+							System.out.println(upgrade.getRegistration().getItem().getItemMeta().getDisplayName());
 							upgrade.applyTo(t);
 						}
 						catch (EventException e)
