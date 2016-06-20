@@ -54,8 +54,8 @@ public class ItemStackTypeAdapter extends TypeAdapter<ItemStack>
 		{
 			w.name("lore");
 			w.beginArray();
-			for (String lore : meta.getLore())
-				w.value(lore);
+			for (String line : meta.getLore())
+				w.value(line.startsWith(ChatColor.RESET.toString()) ? line.substring(2) : line);
 			w.endArray();
 		}
 		if (meta.getEnchants() != null && !meta.getEnchants().isEmpty())
@@ -149,7 +149,12 @@ public class ItemStackTypeAdapter extends TypeAdapter<ItemStack>
 				case "lore":
 					r.beginArray();
 					while (r.peek() != JsonToken.END_ARRAY)
-						lore.add(ChatColor.RESET + r.nextString());
+					{
+						String line = r.nextString();
+						if (!line.startsWith(ChatColor.RESET.toString()))
+							line = ChatColor.RESET + line;
+						lore.add(line);
+					}
 					r.endArray();
 					break;
 				case "enchantments":

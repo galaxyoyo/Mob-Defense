@@ -76,9 +76,11 @@ task proguard(type: ProGuardTask) {
     configurations.compile.each { libraryjars it }
     printmapping 'mobdefense.map'
     keepclasseswithmembers 'public class fr.galaxyoyo.mobdefense.MobDefense {*;}'
-    keepclassmembers 'public class fr.galaxyoyo.mobdefense.MobClass {private <fields>;}'
-    keepclassmembers 'public class fr.galaxyoyo.mobdefense.towers.TowerRegistration {private <fields>;}'
+    keepclassmembers 'public class * implements java.io.Serializable { \
+                          !static !transient <fields>; \
+                      }'
     keep 'class * extends fr.galaxyoyo.mobdefense.towers.Tower'
+    keep 'class * extends fr.galaxyoyo.mobdefense.upgrades.Upgrade'
     keepclassmembers 'public class * extends org.bukkit.event.Event { \
                           org.bukkit.event.HandlerList getHandlerList();\
                       }'

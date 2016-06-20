@@ -2,7 +2,9 @@ package fr.galaxyoyo.mobdefense.towers;
 
 import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
+import com.google.common.collect.Sets;
 import fr.galaxyoyo.mobdefense.MobDefense;
+import fr.galaxyoyo.mobdefense.upgrades.Upgrade;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.Material;
@@ -19,6 +21,7 @@ import org.bukkit.util.Vector;
 
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 public abstract class Tower
 {
@@ -29,6 +32,11 @@ public abstract class Tower
 	private final TowerRegistration registration;
 	private Dispenser dispenser;
 	private BukkitTask loop;
+	private int currentTick = 0;
+	private double updateRate = 20;
+	private float rangeMultiplier = 1.0F;
+	private float speedMultiplier = 1.0F;
+	private Set<Upgrade> upgrades = Sets.newHashSet();
 
 	protected Tower(TowerRegistration registration, Location location)
 	{
@@ -73,7 +81,7 @@ public abstract class Tower
 				towerLoc.getBlock().setTypeIdAndData(Material.DISPENSER.getId(), data, true);
 				loc.getBlock().setType(tower.getRegistration().getMaterial());
 				tower.dispenser = (Dispenser) tower.getLocation().getBlock().getState().getData();
-				tower.loop = Bukkit.getScheduler().runTaskTimer(MobDefense.instance(), tower::onTick, 20L, 20L);
+				tower.loop = Bukkit.getScheduler().runTaskTimer(MobDefense.instance(), tower::onTick0, 1L, 1L);
 			});
 			return tower;
 		}
@@ -119,25 +127,70 @@ public abstract class Tower
 		return Lists.newArrayList(towersByLocation.values());
 	}
 
+	public double getUpdateRate()
+	{
+		return updateRate;
+	}
+
+	public void setUpdateRate(double ticks)
+	{
+		this.updateRate = Math.floor(ticks * 100000.0D) / 100000.0D;
+	}
+
+	public float getRangeMultiplier()
+	{
+		return rangeMultiplier;
+	}
+
+	public void setRangeMultiplier(float multiplier)
+	{
+		this.rangeMultiplier = (float) (Math.floor(multiplier * 100000.0D) / 100000.0D);
+	}
+
+	public float getSpeedMultiplier()
+	{
+		return speedMultiplier;
+	}
+
+	public void setSpeedMultiplier(float multiplier)
+	{
+		this.speedMultiplier = (float) (Math.floor(multiplier * 100000.0D) / 100000.0D);
+	}
+
+	private void onTick0()
+	{
+		if (++currentTick >= updateRate)
+		{
+			getUpgrades().forEach(upgrade -> upgrade.onTowerTick(this));
+			onTick();
+			currentTick = 0;
+		}
+	}
+
+	public Set<Upgrade> getUpgrades()
+	{
+		return upgrades;
+	}
+
 	public abstract void onTick();
 
-	public TippedArrow launchArrow(int range)
+	public TippedArrow launchArrow(float range)
 	{
 		return launchArrow(range, null);
 	}
 
-	public TippedArrow launchArrow(int range, PotionType type)
+	public TippedArrow launchArrow(float range, PotionType type)
 	{
 		return launchArrow(range, type, false, false);
 	}
 
-	public TippedArrow launchArrow(int range, PotionType type, boolean extended, boolean upgraded)
+	public TippedArrow launchArrow(float range, PotionType type, boolean extended, boolean upgraded)
 	{
 		return launchArrow(range, type, extended, upgraded, false);
 	}
 
 	@SuppressWarnings("unchecked")
-	public <T extends Arrow> T launchArrow(int range, PotionType type, boolean extended, boolean upgraded, boolean spectral)
+	public <T extends Arrow> T launchArrow(float range, PotionType type, boolean extended, boolean upgraded, boolean spectral)
 	{
 		BlockFace face = getDispenser().getFacing();
 		Class<T> clazz;
@@ -147,10 +200,13 @@ public abstract class Tower
 			clazz = (Class<T>) SpectralArrow.class;
 		else
 			clazz = (Class<T>) Arrow.class;
+		range *= rangeMultiplier / speedMultiplier;
 		T arrow = location.getWorld().spawnArrow(location.clone().add(face.getModX() + 0.5D, 0.5D, face.getModZ() + 0.5D), new Vector((range - 1) * face.getModX(), 0,
-				(range - 1) * face.getModZ()), 1, -2, clazz);
+				(range - 1) * face.getModZ()), speedMultiplier, -2, clazz);
 		if (type != null)
 			((TippedArrow) arrow).setBasePotionData(new PotionData(type, extended, upgraded));
+		else if (spectral && extended)
+			((SpectralArrow) arrow).setGlowingTicks((int) (((SpectralArrow) arrow).getGlowingTicks() * 2.5D));
 		return arrow;
 	}
 

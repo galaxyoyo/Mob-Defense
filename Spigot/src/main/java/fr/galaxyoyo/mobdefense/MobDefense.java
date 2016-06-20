@@ -9,6 +9,8 @@ import fr.galaxyoyo.mobdefense.events.GameStartedEvent;
 import fr.galaxyoyo.mobdefense.events.GameStoppedEvent;
 import fr.galaxyoyo.mobdefense.towers.Tower;
 import fr.galaxyoyo.mobdefense.towers.TowerRegistration;
+import fr.galaxyoyo.mobdefense.upgrades.Upgrade;
+import fr.galaxyoyo.mobdefense.upgrades.UpgradeRegistration;
 import fr.galaxyoyo.spigot.nbtapi.ItemStackUtils;
 import net.md_5.bungee.api.ChatColor;
 import org.apache.commons.io.FileUtils;
@@ -30,9 +32,12 @@ import org.bukkit.inventory.ItemFlag;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.MerchantRecipe;
 import org.bukkit.inventory.meta.ItemMeta;
+import org.bukkit.inventory.meta.PotionMeta;
 import org.bukkit.plugin.InvalidDescriptionException;
 import org.bukkit.plugin.InvalidPluginException;
 import org.bukkit.plugin.java.JavaPlugin;
+import org.bukkit.potion.PotionData;
+import org.bukkit.potion.PotionType;
 import org.bukkit.scoreboard.DisplaySlot;
 import org.bukkit.scoreboard.Objective;
 import org.mcstats.Metrics;
@@ -229,8 +234,7 @@ public class MobDefense extends JavaPlugin
 						new ItemStack[]{new ItemStack(Material.GOLD_INGOT, 1)}, Material.BEACON);
 				Tower.registerTower(healing);
 				TowerRegistration damage = new TowerRegistration("DamageTower", "Damage Tower", Lists.newArrayList("Launches Instant Damage arrows.", "Remember: instant damage heals" +
-						" " +
-						"zombies, skeletons and pigmens!"), new ItemStack[]{new ItemStack(Material.GOLD_NUGGET, 3)}, Material.NETHER_WART_BLOCK);
+						" zombies, skeletons and pigmens!"), new ItemStack[]{new ItemStack(Material.GOLD_NUGGET, 3)}, Material.NETHER_WART_BLOCK);
 				Tower.registerTower(damage);
 				TowerRegistration poison =
 						new TowerRegistration("PoisonTower", "Poison Tower", Lists.newArrayList("Launches Poison arrows.", "Remember: poison heals zombies, skeletons and pigmens!"),
@@ -238,6 +242,81 @@ public class MobDefense extends JavaPlugin
 				Tower.registerTower(poison);
 			}
 			FileUtils.writeStringToFile(file, getGson().toJson(Tower.getTowerRegistrations()), StandardCharsets.UTF_8);
+
+			file = new File(getDataFolder(), "upgrades.json");
+			if (file.exists())
+				//noinspection unchecked
+				((ArrayList<UpgradeRegistration>) getGson().fromJson(FileUtils.readFileToString(file, StandardCharsets.UTF_8), new TypeToken<ArrayList<UpgradeRegistration>>() {}
+						.getType
+								())).forEach(Upgrade::registerUpgrade);
+			else
+			{
+				ItemStack stack = new ItemStack(Material.BOW);
+				ItemMeta meta = stack.getItemMeta();
+				meta.setDisplayName("Rate upgrade");
+				meta.setLore(Lists.newArrayList(ChatColor.RESET + "Divide tower rate by 2."));
+				stack.setItemMeta(meta);
+				UpgradeRegistration rate2 =
+						new UpgradeRegistration("RateUpgrade", stack.clone(), new ItemStack[]{new ItemStack(Material.GOLD_INGOT), new ItemStack(Material.GOLD_NUGGET, 2)},
+								Collections.singletonMap("divider", 2.0D));
+				Upgrade.registerUpgrade(rate2);
+				meta.setDisplayName("Rate upgrade II");
+				meta.setLore(Lists.newArrayList(ChatColor.RESET + "Divide tower rate by 4."));
+				stack.setItemMeta(meta);
+				UpgradeRegistration rate4 = new UpgradeRegistration("RateUpgrade", stack.clone(), new ItemStack[]{new ItemStack(Material.GOLD_INGOT, 2)}, Collections.singletonMap
+						("divider", 4.0D));
+				Upgrade.registerUpgrade(rate4);
+				meta.setDisplayName("Rate upgrade III");
+				meta.setLore(Lists.newArrayList(ChatColor.RESET + "Divide tower rate by 8."));
+				stack.setItemMeta(meta);
+				UpgradeRegistration rate8 = new UpgradeRegistration("RateUpgrade", stack.clone(), new ItemStack[]{new ItemStack(Material.GOLD_INGOT, 3), new ItemStack(Material
+						.GOLD_NUGGET, 5)}, Collections.singletonMap("divider", 8.0D));
+				Upgrade.registerUpgrade(rate8);
+				stack.setType(Material.ARROW);
+				meta.setDisplayName("Range upgrade");
+				meta.setLore(Lists.newArrayList(ChatColor.RESET + "Multiply tower range by 2."));
+				stack.setItemMeta(meta);
+				UpgradeRegistration range2 =
+						new UpgradeRegistration("RangeUpgrade", stack.clone(), new ItemStack[]{new ItemStack(Material.GOLD_INGOT), new ItemStack(Material.GOLD_NUGGET, 2)},
+								Collections.singletonMap("multiplier", 2.0D));
+				Upgrade.registerUpgrade(range2);
+				meta.setDisplayName("Range upgrade II");
+				meta.setLore(Lists.newArrayList(ChatColor.RESET + "Multiply tower range by 4."));
+				stack.setItemMeta(meta);
+				UpgradeRegistration range4 = new UpgradeRegistration("RangeUpgrade", stack.clone(), new ItemStack[]{new ItemStack(Material.GOLD_INGOT, 2)}, Collections.singletonMap
+						("multiplier", 4.0D));
+				Upgrade.registerUpgrade(range4);
+				meta.setDisplayName("Range upgrade III");
+				meta.setLore(Lists.newArrayList(ChatColor.RESET + "Multiply tower range by 8."));
+				stack.setItemMeta(meta);
+				UpgradeRegistration range8 = new UpgradeRegistration("RangeUpgrade", stack.clone(), new ItemStack[]{new ItemStack(Material.GOLD_INGOT, 3), new ItemStack(Material
+						.GOLD_NUGGET, 5)}, Collections.singletonMap("multiplier", 8.0D));
+				Upgrade.registerUpgrade(range8);
+				stack.setType(Material.POTION);
+				meta = stack.getItemMeta();
+				((PotionMeta) meta).setBasePotionData(new PotionData(PotionType.SPEED));
+				meta.addItemFlags(ItemFlag.HIDE_POTION_EFFECTS);
+				meta.setDisplayName("Speed upgrade");
+				meta.setLore(Lists.newArrayList(ChatColor.RESET + "Multiply tower speed by 2."));
+				stack.setItemMeta(meta);
+				UpgradeRegistration speed2 =
+						new UpgradeRegistration("SpeedUpgrade", stack.clone(), new ItemStack[]{new ItemStack(Material.GOLD_INGOT), new ItemStack(Material.GOLD_NUGGET, 2)},
+								Collections.singletonMap("multiplier", 2.0D));
+				Upgrade.registerUpgrade(speed2);
+				meta.setDisplayName("Speed upgrade II");
+				meta.setLore(Lists.newArrayList(ChatColor.RESET + "Multiply tower speed by 4."));
+				stack.setItemMeta(meta);
+				UpgradeRegistration speed4 = new UpgradeRegistration("SpeedUpgrade", stack.clone(), new ItemStack[]{new ItemStack(Material.GOLD_INGOT, 2)}, Collections.singletonMap
+						("multiplier", 4.0D));
+				Upgrade.registerUpgrade(speed4);
+				meta.setDisplayName("Speed upgrade III");
+				meta.setLore(Lists.newArrayList(ChatColor.RESET + "Multiply tower speed by 8."));
+				stack.setItemMeta(meta);
+				UpgradeRegistration speed8 = new UpgradeRegistration("SpeedUpgrade", stack.clone(), new ItemStack[]{new ItemStack(Material.GOLD_INGOT, 3), new ItemStack(Material
+						.GOLD_NUGGET, 5)}, Collections.singletonMap("multiplier", 8.0D));
+				Upgrade.registerUpgrade(speed8);
+			}
+			FileUtils.writeStringToFile(file, getGson().toJson(Upgrade.getUpgradeRegistrations()), StandardCharsets.UTF_8);
 
 			world.getEntities().stream().filter(entity -> !(entity instanceof Player)).forEach(Entity::remove);
 
@@ -469,8 +548,16 @@ public class MobDefense extends JavaPlugin
 			((CraftVillager) npcUpgrades).getHandle().h(loc.getYaw());
 			((CraftVillager) npcUpgrades).getHandle().i(loc.getYaw());
 			npcUpgrades.setProfession(Villager.Profession.LIBRARIAN);
-			npcUpgrades.setRecipes(Lists.newArrayList());
-			npcUpgrades.setCustomName("Upgrades (Soon ...)");
+			List<MerchantRecipe> recipes = Lists.newArrayList();
+			for (UpgradeRegistration ur : Upgrade.getUpgradeRegistrations())
+			{
+				ItemStack result = ur.getItem().clone();
+				MerchantRecipe recipe = new MerchantRecipe(result, 0, Integer.MAX_VALUE, false);
+				recipe.setIngredients(Lists.newArrayList(ur.getCost()));
+				recipes.add(recipe);
+			}
+			npcUpgrades.setRecipes(recipes);
+			npcUpgrades.setCustomName("Upgrades");
 		}
 
 		for (int i = 0; i < 3; ++i)
