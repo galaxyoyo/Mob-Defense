@@ -220,14 +220,14 @@ public class MobDefense extends JavaPlugin
 				TowerRegistration basic = new TowerRegistration("SimpleTower", "Simple Tower", Lists.newArrayList("Launches basic arrows once every 1/2 second.", "It is the most " +
 						"basic tower you can find, but not the cheapest :)"), new ItemStack[]{new ItemStack(Material.GOLD_NUGGET, 5)}, Material.WOOD);
 				Tower.registerTower(basic);
-				TowerRegistration healing = new TowerRegistration("HealingTower", "Healing Tower",
-						Lists.newArrayList("Launches Instant Healing arrows.", "Remember: Instant Healing deals damage to zombies, skeletons and pigmens!"),
-						new ItemStack[]{new ItemStack(Material.GOLD_INGOT, 1)}, Material.BEACON);
-				Tower.registerTower(healing);
 				TowerRegistration spectral =
 						new TowerRegistration("SpectralTower", "Spectral Tower", Lists.newArrayList("Launches basic spectral arrows.", "It's not very useful, but it looks cool ..."),
 								new ItemStack[]{new ItemStack(Material.GOLD_NUGGET, 7)}, Material.GLOWSTONE);
 				Tower.registerTower(spectral);
+				TowerRegistration healing = new TowerRegistration("HealingTower", "Healing Tower",
+						Lists.newArrayList("Launches Instant Healing arrows.", "Remember: Instant Healing deals damage to zombies, skeletons and pigmens!"),
+						new ItemStack[]{new ItemStack(Material.GOLD_INGOT, 1)}, Material.BEACON);
+				Tower.registerTower(healing);
 				TowerRegistration damage = new TowerRegistration("DamageTower", "Damage Tower", Lists.newArrayList("Launches Instant Damage arrows.", "Remember: instant damage heals" +
 						" " +
 						"zombies, skeletons and pigmens!"), new ItemStack[]{new ItemStack(Material.GOLD_NUGGET, 3)}, Material.NETHER_WART_BLOCK);
