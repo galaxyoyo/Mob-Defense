@@ -11,7 +11,7 @@ import java.io.Serializable;
 import java.util.List;
 import java.util.stream.Collectors;
 
-public class TowerRegistration implements Serializable
+public final class TowerRegistration implements Serializable
 {
 	private transient Class<? extends Tower> clazz;
 	private String className;
@@ -68,16 +68,6 @@ public class TowerRegistration implements Serializable
 		{
 			throw new EventException(ex);
 		}
-	}
-
-	public Class<? extends Tower> getClazz()
-	{
-		return clazz;
-	}
-
-	public String getClassName()
-	{
-		return className;
 	}
 
 	public String getDisplayName()

@@ -78,9 +78,10 @@ task proguard(type: ProGuardTask) {
     keepclasseswithmembers 'public class fr.galaxyoyo.mobdefense.MobDefense {*;}'
     keepclassmembers 'public class fr.galaxyoyo.mobdefense.MobClass {private <fields>;}'
     keepclassmembers 'public class fr.galaxyoyo.mobdefense.towers.TowerRegistration {private <fields>;}'
+    keep 'class * extends fr.galaxyoyo.mobdefense.towers.Tower'
     keepclassmembers 'public class * extends org.bukkit.event.Event { \
-                            org.bukkit.event.HandlerList getHandlerList();\
-                        }'
+                          org.bukkit.event.HandlerList getHandlerList();\
+                      }'
     dontshrink()
     dontoptimize()
     keepattributes '*Annotation*,Signature,SourceFile,LineNumberTable'
