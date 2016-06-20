@@ -34,7 +34,7 @@ public abstract class Tower
 	private double updateRate = 20;
 	private float rangeMultiplier = 1.0F;
 	private float speedMultiplier = 1.0F;
-	private List<Upgrade> upgrades = Lists.newArrayListWithCapacity(9);
+	private List<Upgrade> upgrades = Lists.newArrayList(null, null, null, null, null, null, null, null, null);
 
 	protected Tower(TowerRegistration registration, Location location)
 	{

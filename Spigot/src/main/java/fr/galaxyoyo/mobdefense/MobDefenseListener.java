@@ -221,20 +221,15 @@ public class MobDefenseListener implements Listener
 				{
 					ItemStack stack = event.getCursor().clone();
 					stack.setAmount(1);
-					Optional<UpgradeRegistration> optional = Upgrade.getUpgradeRegistrations().stream().filter(upgradeRegistration ->
-					{
-						System.out.println(stack);
-						System.out.println(upgradeRegistration.getItem());
-						return upgradeRegistration.getItem().equals(stack);
-					}).findAny();
-					System.out.println(optional);
+					Optional<UpgradeRegistration> optional = Upgrade.getUpgradeRegistrations().stream().filter(upgradeRegistration -> upgradeRegistration.getItem().equals(stack))
+							.findAny();
 					event.setCancelled(!optional.isPresent());
 					optional.ifPresent(upgradeRegistration -> {
 						try
 						{
 							Upgrade upgrade = upgradeRegistration.newInstance(t);
-							System.out.println(upgrade.getRegistration().getItem().getItemMeta().getDisplayName());
 							upgrade.applyTo(t);
+							t.setUpgrade(event.getRawSlot(), upgrade);
 						}
 						catch (EventException e)
 						{
@@ -285,6 +280,7 @@ public class MobDefenseListener implements Listener
 						{
 							Upgrade upgrade = upgradeRegistration.newInstance(t);
 							upgrade.applyTo(t);
+							t.setUpgrade(event.getRawSlot(), upgrade);
 						}
 						catch (EventException e)
 						{
