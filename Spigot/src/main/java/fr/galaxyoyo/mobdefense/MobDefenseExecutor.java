@@ -1,5 +1,6 @@
 package fr.galaxyoyo.mobdefense;
 
+import com.google.common.collect.Lists;
 import net.md_5.bungee.api.ChatColor;
 import org.bukkit.Location;
 import org.bukkit.command.Command;
@@ -107,8 +108,22 @@ public class MobDefenseExecutor implements CommandExecutor, TabCompleter
 	}
 
 	@Override
-	public List<String> onTabComplete(CommandSender commandSender, Command command, String s, String[] strings)
+	public List<String> onTabComplete(CommandSender sender, Command cmd, String label, String[] args)
 	{
-		return null;
+		List<String> options;
+
+		if (args.length == 1)
+			options = Lists.newArrayList("start", "stop", "setloc");
+		else if (args.length == 2 && args[0].equalsIgnoreCase("setloc"))
+			options = Lists.newArrayList("spawn", "end", "playerSpawn", "npc");
+		else if (args.length == 3 && args[0].equalsIgnoreCase("setloc") && args[1].equalsIgnoreCase("npc"))
+			options = Lists.newArrayList("towers", "upgrades", "exchange");
+		else
+			options = Lists.newArrayList();
+
+		String lastArg = args[args.length - 1];
+		options.removeIf(option -> !option.startsWith(lastArg.toLowerCase()));
+
+		return options;
 	}
 }
