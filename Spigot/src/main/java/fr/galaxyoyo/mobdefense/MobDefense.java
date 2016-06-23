@@ -301,7 +301,7 @@ public class MobDefense extends JavaPlugin
 			{
 				TowerRegistration basic = new TowerRegistration("ArrowEffectTower", "Simple Tower", Lists.newArrayList("Launches basic arrows twice every second.", "It is the most " +
 						"basic tower you can find, but not the cheapest :)"), new ItemStack[]{new ItemStack(Material.GOLD_NUGGET, 5)}, Material.WOOD, Collections.singletonMap("rate",
-						"10"));
+						10));
 				Tower.registerTower(basic);
 				TowerRegistration spectral =
 						new TowerRegistration("SpectralTower", "Spectral Tower", Lists.newArrayList("Launches basic spectral arrows.", "It's not very useful, but it looks cool ..."),
