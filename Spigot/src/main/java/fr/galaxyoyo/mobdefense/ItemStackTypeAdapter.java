@@ -142,6 +142,7 @@ public class ItemStackTypeAdapter extends TypeAdapter<ItemStack>
 		List<ItemFlag> flags = Lists.newArrayList();
 		boolean unbreakable = false;
 		List<PotionEffect> effects = Lists.newArrayList();
+		PotionEffectType mainEffect = null;
 		PotionData basePotionData = null;
 
 		r.beginObject();
@@ -210,7 +211,13 @@ public class ItemStackTypeAdapter extends TypeAdapter<ItemStack>
 								break;
 						}
 					}
-					basePotionData = new PotionData(potionType, extended, upgraded);
+					if (NMSUtils.getServerVersion().isAfter1_9())
+						basePotionData = new PotionData(potionType, extended, upgraded);
+					else
+					{
+						effects.add(new PotionEffect(potionType.getEffectType(), 0, upgraded && potionType.getMaxLevel() == 2 ? 1 : 0));
+						mainEffect = potionType.getEffectType();
+					}
 					r.endObject();
 					break;
 				case "potionEffects":
@@ -271,7 +278,11 @@ public class ItemStackTypeAdapter extends TypeAdapter<ItemStack>
 		meta.spigot().setUnbreakable(unbreakable);
 		if (meta instanceof PotionMeta)
 		{
-			((PotionMeta) meta).setBasePotionData(basePotionData);
+			if (NMSUtils.getServerVersion().isAfter1_9())
+				((PotionMeta) meta).setBasePotionData(basePotionData);
+			else
+				//noinspection deprecation
+				((PotionMeta) meta).setMainEffect(mainEffect);
 			effects.forEach(effect -> ((PotionMeta) meta).addCustomEffect(effect, false));
 		}
 		stack.setItemMeta(meta);

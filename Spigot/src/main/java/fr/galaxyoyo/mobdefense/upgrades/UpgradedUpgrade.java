@@ -1,5 +1,6 @@
 package fr.galaxyoyo.mobdefense.upgrades;
 
+import fr.galaxyoyo.mobdefense.NMSUtils;
 import fr.galaxyoyo.mobdefense.towers.Tower;
 import org.bukkit.entity.Arrow;
 import org.bukkit.entity.TippedArrow;
@@ -37,7 +38,7 @@ public class UpgradedUpgrade extends Upgrade
 	@Override
 	public void onTowerLaunchArrow(Arrow arrow)
 	{
-		if (arrow instanceof TippedArrow)
+		if (NMSUtils.getServerVersion().isAfter1_9() && arrow instanceof TippedArrow)
 		{
 			PotionData data = ((TippedArrow) arrow).getBasePotionData();
 			if (data.getType().isUpgradeable())

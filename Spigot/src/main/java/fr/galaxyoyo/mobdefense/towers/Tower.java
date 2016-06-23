@@ -3,6 +3,7 @@ package fr.galaxyoyo.mobdefense.towers;
 import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
 import fr.galaxyoyo.mobdefense.MobDefense;
+import fr.galaxyoyo.mobdefense.NMSUtils;
 import fr.galaxyoyo.mobdefense.upgrades.Upgrade;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
@@ -208,6 +209,11 @@ public abstract class Tower
 	@SuppressWarnings("unchecked")
 	public <T extends Arrow> T launchArrow(float range, PotionType type, boolean extended, boolean upgraded, int spectralGlowingTicks)
 	{
+		if (NMSUtils.getServerVersion().isBefore1_9())
+		{
+			type = null;
+			spectralGlowingTicks = -1;
+		}
 		BlockFace face = getDispenser().getFacing();
 		Class<T> clazz;
 		if (type != null)
