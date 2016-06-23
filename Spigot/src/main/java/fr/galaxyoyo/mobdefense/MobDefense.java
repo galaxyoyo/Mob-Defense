@@ -11,8 +11,10 @@ import fr.galaxyoyo.mobdefense.towers.Tower;
 import fr.galaxyoyo.mobdefense.towers.TowerRegistration;
 import fr.galaxyoyo.mobdefense.upgrades.Upgrade;
 import fr.galaxyoyo.mobdefense.upgrades.UpgradeRegistration;
+import fr.galaxyoyo.spigot.nbtapi.EntityUtils;
 import fr.galaxyoyo.spigot.nbtapi.ItemStackUtils;
 import fr.galaxyoyo.spigot.nbtapi.ReflectionUtils;
+import fr.galaxyoyo.spigot.nbtapi.TagCompound;
 import net.md_5.bungee.api.ChatColor;
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.io.IOUtils;
@@ -562,8 +564,16 @@ public class MobDefense extends JavaPlugin
 		{
 			Location loc = npcTowerLoc.clone().add(random.nextDouble() * 3.0D - 1.5D, 0, random.nextDouble() * 3.0D - 1.5D);
 			Villager npcTower = (Villager) world.spawnEntity(loc, EntityType.VILLAGER);
-			npcTower.setCollidable(false);
-			npcTower.setAI(false);
+			if (NMSUtils.getServerVersion().isAfter1_9())
+				npcTower.setCollidable(false);
+			if (NMSUtils.getServerVersion().compareTo(NMSUtils.ServerVersion.v1_8_R3) >= 0)
+				npcTower.setAI(false);
+			else
+			{
+				TagCompound compound = EntityUtils.getTagCompound(npcTower);
+				compound.setByte("NoAI", (byte) 1);
+				EntityUtils.setTagCompound(npcTower, compound);
+			}
 			NMSUtils.setEntityYaw(npcTower, loc.getYaw());
 			npcTower.setProfession(Villager.Profession.FARMER);
 			List<MerchantRecipe> recipes = Lists.newArrayList();
@@ -589,8 +599,16 @@ public class MobDefense extends JavaPlugin
 		{
 			Location loc = npcUpgradesLoc.clone().add(random.nextDouble() * 3.0D - 1.5D, 0, random.nextDouble() * 3.0D - 1.5D);
 			Villager npcUpgrades = (Villager) world.spawnEntity(loc, EntityType.VILLAGER);
-			npcUpgrades.setCollidable(false);
-			npcUpgrades.setAI(false);
+			if (NMSUtils.getServerVersion().isAfter1_9())
+				npcUpgrades.setCollidable(false);
+			if (NMSUtils.getServerVersion().compareTo(NMSUtils.ServerVersion.v1_8_R3) >= 0)
+				npcUpgrades.setAI(false);
+			else
+			{
+				TagCompound compound = EntityUtils.getTagCompound(npcUpgrades);
+				compound.setByte("NoAI", (byte) 1);
+				EntityUtils.setTagCompound(npcUpgrades, compound);
+			}
 			NMSUtils.setEntityYaw(npcUpgrades, loc.getYaw());
 			npcUpgrades.setProfession(Villager.Profession.LIBRARIAN);
 			List<MerchantRecipe> recipes = Lists.newArrayList();
@@ -609,8 +627,16 @@ public class MobDefense extends JavaPlugin
 		{
 			Location loc = npcExchangeLoc.clone().add(random.nextDouble() * 4.0D - 1.0D, 0, random.nextDouble() * 3.0D - 1.5D);
 			Villager npcExchange = (Villager) world.spawnEntity(loc, EntityType.VILLAGER);
-			npcExchange.setCollidable(false);
-			npcExchange.setAI(false);
+			if (NMSUtils.getServerVersion().isAfter1_9())
+				npcExchange.setCollidable(false);
+			if (NMSUtils.getServerVersion().compareTo(NMSUtils.ServerVersion.v1_8_R3) >= 0)
+				npcExchange.setAI(false);
+			else
+			{
+				TagCompound compound = EntityUtils.getTagCompound(npcExchange);
+				compound.setByte("NoAI", (byte) 1);
+				EntityUtils.setTagCompound(npcExchange, compound);
+			}
 			NMSUtils.setEntityYaw(npcExchange, loc.getYaw());
 			npcExchange.setProfession(Villager.Profession.BLACKSMITH);
 			MerchantRecipe nuggetToIngot = new MerchantRecipe(new ItemStack(Material.GOLD_INGOT), 0, Integer.MAX_VALUE, true);
