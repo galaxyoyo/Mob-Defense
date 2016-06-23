@@ -536,7 +536,7 @@ public class MobDefense extends JavaPlugin
 			}
 			else
 			{
-				Random random = ReflectionUtils.getBukkitField(ReflectionUtils.invokeBukkitMethod("getHandle", Bukkit.getWorlds().get(0)), "random");
+				Random random = ReflectionUtils.getNMSField(ReflectionUtils.invokeBukkitMethod("getHandle", Bukkit.getWorlds().get(0)), "random");
 				giveTo = players.get(random.nextInt(players.size()));
 			}
 		}
