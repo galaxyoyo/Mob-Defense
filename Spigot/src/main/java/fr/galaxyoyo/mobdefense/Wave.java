@@ -7,18 +7,15 @@ import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
 import com.google.common.collect.Sets;
 import fr.galaxyoyo.mobdefense.events.EntityGoneEvent;
-import net.minecraft.server.v1_10_R1.EntityCreature;
-import net.minecraft.server.v1_10_R1.GenericAttributes;
-import net.minecraft.server.v1_10_R1.PathfinderGoalSelector;
+import fr.galaxyoyo.spigot.nbtapi.EntityUtils;
+import fr.galaxyoyo.spigot.nbtapi.ReflectionUtils;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
-import org.bukkit.craftbukkit.v1_10_R1.entity.CraftCreature;
 import org.bukkit.entity.*;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.scheduler.BukkitRunnable;
 
 import java.io.Serializable;
-import java.lang.reflect.Field;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -124,24 +121,16 @@ public class Wave implements Serializable
 				creatures.add(c);
 				wavesByCreature.put(c, Wave.this);
 
-				EntityCreature ec = ((CraftCreature) c).getHandle();
-				ec.getAttributeInstance(GenericAttributes.c).setValue(1.0D);
-
-				try
-				{
-					Field bField = PathfinderGoalSelector.class.getDeclaredField("b");
-					bField.setAccessible(true);
-					Field cField = PathfinderGoalSelector.class.getDeclaredField("c");
-					cField.setAccessible(true);
-					((Set) bField.get(ec.goalSelector)).clear();
-					((Set) cField.get(ec.goalSelector)).clear();
-					((Set) bField.get(ec.targetSelector)).clear();
-					((Set) cField.get(ec.targetSelector)).clear();
-				}
-				catch (Throwable t)
-				{
-					t.printStackTrace();
-				}
+				EntityUtils.setAttribute(c, EntityUtils.EntityAttributes.KNOCKBACK_RESISTANCE, 1.0D);
+				Object handle = ReflectionUtils.invokeBukkitMethod("getHandle", c);
+				Set set = ReflectionUtils.getNMSField("b", ReflectionUtils.invokeNMSMethod("goalSelector", handle));
+				set.clear();
+				set = ReflectionUtils.getNMSField("c", ReflectionUtils.invokeNMSMethod("goalSelector", handle));
+				set.clear();
+				set = ReflectionUtils.getNMSField("b", ReflectionUtils.invokeNMSMethod("targetSelector", handle));
+				set.clear();
+				set = ReflectionUtils.getNMSField("c", ReflectionUtils.invokeNMSMethod("targetSelector", handle));
+				set.clear();
 
 				creatureClasses.put(c, entry.get().getKey());
 				starts.put(c, MobDefense.instance().getSpawn().clone());
@@ -228,7 +217,10 @@ public class Wave implements Serializable
 				next = creatureTiles.get(c).get(tileId);
 			}
 		}
-		((CraftCreature) c).getHandle().getNavigation().a(next.getX(start), next.getY(start) + 1, next.getZ(start), creatureClasses.get(c).getSpeed());
+		Object handle = ReflectionUtils.invokeBukkitMethod("getHandle", c);
+		Object navigation = ReflectionUtils.invokeNMSMethod("getNavigation", handle);
+		ReflectionUtils.invokeNMSMethod("a", navigation, new Class<?>[]{double.class, double.class, double.class, double.class}, next.getX(start), next.getY(start) + 1, next.getZ
+				(start), creatureClasses.get(c).getSpeed());
 	}
 
 	public int getNumber()

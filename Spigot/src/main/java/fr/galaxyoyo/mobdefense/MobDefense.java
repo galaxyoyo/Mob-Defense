@@ -12,6 +12,7 @@ import fr.galaxyoyo.mobdefense.towers.TowerRegistration;
 import fr.galaxyoyo.mobdefense.upgrades.Upgrade;
 import fr.galaxyoyo.mobdefense.upgrades.UpgradeRegistration;
 import fr.galaxyoyo.spigot.nbtapi.ItemStackUtils;
+import fr.galaxyoyo.spigot.nbtapi.ReflectionUtils;
 import net.md_5.bungee.api.ChatColor;
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.io.IOUtils;
@@ -21,8 +22,6 @@ import org.bukkit.Material;
 import org.bukkit.World;
 import org.bukkit.command.CommandSender;
 import org.bukkit.configuration.file.YamlConfiguration;
-import org.bukkit.craftbukkit.v1_10_R1.CraftWorld;
-import org.bukkit.craftbukkit.v1_10_R1.entity.CraftVillager;
 import org.bukkit.enchantments.Enchantment;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.EntityType;
@@ -74,6 +73,20 @@ public class MobDefense extends JavaPlugin
 	@Override
 	public void onLoad()
 	{
+		getLogger().info("You're running the MobDefense plugin, by galaxyoyo. Thanks for buying it!");
+		getLogger().info("Checking server version ...");
+		try
+		{
+			NMSUtils.ServerVersion version = NMSUtils.getServerVersion();
+			getLogger().info("You're running Minecraft server " + version.name() + ", for Minecraft " + version.getServerName() + ".");
+		}
+		catch (UnsupportedClassVersionError error)
+		{
+			getLogger().severe("You're running Minecraft server " + error.getMessage() + ". This version is unsupported by MobDefense now. This plugin will now be disabled.");
+			getServer().getPluginManager().disablePlugin(this);
+			return;
+		}
+
 		JavaPlugin nbtapi = (JavaPlugin) getServer().getPluginManager().getPlugin("NBTAPI");
 		String latestNBTAPIVersion = getLatestSpigotVersion(24908);
 		boolean needToUpdate = nbtapi == null;
@@ -522,7 +535,10 @@ public class MobDefense extends JavaPlugin
 				return;
 			}
 			else
-				giveTo = players.get(((CraftWorld) Bukkit.getWorlds().get(0)).getHandle().random.nextInt(players.size()));
+			{
+				Random random = ReflectionUtils.getBukkitField(ReflectionUtils.invokeBukkitMethod("getHandle", Bukkit.getWorlds().get(0)), "random");
+				giveTo = players.get(random.nextInt(players.size()));
+			}
 		}
 
 		int remainingMoney = startMoney;
@@ -533,7 +549,7 @@ public class MobDefense extends JavaPlugin
 		}
 
 		World world = Bukkit.getWorlds().get(0);
-		Random random = ((CraftWorld) world).getHandle().random;
+		Random random = ReflectionUtils.getBukkitField(ReflectionUtils.invokeBukkitMethod("getHandle", world), "random");
 
 		for (int i = 0; i < 3; ++i)
 		{
@@ -541,8 +557,7 @@ public class MobDefense extends JavaPlugin
 			Villager npcTower = (Villager) world.spawnEntity(loc, EntityType.VILLAGER);
 			npcTower.setCollidable(false);
 			npcTower.setAI(false);
-			((CraftVillager) npcTower).getHandle().h(loc.getYaw());
-			((CraftVillager) npcTower).getHandle().i(loc.getYaw());
+			NMSUtils.setEntityYaw(npcTower, loc.getYaw());
 			npcTower.setProfession(Villager.Profession.FARMER);
 			List<MerchantRecipe> recipes = Lists.newArrayList();
 			for (TowerRegistration tr : Tower.getTowerRegistrations())
@@ -555,7 +570,7 @@ public class MobDefense extends JavaPlugin
 				result.setItemMeta(meta);
 				List<Material> list = Arrays.stream(Material.values()).filter(Material::isSolid).collect(Collectors.toList());
 				ItemStackUtils.setCanPlaceOn(result, list.toArray(new Material[list.size()]));
-				MerchantRecipe recipe = new MerchantRecipe(result, 0, Integer.MAX_VALUE, false);
+				MerchantRecipe recipe = new MerchantRecipe(result, 0, Integer.MAX_VALUE, true);
 				recipe.setIngredients(Lists.newArrayList(tr.getCost()));
 				recipes.add(recipe);
 			}
@@ -569,14 +584,13 @@ public class MobDefense extends JavaPlugin
 			Villager npcUpgrades = (Villager) world.spawnEntity(loc, EntityType.VILLAGER);
 			npcUpgrades.setCollidable(false);
 			npcUpgrades.setAI(false);
-			((CraftVillager) npcUpgrades).getHandle().h(loc.getYaw());
-			((CraftVillager) npcUpgrades).getHandle().i(loc.getYaw());
+			NMSUtils.setEntityYaw(npcUpgrades, loc.getYaw());
 			npcUpgrades.setProfession(Villager.Profession.LIBRARIAN);
 			List<MerchantRecipe> recipes = Lists.newArrayList();
 			for (UpgradeRegistration ur : Upgrade.getUpgradeRegistrations())
 			{
 				ItemStack result = ur.getItem().clone();
-				MerchantRecipe recipe = new MerchantRecipe(result, 0, Integer.MAX_VALUE, false);
+				MerchantRecipe recipe = new MerchantRecipe(result, 0, Integer.MAX_VALUE, true);
 				recipe.setIngredients(Lists.newArrayList(ur.getCost()));
 				recipes.add(recipe);
 			}
@@ -590,17 +604,16 @@ public class MobDefense extends JavaPlugin
 			Villager npcExchange = (Villager) world.spawnEntity(loc, EntityType.VILLAGER);
 			npcExchange.setCollidable(false);
 			npcExchange.setAI(false);
-			((CraftVillager) npcExchange).getHandle().h(loc.getYaw());
-			((CraftVillager) npcExchange).getHandle().i(loc.getYaw());
+			NMSUtils.setEntityYaw(npcExchange, loc.getYaw());
 			npcExchange.setProfession(Villager.Profession.BLACKSMITH);
-			MerchantRecipe nuggetToIngot = new MerchantRecipe(new ItemStack(Material.GOLD_INGOT), 0, Integer.MAX_VALUE, false);
-			MerchantRecipe ingotToNugget = new MerchantRecipe(new ItemStack(Material.GOLD_NUGGET, 9), 0, Integer.MAX_VALUE, false);
-			MerchantRecipe ingotToBlock = new MerchantRecipe(new ItemStack(Material.GOLD_BLOCK), 0, Integer.MAX_VALUE, false);
-			MerchantRecipe blockToIngot = new MerchantRecipe(new ItemStack(Material.GOLD_INGOT, 9), 0, Integer.MAX_VALUE, false);
-			MerchantRecipe blockToEmerald = new MerchantRecipe(new ItemStack(Material.EMERALD), 0, Integer.MAX_VALUE, false);
-			MerchantRecipe emeraldToBlock = new MerchantRecipe(new ItemStack(Material.GOLD_BLOCK, 9), 0, Integer.MAX_VALUE, false);
-			MerchantRecipe emeraldToEBlock = new MerchantRecipe(new ItemStack(Material.EMERALD_BLOCK), 0, Integer.MAX_VALUE, false);
-			MerchantRecipe eBlockToEmerald = new MerchantRecipe(new ItemStack(Material.EMERALD, 9), 0, Integer.MAX_VALUE, false);
+			MerchantRecipe nuggetToIngot = new MerchantRecipe(new ItemStack(Material.GOLD_INGOT), 0, Integer.MAX_VALUE, true);
+			MerchantRecipe ingotToNugget = new MerchantRecipe(new ItemStack(Material.GOLD_NUGGET, 9), 0, Integer.MAX_VALUE, true);
+			MerchantRecipe ingotToBlock = new MerchantRecipe(new ItemStack(Material.GOLD_BLOCK), 0, Integer.MAX_VALUE, true);
+			MerchantRecipe blockToIngot = new MerchantRecipe(new ItemStack(Material.GOLD_INGOT, 9), 0, Integer.MAX_VALUE, true);
+			MerchantRecipe blockToEmerald = new MerchantRecipe(new ItemStack(Material.EMERALD), 0, Integer.MAX_VALUE, true);
+			MerchantRecipe emeraldToBlock = new MerchantRecipe(new ItemStack(Material.GOLD_BLOCK, 9), 0, Integer.MAX_VALUE, true);
+			MerchantRecipe emeraldToEBlock = new MerchantRecipe(new ItemStack(Material.EMERALD_BLOCK), 0, Integer.MAX_VALUE, true);
+			MerchantRecipe eBlockToEmerald = new MerchantRecipe(new ItemStack(Material.EMERALD, 9), 0, Integer.MAX_VALUE, true);
 			nuggetToIngot.addIngredient(new ItemStack(Material.GOLD_NUGGET, 9));
 			ingotToNugget.addIngredient(new ItemStack(Material.GOLD_INGOT));
 			ingotToBlock.addIngredient(new ItemStack(Material.GOLD_INGOT, 9));

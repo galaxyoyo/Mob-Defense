@@ -59,7 +59,8 @@ public class MobDefenseListener implements Listener
 		ItemStackUtils.setCanDestroy(pickaxe, Material.DISPENSER);
 		event.getPlayer().getInventory().clear();
 		event.getPlayer().getInventory().addItem(pickaxe);
-		event.getPlayer().setCollidable(false);
+		if (NMSUtils.getServerVersion().isAfter1_9())
+			event.getPlayer().setCollidable(false);
 		event.getPlayer().teleport(MobDefense.instance().getPlayerSpawn());
 		event.getPlayer().setGameMode(GameMode.ADVENTURE);
 
@@ -94,7 +95,8 @@ public class MobDefenseListener implements Listener
 				event.setBuild(event.getPlayer().getGameMode() == GameMode.CREATIVE);
 				return;
 			}
-			event.getPlayer().getInventory().all(Material.DIAMOND_PICKAXE).values().stream().forEach(stack -> {
+			event.getPlayer().getInventory().all(Material.DIAMOND_PICKAXE).values().forEach(stack ->
+			{
 				List<Material> canDestroy = ItemStackUtils.getCanDestroy(stack);
 				if (!canDestroy.contains(t.getRegistration().getMaterial()))
 				{
@@ -132,10 +134,16 @@ public class MobDefenseListener implements Listener
 				if (stack.getAmount() > 1)
 				{
 					stack.setAmount(stack.getAmount() - 1);
-					if (event.getPlayer().getInventory().getItemInMainHand() != null && event.getPlayer().getInventory().getItemInMainHand().getType() == Material.DISPENSER)
-						event.getPlayer().getInventory().setItemInMainHand(stack);
+					if (NMSUtils.getServerVersion().isAfter1_9())
+					{
+						if (event.getPlayer().getInventory().getItemInMainHand() != null && event.getPlayer().getInventory().getItemInMainHand().getType() == Material.DISPENSER)
+							event.getPlayer().getInventory().setItemInMainHand(stack);
+						else
+							event.getPlayer().getInventory().setItemInOffHand(stack);
+					}
 					else
-						event.getPlayer().getInventory().setItemInOffHand(stack);
+						//noinspection deprecation
+						event.getPlayer().getInventory().setItemInHand(stack);
 				}
 				else
 				{
@@ -201,9 +209,6 @@ public class MobDefenseListener implements Listener
 			case PICKUP_SOME:
 			case PICKUP_HALF:
 			case PICKUP_ONE:
-				//	System.out.println("PICKUP");
-				//	System.out.println(event.getCurrentItem());
-				//	System.out.println(event.getCursor());
 				if (event.getRawSlot() < 9)
 				{
 					Upgrade upgrade = t.getUpgrade(event.getRawSlot());
@@ -214,9 +219,6 @@ public class MobDefenseListener implements Listener
 			case PLACE_ALL:
 			case PLACE_SOME:
 			case PLACE_ONE:
-				//	System.out.println("PLACE");
-				//	System.out.println(event.getCurrentItem());
-				//	System.out.println(event.getCursor());
 				if (event.getRawSlot() < 9)
 				{
 					ItemStack stack = event.getCursor().clone();
@@ -239,18 +241,12 @@ public class MobDefenseListener implements Listener
 				}
 				break;
 			case SWAP_WITH_CURSOR:
-				//	System.out.println("SWAP");
-				//	System.out.println(event.getCurrentItem());
-				//	System.out.println(event.getCursor());
 				event.getWhoClicked().sendMessage("[MobDefense] Warning: this method to add an upgrade is unsupported. Please tell me how you have done this, I couldn't do this.");
 				break;
 			case DROP_ALL_CURSOR:
 			case DROP_ONE_CURSOR:
 			case DROP_ALL_SLOT:
 			case DROP_ONE_SLOT:
-				//	System.out.println("DROP");
-				//	System.out.println(event.getCurrentItem());
-				//	System.out.println(event.getCursor());
 				if (event.getRawSlot() < 9)
 				{
 					Upgrade upgrade = t.getUpgrade(event.getRawSlot());
@@ -259,9 +255,6 @@ public class MobDefenseListener implements Listener
 				}
 				break;
 			case MOVE_TO_OTHER_INVENTORY:
-				//	System.out.println("MOVE");
-				//	System.out.println(event.getCurrentItem());
-				//	System.out.println(event.getCursor());
 				if (event.getRawSlot() < 9)
 				{
 					Upgrade upgrade = t.getUpgrade(event.getRawSlot());
