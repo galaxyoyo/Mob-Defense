@@ -29,9 +29,11 @@ public class NMSUtils
 		Object handle = invokeBukkitMethod("getHandle", e);
 		if (VERSION.isAfter1_9())
 		{
-			invokeNMSMethod("h", handle, new Class[]{float.class}, yaw);
-			invokeNMSMethod("i", handle, new Class[]{float.class}, yaw);
+			invokeNMSMethod("EntityLiving", "h", handle, new Class[]{float.class}, yaw);
+			invokeNMSMethod("EntityLiving", "i", handle, new Class[]{float.class}, yaw);
 		}
+		else
+			invokeNMSMethod("EntityLiving", "f", handle, new Class[]{float.class}, yaw);
 	}
 
 	public static ServerVersion getServerVersion()
