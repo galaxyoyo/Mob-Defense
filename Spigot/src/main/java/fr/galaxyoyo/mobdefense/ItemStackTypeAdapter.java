@@ -84,7 +84,7 @@ public class ItemStackTypeAdapter extends TypeAdapter<ItemStack>
 		if (meta instanceof PotionMeta)
 		{
 			PotionMeta potionMeta = (PotionMeta) meta;
-			if (potionMeta.getBasePotionData() != null)
+			if (NMSUtils.getServerVersion().isAfter1_9() && potionMeta.getBasePotionData() != null)
 			{
 				PotionData data = potionMeta.getBasePotionData();
 				w.name("basePotionData");
