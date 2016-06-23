@@ -327,8 +327,8 @@ public class MobDefense extends JavaPlugin
 				Tower.registerTower(healing);
 				TowerRegistration damage =
 						new TowerRegistration("ArrowEffectTower", "Damage Tower", Lists.newArrayList("Launches Instant Damage arrows.", "Remember: instant damage heals" +
-								" zombies, skeletons and pigmens!"), new ItemStack[]{new ItemStack(Material.GOLD_NUGGET, 3)}, Material.NETHER_WART_BLOCK, Collections.singletonMap
-								("basePotionType", PotionType.INSTANT_DAMAGE.name().toLowerCase()));
+								" zombies, skeletons and pigmens!"), new ItemStack[]{new ItemStack(Material.GOLD_NUGGET, 3)}, NMSUtils.getServerVersion().isAfter1_10() ? Material
+								.NETHER_WART_BLOCK : Material.NETHER_BRICK, Collections.singletonMap("basePotionType", PotionType.INSTANT_DAMAGE.name().toLowerCase()));
 				Tower.registerTower(damage);
 				TowerRegistration poison =
 						new TowerRegistration("ArrowEffectTower", "Poison Tower",
@@ -549,7 +549,7 @@ public class MobDefense extends JavaPlugin
 		}
 
 		World world = Bukkit.getWorlds().get(0);
-		Random random = ReflectionUtils.getBukkitField(ReflectionUtils.invokeBukkitMethod("getHandle", world), "random");
+		Random random = ReflectionUtils.getNMSField(ReflectionUtils.invokeBukkitMethod("getHandle", world), "random");
 
 		for (int i = 0; i < 3; ++i)
 		{

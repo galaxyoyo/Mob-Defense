@@ -110,14 +110,24 @@ public class Wave implements Serializable
 				c.getEquipment().setChestplate(inv[1]);
 				c.getEquipment().setLeggings(inv[2]);
 				c.getEquipment().setBoots(inv[3]);
-				c.getEquipment().setItemInMainHand(inv[4]);
-				c.getEquipment().setItemInOffHand(inv[5]);
+				if (NMSUtils.getServerVersion().isAfter1_9())
+				{
+					c.getEquipment().setItemInMainHand(inv[4]);
+					c.getEquipment().setItemInOffHand(inv[5]);
+					c.getEquipment().setItemInMainHandDropChance(0.0F);
+					c.getEquipment().setItemInOffHandDropChance(0.0F);
+				}
+				else
+				{
+					//noinspection deprecation
+					c.getEquipment().setItemInHand(inv[4]);
+					//noinspection deprecation
+					c.getEquipment().setItemInHandDropChance(0.0F);
+				}
 				c.getEquipment().setHelmetDropChance(0.0F);
 				c.getEquipment().setChestplateDropChance(0.0F);
 				c.getEquipment().setLeggingsDropChance(0.0F);
 				c.getEquipment().setBootsDropChance(0.0F);
-				c.getEquipment().setItemInMainHandDropChance(0.0F);
-				c.getEquipment().setItemInOffHandDropChance(0.0F);
 				creatures.add(c);
 				wavesByCreature.put(c, Wave.this);
 
