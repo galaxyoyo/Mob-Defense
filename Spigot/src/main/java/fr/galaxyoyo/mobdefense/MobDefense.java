@@ -628,9 +628,10 @@ public class MobDefense extends JavaPlugin
 			Location loc = npcExchangeLoc.clone().add(random.nextDouble() * 4.0D - 1.0D, 0, random.nextDouble() * 3.0D - 1.5D);
 			Villager npcExchange = (Villager) world.spawnEntity(loc, EntityType.VILLAGER);
 			if (NMSUtils.getServerVersion().isAfter1_9())
+			{
 				npcExchange.setCollidable(false);
-			if (NMSUtils.getServerVersion().compareTo(NMSUtils.ServerVersion.v1_8_R3) >= 0)
 				npcExchange.setAI(false);
+			}
 			else
 			{
 				TagCompound compound = EntityUtils.getTagCompound(npcExchange);
