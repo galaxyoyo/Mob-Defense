@@ -297,7 +297,7 @@ public class MobDefense extends JavaPlugin
 						())).forEach(Tower::registerTower);
 			else
 			{
-				TowerRegistration basic = new TowerRegistration("SimpleTower", "Simple Tower", Lists.newArrayList("Launches basic arrows once every 1/2 second.", "It is the most " +
+				TowerRegistration basic = new TowerRegistration("SimpleTower", "Simple Tower", Lists.newArrayList("Launches basic arrows once every second.", "It is the most " +
 						"basic tower you can find, but not the cheapest :)"), new ItemStack[]{new ItemStack(Material.GOLD_NUGGET, 5)}, Material.WOOD);
 				Tower.registerTower(basic);
 				TowerRegistration spectral =
