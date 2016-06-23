@@ -266,7 +266,7 @@ public class ItemStackTypeAdapter extends TypeAdapter<ItemStack>
 						else
 							effects.add(new PotionEffect(effect, duration, amplifier, ambient, particles));
 					}
-					r.endObject();
+					r.endArray();
 				default:
 					System.err.println("Unknown property " + n + ".");
 					break;
