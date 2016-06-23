@@ -523,6 +523,9 @@ public class MobDefense extends JavaPlugin
 			return;
 		}
 
+		Random random = ReflectionUtils.getNMSField(ReflectionUtils.invokeBukkitMethod("getHandle", Bukkit.getWorlds().get(0)), "random");
+		System.out.println(random);
+
 		Player giveTo;
 		if (sender instanceof Player)
 			giveTo = (Player) sender;
@@ -535,10 +538,7 @@ public class MobDefense extends JavaPlugin
 				return;
 			}
 			else
-			{
-				Random random = ReflectionUtils.getNMSField(ReflectionUtils.invokeBukkitMethod("getHandle", Bukkit.getWorlds().get(0)), "random");
 				giveTo = players.get(random.nextInt(players.size()));
-			}
 		}
 
 		int remainingMoney = startMoney;
@@ -549,7 +549,6 @@ public class MobDefense extends JavaPlugin
 		}
 
 		World world = Bukkit.getWorlds().get(0);
-		Random random = ReflectionUtils.getNMSField(ReflectionUtils.invokeBukkitMethod("getHandle", world), "random");
 
 		for (int i = 0; i < 3; ++i)
 		{
