@@ -114,8 +114,11 @@ public class ItemStackTypeAdapter extends TypeAdapter<ItemStack>
 					w.value(effect.isAmbient());
 					w.name("particles");
 					w.value(effect.hasParticles());
-					w.name("color");
-					w.value(effect.getColor().asRGB());
+					if (NMSUtils.getServerVersion().isAfter1_9())
+					{
+						w.name("color");
+						w.value(effect.getColor().asRGB());
+					}
 					w.endObject();
 				}
 				w.endArray();
