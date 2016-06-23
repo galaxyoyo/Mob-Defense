@@ -261,7 +261,10 @@ public class ItemStackTypeAdapter extends TypeAdapter<ItemStack>
 						r.endObject();
 						assert effect != null;
 						//noinspection ConstantConditions
-						effects.add(new PotionEffect(effect, duration, amplifier, ambient, particles, color));
+						if (NMSUtils.getServerVersion().isAfter1_9())
+							effects.add(new PotionEffect(effect, duration, amplifier, ambient, particles, color));
+						else
+							effects.add(new PotionEffect(effect, duration, amplifier, ambient, particles));
 					}
 					r.endObject();
 				default:
