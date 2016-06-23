@@ -234,26 +234,29 @@ public class ItemStackTypeAdapter extends TypeAdapter<ItemStack>
 						boolean ambient = true;
 						boolean particles = true;
 						Color color = null;
-						switch (r.nextName())
+						while (r.peek() != JsonToken.END_OBJECT)
 						{
-							case "id":
-								effect = PotionEffectType.getByName(r.nextString().toUpperCase());
-								break;
-							case "duration":
-								duration = r.nextInt();
-								break;
-							case "amplifier":
-								amplifier = r.nextInt();
-								break;
-							case "ambient":
-								ambient = r.nextBoolean();
-								break;
-							case "particles":
-								particles = r.nextBoolean();
-								break;
-							case "color":
-								color = Color.fromRGB(r.nextInt());
-								break;
+							switch (r.nextName())
+							{
+								case "id":
+									effect = PotionEffectType.getByName(r.nextString().toUpperCase());
+									break;
+								case "duration":
+									duration = r.nextInt();
+									break;
+								case "amplifier":
+									amplifier = r.nextInt();
+									break;
+								case "ambient":
+									ambient = r.nextBoolean();
+									break;
+								case "particles":
+									particles = r.nextBoolean();
+									break;
+								case "color":
+									color = Color.fromRGB(r.nextInt());
+									break;
+							}
 						}
 						r.endObject();
 						assert effect != null;
