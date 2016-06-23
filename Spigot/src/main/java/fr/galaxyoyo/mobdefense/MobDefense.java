@@ -74,19 +74,6 @@ public class MobDefense extends JavaPlugin
 	public void onLoad()
 	{
 		getLogger().info("You're running the MobDefense plugin, by galaxyoyo. Thanks for buying it!");
-		getLogger().info("Checking server version ...");
-		try
-		{
-			NMSUtils.ServerVersion version = NMSUtils.getServerVersion();
-			getLogger().info("You're running Minecraft server " + version.name() + ", for Minecraft " + version.getServerName() + ".");
-		}
-		catch (UnsupportedClassVersionError error)
-		{
-			getLogger().severe("You're running Minecraft server " + error.getMessage() + ". This version is unsupported by MobDefense now. This plugin will now be disabled.");
-			getServer().getPluginManager().disablePlugin(this);
-			return;
-		}
-
 		JavaPlugin nbtapi = (JavaPlugin) getServer().getPluginManager().getPlugin("NBTAPI");
 		String latestNBTAPIVersion = getLatestSpigotVersion(24908);
 		boolean needToUpdate = nbtapi == null;
@@ -210,6 +197,19 @@ public class MobDefense extends JavaPlugin
 	public void onEnable()
 	{
 		instance = this;
+
+		getLogger().info("Checking server version ...");
+		try
+		{
+			NMSUtils.ServerVersion version = NMSUtils.getServerVersion();
+			getLogger().info("You're running Minecraft server " + version.name() + ", for Minecraft " + version.getServerName() + ".");
+		}
+		catch (UnsupportedClassVersionError error)
+		{
+			getLogger().severe("You're running Minecraft server " + error.getMessage() + ". This version is unsupported by MobDefense now. This plugin will now be disabled.");
+			getServer().getPluginManager().disablePlugin(this);
+			return;
+		}
 
 		getServer().getPluginManager().registerEvents(new MobDefenseListener(), this);
 

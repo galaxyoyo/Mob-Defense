@@ -79,6 +79,9 @@ task proguard(type: ProGuardTask) {
     keepclassmembers 'public class * implements java.io.Serializable { \
                           !static !transient <fields>; \
                       }'
+    keepclassmembers 'public enum fr.galaxyoyo.mobdefense.NMSUtils$ServerVersion { \
+                          <fields>; \
+                      }'
     keep 'class * extends fr.galaxyoyo.mobdefense.towers.Tower'
     keep 'class * extends fr.galaxyoyo.mobdefense.upgrades.Upgrade'
     keepclassmembers 'public class * extends org.bukkit.event.Event { \
