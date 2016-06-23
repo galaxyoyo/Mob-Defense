@@ -276,12 +276,19 @@ public class MobDefense extends JavaPlugin
 				boots.addUnsafeEnchantment(Enchantment.DEPTH_STRIDER, 42);
 				ItemStack sword = new ItemStack(Material.DIAMOND_SWORD);
 				sword.addUnsafeEnchantment(Enchantment.FIRE_ASPECT, 42);
-				ItemStack shield = new ItemStack(Material.SHIELD);
-				shield.addUnsafeEnchantment(Enchantment.ARROW_KNOCKBACK, 42);
-				ItemMeta meta = shield.getItemMeta();
-				meta.spigot().setUnbreakable(true);
-				shield.setItemMeta(meta);
-				MobClass sample = new MobClass("sample", "Sample Zombie", 42, 1.0F, EntityType.ZOMBIE, new ItemStack[]{helmet, chestplate, leggings, boots, sword, shield}, 42);
+				ItemStack[] stacks;
+				if (NMSUtils.getServerVersion().isBefore1_9())
+					stacks = new ItemStack[]{helmet, chestplate, leggings, boots, sword};
+				else
+				{
+					ItemStack shield = new ItemStack(Material.SHIELD);
+					shield.addUnsafeEnchantment(Enchantment.ARROW_KNOCKBACK, 42);
+					ItemMeta meta = shield.getItemMeta();
+					meta.spigot().setUnbreakable(true);
+					shield.setItemMeta(meta);
+					stacks = new ItemStack[]{helmet, chestplate, leggings, boots, sword, shield};
+				}
+				MobClass sample = new MobClass("sample", "Sample Zombie", 42, 1.0F, EntityType.ZOMBIE, stacks, 42);
 				mobClasses.put(sample.getName(), sample);
 			}
 			FileUtils.writeStringToFile(file, getGson().toJson(mobClasses.values()), StandardCharsets.UTF_8);
