@@ -24,6 +24,6 @@ public class SpectralTower extends Tower
 	public void load(Map<String, Object> parameters)
 	{
 		range = (float) parameters.getOrDefault("range", 10.0F);
-		glowingTicks = (int) parameters.getOrDefault("glowingTicks", 200);
+		glowingTicks = ((Number) parameters.getOrDefault("glowingTicks", 200)).intValue();
 	}
 }
