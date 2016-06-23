@@ -23,10 +23,7 @@ import org.bukkit.event.block.BlockPlaceEvent;
 import org.bukkit.event.entity.*;
 import org.bukkit.event.inventory.InventoryClickEvent;
 import org.bukkit.event.inventory.InventoryOpenEvent;
-import org.bukkit.event.player.PlayerInteractEntityEvent;
-import org.bukkit.event.player.PlayerInteractEvent;
-import org.bukkit.event.player.PlayerJoinEvent;
-import org.bukkit.event.player.PlayerQuitEvent;
+import org.bukkit.event.player.*;
 import org.bukkit.event.weather.WeatherChangeEvent;
 import org.bukkit.event.world.WorldLoadEvent;
 import org.bukkit.inventory.Inventory;
@@ -294,6 +291,12 @@ public class MobDefenseListener implements Listener
 			case UNKNOWN:
 				break;
 		}
+	}
+
+	@EventHandler
+	public void onExperienceReceived(PlayerExpChangeEvent event)
+	{
+		event.setAmount(0);
 	}
 
 	@EventHandler
