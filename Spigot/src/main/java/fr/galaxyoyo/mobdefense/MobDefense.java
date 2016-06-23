@@ -565,9 +565,10 @@ public class MobDefense extends JavaPlugin
 			Location loc = npcTowerLoc.clone().add(random.nextDouble() * 3.0D - 1.5D, 0, random.nextDouble() * 3.0D - 1.5D);
 			Villager npcTower = (Villager) world.spawnEntity(loc, EntityType.VILLAGER);
 			if (NMSUtils.getServerVersion().isAfter1_9())
+			{
 				npcTower.setCollidable(false);
-			if (NMSUtils.getServerVersion().compareTo(NMSUtils.ServerVersion.v1_8_R3) >= 0)
 				npcTower.setAI(false);
+			}
 			else
 			{
 				TagCompound compound = EntityUtils.getTagCompound(npcTower);
@@ -600,9 +601,10 @@ public class MobDefense extends JavaPlugin
 			Location loc = npcUpgradesLoc.clone().add(random.nextDouble() * 3.0D - 1.5D, 0, random.nextDouble() * 3.0D - 1.5D);
 			Villager npcUpgrades = (Villager) world.spawnEntity(loc, EntityType.VILLAGER);
 			if (NMSUtils.getServerVersion().isAfter1_9())
+			{
 				npcUpgrades.setCollidable(false);
-			if (NMSUtils.getServerVersion().compareTo(NMSUtils.ServerVersion.v1_8_R3) >= 0)
 				npcUpgrades.setAI(false);
+			}
 			else
 			{
 				TagCompound compound = EntityUtils.getTagCompound(npcUpgrades);
