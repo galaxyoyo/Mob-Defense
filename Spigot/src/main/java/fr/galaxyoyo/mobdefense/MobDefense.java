@@ -523,8 +523,7 @@ public class MobDefense extends JavaPlugin
 			return;
 		}
 
-		Random random = ReflectionUtils.getNMSField(ReflectionUtils.invokeBukkitMethod("getHandle", Bukkit.getWorlds().get(0)), "random");
-		System.out.println(random);
+		Random random = ReflectionUtils.getNMSField("World", ReflectionUtils.invokeBukkitMethod("getHandle", Bukkit.getWorlds().get(0)), "random");
 
 		Player giveTo;
 		if (sender instanceof Player)
