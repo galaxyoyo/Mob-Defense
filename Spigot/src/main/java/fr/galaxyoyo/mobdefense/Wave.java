@@ -230,7 +230,7 @@ public class Wave implements Serializable
 			}
 		}
 		Object handle = ReflectionUtils.invokeBukkitMethod("getHandle", c);
-		Object navigation = ReflectionUtils.invokeNMSMethod("getNavigation", handle);
+		Object navigation = ReflectionUtils.invokeNMSMethod("EntityInsentient", "getNavigation", handle, new Class<?>[0]);
 		ReflectionUtils.invokeNMSMethod("a", navigation, new Class<?>[]{double.class, double.class, double.class, double.class}, next.getX(start), next.getY(start) + 1, next.getZ
 				(start), creatureClasses.get(c).getSpeed());
 	}
