@@ -111,10 +111,85 @@ public class MobDefense extends JavaPlugin
 		}
 	}
 
+	private String getLatestSpigotVersion(int resourceId)
+	{
+		try
+		{
+			HttpURLConnection con = (HttpURLConnection) new URL("http://www.spigotmc.org/api/general.php").openConnection();
+			con.setDoOutput(true);
+			con.setRequestMethod("POST");
+			con.getOutputStream().write(
+					("key=98BE0FE67F88AB82B4C197FAF1DC3B69206EFDCC4D3B80FC83A00037510B99B4&resource=" + resourceId).getBytes("UTF-8"));
+			String version = new BufferedReader(new InputStreamReader(con.getInputStream())).readLine();
+			if (version.length() <= 7)
+				return version;
+		}
+		catch (Exception ex)
+		{
+			getLogger().warning("Failed to check for a update on spigot.");
+		}
+		return null;
+	}
+
+	public URL getLatestDownloadURL(String resourceName, int resourceId)
+	{
+		try
+		{
+			String url = "https://www.spigotmc.org/resources/" + (resourceName != null ? resourceName + "." : "") + resourceId + "/";
+			URL u = new URL(url);
+			HttpURLConnection co = (HttpURLConnection) u.openConnection();
+			co.setRequestMethod("GET");
+			co.setRequestProperty("User-Agent", "Mozilla/5.0");
+			co.setRequestProperty("Connection", "Keep-Alive");
+			co.connect();
+			String content = IOUtils.toString(co.getInputStream(), StandardCharsets.UTF_8);
+			co.disconnect();
+			String innerLabel = content.substring(content.indexOf("<label class=\"downloadButton \">"));
+			innerLabel = innerLabel.substring(0, innerLabel.indexOf("</label>"));
+			String downloadURL = innerLabel.substring(innerLabel.indexOf("<a href=\"") + 9);
+			downloadURL = downloadURL.substring(0, downloadURL.indexOf("\" class=\"inner\">"));
+			downloadURL = "https://www.spigotmc.org/" + downloadURL;
+			return new URL(downloadURL);
+		}
+		catch (Exception ex)
+		{
+			ex.printStackTrace();
+		}
+
+		return null;
+	}
+
 	@Override
 	public void onDisable()
 	{
 		stop(null);
+	}
+
+	public void stop(CommandSender sender)
+	{
+		if (objective == null)
+		{
+			if (sender != null)
+				sender.sendMessage("[MobDefense] No game is running!");
+			return;
+		}
+
+		Bukkit.broadcastMessage("[MobDefense] Game ended.");
+
+		for (Tower tower : Tower.getAllTowers())
+			Tower.breakAt(tower.getLocation());
+		Bukkit.getWorlds().get(0).getEntities().stream().filter(entity -> entity.getType() != EntityType.PLAYER).forEach(Entity::remove);
+		Bukkit.getOnlinePlayers().forEach(player -> player.getInventory().clear());
+		getServer().getPluginManager().callEvent(new GameStoppedEvent(currentWave == null ? 0 : currentWave.getNumber()));
+		currentWave = null;
+		objective.unregister();
+		objective = null;
+		Bukkit.getScheduler().cancelTasks(MobDefense.instance());
+	}
+
+	public static MobDefense instance()
+	{
+		return instance;
 	}
 
 	@Override
@@ -132,7 +207,7 @@ public class MobDefense extends JavaPlugin
 
 		try
 		{
-			String version = getLatestSpigotVersion(Integer.parseInt(IOUtils.toString(new URL("http://arathia.fr/mobdefense-resourceid.txt"))));
+			String version = getLatestSpigotVersion(25068);
 			if (new Version(getDescription().getVersion()).compareTo(new Version(version)) < 0)
 			{
 				getLogger().warning(
@@ -169,7 +244,7 @@ public class MobDefense extends JavaPlugin
 			File file = new File(getDataFolder(), "mobs.json");
 			if (file.exists())
 				//noinspection unchecked
-				((List<MobClass>) getGson().fromJson(FileUtils.readFileToString(file, StandardCharsets.UTF_8), new TypeToken<ArrayList<MobClass>>() {}.getType())).stream()
+				((List<MobClass>) getGson().fromJson(FileUtils.readFileToString(file, StandardCharsets.UTF_8), new TypeToken<ArrayList<MobClass>>() {}.getType()))
 						.forEach(mobClass -> mobClasses.put(mobClass.getName(), mobClass));
 			else
 			{
@@ -348,81 +423,6 @@ public class MobDefense extends JavaPlugin
 	public Gson getGson()
 	{
 		return gson;
-	}
-
-	public void stop(CommandSender sender)
-	{
-		if (objective == null)
-		{
-			if (sender != null)
-				sender.sendMessage("[MobDefense] No game is running!");
-			return;
-		}
-
-		Bukkit.broadcastMessage("[MobDefense] Game ended.");
-
-		for (Tower tower : Tower.getAllTowers())
-			Tower.breakAt(tower.getLocation());
-		Bukkit.getWorlds().get(0).getEntities().stream().filter(entity -> entity.getType() != EntityType.PLAYER).forEach(Entity::remove);
-		Bukkit.getOnlinePlayers().forEach(player -> player.getInventory().clear());
-		getServer().getPluginManager().callEvent(new GameStoppedEvent(currentWave == null ? 0 : currentWave.getNumber()));
-		currentWave = null;
-		objective.unregister();
-		objective = null;
-		Bukkit.getScheduler().cancelTasks(MobDefense.instance());
-	}
-
-	public static MobDefense instance()
-	{
-		return instance;
-	}
-
-	private String getLatestSpigotVersion(int resourceId)
-	{
-		try
-		{
-			HttpURLConnection con = (HttpURLConnection) new URL("http://www.spigotmc.org/api/general.php").openConnection();
-			con.setDoOutput(true);
-			con.setRequestMethod("POST");
-			con.getOutputStream().write(
-					("key=98BE0FE67F88AB82B4C197FAF1DC3B69206EFDCC4D3B80FC83A00037510B99B4&resource=" + resourceId).getBytes("UTF-8"));
-			String version = new BufferedReader(new InputStreamReader(con.getInputStream())).readLine();
-			if (version.length() <= 7)
-				return version;
-		}
-		catch (Exception ex)
-		{
-			getLogger().warning("Failed to check for a update on spigot.");
-		}
-		return null;
-	}
-
-	public URL getLatestDownloadURL(String resourceName, int resourceId)
-	{
-		try
-		{
-			String url = "https://www.spigotmc.org/resources/" + (resourceName != null ? resourceName + "." : "") + resourceId + "/";
-			URL u = new URL(url);
-			HttpURLConnection co = (HttpURLConnection) u.openConnection();
-			co.setRequestMethod("GET");
-			co.setRequestProperty("User-Agent", "Mozilla/5.0");
-			co.setRequestProperty("Connection", "Keep-Alive");
-			co.connect();
-			String content = IOUtils.toString(co.getInputStream(), StandardCharsets.UTF_8);
-			co.disconnect();
-			String innerLabel = content.substring(content.indexOf("<label class=\"downloadButton \">"));
-			innerLabel = innerLabel.substring(0, innerLabel.indexOf("</label>"));
-			String downloadURL = innerLabel.substring(innerLabel.indexOf("<a href=\"") + 9);
-			downloadURL = downloadURL.substring(0, downloadURL.indexOf("\" class=\"inner\">"));
-			downloadURL = "https://www.spigotmc.org/" + downloadURL;
-			return new URL(downloadURL);
-		}
-		catch (Exception ex)
-		{
-			ex.printStackTrace();
-		}
-
-		return null;
 	}
 
 	public String getLatestVersion()
