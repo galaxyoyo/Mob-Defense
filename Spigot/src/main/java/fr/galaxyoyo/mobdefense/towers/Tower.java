@@ -220,7 +220,7 @@ public abstract class Tower
 		T arrow = location.getWorld().spawnArrow(location.clone().add(face.getModX() + 0.5D, 0.5D, face.getModZ() + 0.5D), new Vector((range - 1) * face.getModX(), 0,
 				(range - 1) * face.getModZ()), speedMultiplier, -2, clazz);
 		if (type != null)
-			((TippedArrow) arrow).setBasePotionData(new PotionData(type, extended, upgraded));
+			((TippedArrow) arrow).setBasePotionData(new PotionData(type, type.isExtendable() && extended, type.isUpgradeable() && upgraded));
 		else if (spectralGlowingTicks > 0)
 			((SpectralArrow) arrow).setGlowingTicks((int) (spectralGlowingTicks * (extended ? 2.5D : 1.0D)));
 		getUpgrades().stream().filter(upgrade -> upgrade != null).forEach(upgrade -> upgrade.onTowerLaunchArrow(arrow));
