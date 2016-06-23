@@ -25,7 +25,7 @@ public class NMSUtils
 
 	public static void setEntityYaw(Entity e, float yaw)
 	{
-		yaw %= 180.0F;
+		yaw %= 360.0F;
 		Object handle = invokeBukkitMethod("getHandle", e);
 		if (VERSION.isAfter1_9())
 		{

@@ -133,13 +133,13 @@ public class Wave implements Serializable
 
 				EntityUtils.setAttribute(c, EntityUtils.EntityAttributes.KNOCKBACK_RESISTANCE, 1.0D);
 				Object handle = ReflectionUtils.invokeBukkitMethod("getHandle", c);
-				Set set = ReflectionUtils.getNMSField("b", ReflectionUtils.invokeNMSMethod("goalSelector", handle));
+				Set set = ReflectionUtils.getNMSField(ReflectionUtils.invokeNMSMethod("goalSelector", handle), "b");
 				set.clear();
-				set = ReflectionUtils.getNMSField("c", ReflectionUtils.invokeNMSMethod("goalSelector", handle));
+				set = ReflectionUtils.getNMSField(ReflectionUtils.invokeNMSMethod("goalSelector", handle), "b");
 				set.clear();
-				set = ReflectionUtils.getNMSField("b", ReflectionUtils.invokeNMSMethod("targetSelector", handle));
+				set = ReflectionUtils.getNMSField(ReflectionUtils.invokeNMSMethod("targetSelector", handle), "c");
 				set.clear();
-				set = ReflectionUtils.getNMSField("c", ReflectionUtils.invokeNMSMethod("targetSelector", handle));
+				set = ReflectionUtils.getNMSField(ReflectionUtils.invokeNMSMethod("targetSelector", handle), "c");
 				set.clear();
 
 				creatureClasses.put(c, entry.get().getKey());
