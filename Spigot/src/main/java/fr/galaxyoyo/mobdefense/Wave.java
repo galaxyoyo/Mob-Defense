@@ -135,13 +135,13 @@ public class Wave implements Serializable
 				Object handle = ReflectionUtils.invokeBukkitMethod("getHandle", c);
 				Object goalSelector = ReflectionUtils.getNMSField("EntityInsentient", handle, "goalSelector");
 				Object targetSelector = ReflectionUtils.getNMSField("EntityInsentient", handle, "targetSelector");
-				Set set = ReflectionUtils.invokeNMSMethod("b", goalSelector);
+				Set set = ReflectionUtils.getNMSField(goalSelector, "b");
 				set.clear();
-				set = ReflectionUtils.invokeNMSMethod("c", goalSelector);
+				set = ReflectionUtils.getNMSField(goalSelector, "c");
 				set.clear();
-				set = ReflectionUtils.invokeNMSMethod("b", targetSelector);
+				set = ReflectionUtils.getNMSField(targetSelector, "b");
 				set.clear();
-				set = ReflectionUtils.invokeNMSMethod("c", targetSelector);
+				set = ReflectionUtils.getNMSField(targetSelector, "c");
 				set.clear();
 
 				creatureClasses.put(c, entry.get().getKey());
