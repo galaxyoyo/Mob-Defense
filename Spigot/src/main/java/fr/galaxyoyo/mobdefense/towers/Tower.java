@@ -232,6 +232,7 @@ public abstract class Tower
 		return dispenser;
 	}
 
+	@SuppressWarnings("unused")
 	public SpectralArrow launchSpectralArrow(float range)
 	{
 		return launchSpectralArrow(range, 200);

@@ -310,17 +310,17 @@ public class MobDefense extends JavaPlugin
 				TowerRegistration healing = new TowerRegistration("ArrowEffectTower", "Healing Tower",
 						Lists.newArrayList("Launches Instant Healing arrows.", "Remember: Instant Healing deals damage to zombies, skeletons and pigmens!"),
 						new ItemStack[]{new ItemStack(Material.GOLD_INGOT, 1)}, Material.BEACON,
-						Collections.singletonMap("basePotionData", PotionType.INSTANT_HEAL.name().toLowerCase()));
+						Collections.singletonMap("basePotionType", PotionType.INSTANT_HEAL.name().toLowerCase()));
 				Tower.registerTower(healing);
 				TowerRegistration damage =
 						new TowerRegistration("ArrowEffectTower", "Damage Tower", Lists.newArrayList("Launches Instant Damage arrows.", "Remember: instant damage heals" +
 								" zombies, skeletons and pigmens!"), new ItemStack[]{new ItemStack(Material.GOLD_NUGGET, 3)}, Material.NETHER_WART_BLOCK, Collections.singletonMap
-								("basePotionData", PotionType.INSTANT_DAMAGE.name().toLowerCase()));
+								("basePotionType", PotionType.INSTANT_DAMAGE.name().toLowerCase()));
 				Tower.registerTower(damage);
 				TowerRegistration poison =
 						new TowerRegistration("ArrowEffectTower", "Poison Tower",
 								Lists.newArrayList("Launches Poison arrows.", "Remember: poison heals zombies, skeletons and pigmens!"),
-								new ItemStack[]{new ItemStack(Material.GOLD_NUGGET, 3)}, Material.SLIME_BLOCK, Collections.singletonMap("basePotionData", PotionType.POISON.name()
+								new ItemStack[]{new ItemStack(Material.GOLD_NUGGET, 3)}, Material.SLIME_BLOCK, Collections.singletonMap("basePotionType", PotionType.POISON.name()
 								.toLowerCase()));
 				Tower.registerTower(poison);
 			}

@@ -30,7 +30,7 @@ public class ArrowEffectTower extends Tower
 		range = (float) parameters.getOrDefault("range", 10.0F);
 		try
 		{
-			basePotionType = PotionType.valueOf(parameters.getOrDefault("basePotionType", null).toString().toUpperCase());
+			basePotionType = PotionType.valueOf(String.valueOf(parameters.getOrDefault("basePotionType", null)).toUpperCase());
 		}
 		catch (IllegalArgumentException ex)
 		{
