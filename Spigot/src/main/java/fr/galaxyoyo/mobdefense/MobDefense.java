@@ -109,6 +109,8 @@ public class MobDefense extends JavaPlugin
 			{
 				e.printStackTrace();
 			}
+
+			Bukkit.reload();
 		}
 	}
 
