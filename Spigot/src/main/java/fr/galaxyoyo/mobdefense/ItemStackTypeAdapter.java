@@ -264,7 +264,11 @@ public class ItemStackTypeAdapter extends TypeAdapter<ItemStack>
 						if (NMSUtils.getServerVersion().isAfter1_9())
 							effects.add(new PotionEffect(effect, duration, amplifier, ambient, particles, color));
 						else
+						{
+							if (mainEffect == null)
+								mainEffect = effect;
 							effects.add(new PotionEffect(effect, duration, amplifier, ambient, particles));
+						}
 					}
 					r.endArray();
 				default:
