@@ -305,7 +305,7 @@ public class MobDefenseListener implements Listener
 	@EventHandler
 	public void onEntityDamageByEntity(EntityDamageByEntityEvent event)
 	{
-		event.setCancelled(event.getDamager().getType() == EntityType.PLAYER);
+		event.setCancelled(event.getDamager().getType() == EntityType.PLAYER || event.getEntityType() == EntityType.PLAYER);
 	}
 
 	@EventHandler
