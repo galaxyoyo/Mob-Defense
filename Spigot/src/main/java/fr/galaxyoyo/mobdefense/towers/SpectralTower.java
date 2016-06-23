@@ -2,8 +2,13 @@ package fr.galaxyoyo.mobdefense.towers;
 
 import org.bukkit.Location;
 
+import java.util.Map;
+
 public class SpectralTower extends Tower
 {
+	private float range;
+	private int glowingTicks;
+
 	protected SpectralTower(TowerRegistration registration, Location location)
 	{
 		super(registration, location);
@@ -12,6 +17,13 @@ public class SpectralTower extends Tower
 	@Override
 	public void onTick()
 	{
-		launchSpectralArrow(10);
+		launchSpectralArrow(range, glowingTicks);
+	}
+
+	@Override
+	public void load(Map<String, Object> parameters)
+	{
+		range = (float) parameters.getOrDefault("range", 10.0F);
+		glowingTicks = (int) parameters.getOrDefault("glowingTicks", 200);
 	}
 }

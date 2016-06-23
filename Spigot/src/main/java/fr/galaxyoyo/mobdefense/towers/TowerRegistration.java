@@ -10,6 +10,7 @@ import org.bukkit.inventory.ItemStack;
 import java.io.Serializable;
 import java.lang.reflect.Constructor;
 import java.util.List;
+import java.util.Map;
 import java.util.stream.Collectors;
 
 public final class TowerRegistration implements Serializable
@@ -20,19 +21,21 @@ public final class TowerRegistration implements Serializable
 	private List<String> lore;
 	private ItemStack[] cost;
 	private Material material;
+	private Map<String, Object> parameters;
 
 	@SuppressWarnings("unused")
 	private TowerRegistration()
 	{
 	}
 
-	public TowerRegistration(String className, String displayName, List<String> lore, ItemStack[] cost, Material material)
+	public TowerRegistration(String className, String displayName, List<String> lore, ItemStack[] cost, Material material, Map<String, Object> parameters)
 	{
 		this.className = className;
 		this.displayName = displayName;
 		this.lore = lore;
 		this.cost = cost;
 		this.material = material;
+		this.parameters = parameters;
 	}
 
 	public boolean register()
@@ -66,12 +69,20 @@ public final class TowerRegistration implements Serializable
 			//noinspection unchecked
 			Constructor<T> constructor = (Constructor<T>) clazz.getDeclaredConstructor(TowerRegistration.class, Location.class);
 			constructor.setAccessible(true);
-			return constructor.newInstance(this, loc);
+			T t = constructor.newInstance(this, loc);
+			t.setUpdateRate((int) parameters.getOrDefault("rate", MobDefense.instance().getTowerUpdateRate()));
+			t.load(getParameters());
+			return t;
 		}
 		catch (Exception ex)
 		{
 			throw new EventException(ex);
 		}
+	}
+
+	public Map<String, Object> getParameters()
+	{
+		return parameters;
 	}
 
 	public String getDisplayName()

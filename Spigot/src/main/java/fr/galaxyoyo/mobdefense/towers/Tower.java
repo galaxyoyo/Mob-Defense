@@ -177,6 +177,8 @@ public abstract class Tower
 
 	public abstract void onTick();
 
+	public abstract void load(Map<String, Object> parameters);
+
 	public Upgrade getUpgrade(int slot)
 	{
 		return upgrades.get(slot);
@@ -187,6 +189,7 @@ public abstract class Tower
 		upgrades.set(slot, upgrade);
 	}
 
+	@SuppressWarnings("unused")
 	public <T extends Arrow> T launchArrow(float range)
 	{
 		return launchArrow(range, null);
@@ -199,17 +202,17 @@ public abstract class Tower
 
 	public <T extends Arrow> T launchArrow(float range, PotionType type, boolean extended, boolean upgraded)
 	{
-		return launchArrow(range, type, extended, upgraded, false);
+		return launchArrow(range, type, extended, upgraded, -1);
 	}
 
 	@SuppressWarnings("unchecked")
-	public <T extends Arrow> T launchArrow(float range, PotionType type, boolean extended, boolean upgraded, boolean spectral)
+	public <T extends Arrow> T launchArrow(float range, PotionType type, boolean extended, boolean upgraded, int spectralGlowingTicks)
 	{
 		BlockFace face = getDispenser().getFacing();
 		Class<T> clazz;
 		if (type != null)
 			clazz = (Class<T>) TippedArrow.class;
-		else if (spectral)
+		else if (spectralGlowingTicks > 0)
 			clazz = (Class<T>) SpectralArrow.class;
 		else
 			clazz = (Class<T>) Arrow.class;
@@ -218,8 +221,8 @@ public abstract class Tower
 				(range - 1) * face.getModZ()), speedMultiplier, -2, clazz);
 		if (type != null)
 			((TippedArrow) arrow).setBasePotionData(new PotionData(type, extended, upgraded));
-		else if (spectral && extended)
-			((SpectralArrow) arrow).setGlowingTicks((int) (((SpectralArrow) arrow).getGlowingTicks() * 2.5D));
+		else if (spectralGlowingTicks > 0)
+			((SpectralArrow) arrow).setGlowingTicks((int) (spectralGlowingTicks * (extended ? 2.5D : 1.0D)));
 		getUpgrades().stream().filter(upgrade -> upgrade != null).forEach(upgrade -> upgrade.onTowerLaunchArrow(arrow));
 		return arrow;
 	}
@@ -229,8 +232,13 @@ public abstract class Tower
 		return dispenser;
 	}
 
-	public SpectralArrow launchSpectralArrow(int range)
+	public SpectralArrow launchSpectralArrow(float range)
 	{
-		return launchArrow(range, null, false, false, true);
+		return launchSpectralArrow(range, 200);
+	}
+
+	public SpectralArrow launchSpectralArrow(float range, int glowingTicks)
+	{
+		return launchArrow(range, null, false, false, glowingTicks);
 	}
 }

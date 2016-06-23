@@ -66,6 +66,7 @@ public class MobDefense extends JavaPlugin
 	private Location npcTowerLoc;
 	private Location npcUpgradesLoc;
 	private Location npcExchangeLoc;
+	private int towerUpdateRate;
 	private List<Wave> waves = Lists.newArrayList();
 	private Wave currentWave;
 	private Objective objective;
@@ -237,6 +238,7 @@ public class MobDefense extends JavaPlugin
 			npcUpgradesLoc = LocationConverter.instance().fromString(upgradesLoc);
 			String exchangeLoc = config.getString("npc-exchange-loc", LocationConverter.instance().toString(world.getSpawnLocation()));
 			npcExchangeLoc = LocationConverter.instance().fromString(exchangeLoc);
+			towerUpdateRate = config.getInt("tower-update-rate", 20);
 			startMoney = config.getInt("start-money", 50);
 			waveTime = config.getInt("wave-time", 42);
 			baseLives = config.getInt("lives", 10);
@@ -297,23 +299,29 @@ public class MobDefense extends JavaPlugin
 						())).forEach(Tower::registerTower);
 			else
 			{
-				TowerRegistration basic = new TowerRegistration("SimpleTower", "Simple Tower", Lists.newArrayList("Launches basic arrows once every second.", "It is the most " +
-						"basic tower you can find, but not the cheapest :)"), new ItemStack[]{new ItemStack(Material.GOLD_NUGGET, 5)}, Material.WOOD);
+				TowerRegistration basic = new TowerRegistration("ArrowEffectTower", "Simple Tower", Lists.newArrayList("Launches basic arrows twice every second.", "It is the most " +
+						"basic tower you can find, but not the cheapest :)"), new ItemStack[]{new ItemStack(Material.GOLD_NUGGET, 5)}, Material.WOOD, Collections.singletonMap("rate",
+						"10"));
 				Tower.registerTower(basic);
 				TowerRegistration spectral =
 						new TowerRegistration("SpectralTower", "Spectral Tower", Lists.newArrayList("Launches basic spectral arrows.", "It's not very useful, but it looks cool ..."),
-								new ItemStack[]{new ItemStack(Material.GOLD_NUGGET, 7)}, Material.GLOWSTONE);
+								new ItemStack[]{new ItemStack(Material.GOLD_NUGGET, 7)}, Material.GLOWSTONE, Collections.singletonMap("glowingTicks", 500));
 				Tower.registerTower(spectral);
-				TowerRegistration healing = new TowerRegistration("HealingTower", "Healing Tower",
+				TowerRegistration healing = new TowerRegistration("ArrowEffectTower", "Healing Tower",
 						Lists.newArrayList("Launches Instant Healing arrows.", "Remember: Instant Healing deals damage to zombies, skeletons and pigmens!"),
-						new ItemStack[]{new ItemStack(Material.GOLD_INGOT, 1)}, Material.BEACON);
+						new ItemStack[]{new ItemStack(Material.GOLD_INGOT, 1)}, Material.BEACON,
+						Collections.singletonMap("basePotionData", PotionType.INSTANT_HEAL.name().toLowerCase()));
 				Tower.registerTower(healing);
-				TowerRegistration damage = new TowerRegistration("DamageTower", "Damage Tower", Lists.newArrayList("Launches Instant Damage arrows.", "Remember: instant damage heals" +
-						" zombies, skeletons and pigmens!"), new ItemStack[]{new ItemStack(Material.GOLD_NUGGET, 3)}, Material.NETHER_WART_BLOCK);
+				TowerRegistration damage =
+						new TowerRegistration("ArrowEffectTower", "Damage Tower", Lists.newArrayList("Launches Instant Damage arrows.", "Remember: instant damage heals" +
+								" zombies, skeletons and pigmens!"), new ItemStack[]{new ItemStack(Material.GOLD_NUGGET, 3)}, Material.NETHER_WART_BLOCK, Collections.singletonMap
+								("basePotionData", PotionType.INSTANT_DAMAGE.name().toLowerCase()));
 				Tower.registerTower(damage);
 				TowerRegistration poison =
-						new TowerRegistration("PoisonTower", "Poison Tower", Lists.newArrayList("Launches Poison arrows.", "Remember: poison heals zombies, skeletons and pigmens!"),
-								new ItemStack[]{new ItemStack(Material.GOLD_NUGGET, 3)}, Material.SLIME_BLOCK);
+						new TowerRegistration("ArrowEffectTower", "Poison Tower",
+								Lists.newArrayList("Launches Poison arrows.", "Remember: poison heals zombies, skeletons and pigmens!"),
+								new ItemStack[]{new ItemStack(Material.GOLD_NUGGET, 3)}, Material.SLIME_BLOCK, Collections.singletonMap("basePotionData", PotionType.POISON.name()
+								.toLowerCase()));
 				Tower.registerTower(poison);
 			}
 			FileUtils.writeStringToFile(file, getGson().toJson(Tower.getTowerRegistrations()), StandardCharsets.UTF_8);
@@ -644,5 +652,10 @@ public class MobDefense extends JavaPlugin
 	{
 		this.npcExchangeLoc = location;
 		getConfig().set("npc-exchange-loc", LocationConverter.instance().toString(location));
+	}
+
+	public int getTowerUpdateRate()
+	{
+		return towerUpdateRate;
 	}
 }

@@ -10,7 +10,7 @@ import java.lang.reflect.Constructor;
 import java.util.Map;
 
 
-public class UpgradeRegistration implements Serializable
+public final class UpgradeRegistration implements Serializable
 {
 	private transient Class<? extends Upgrade> clazz;
 	private String className;
