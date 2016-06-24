@@ -16,10 +16,7 @@ import org.bukkit.inventory.ItemStack;
 import org.bukkit.scheduler.BukkitRunnable;
 
 import java.io.Serializable;
-import java.util.Collection;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
+import java.util.*;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.concurrent.atomic.AtomicReference;
 
@@ -72,7 +69,7 @@ public class Wave implements Serializable
 		Bukkit.broadcastMessage("Starting wave #" + number + " (" + totalMobs.get() + (totalMobs.get() > 1 ? " mobs)" : " mob)"));
 
 		Set<Creature> creatures = Sets.newHashSet();
-		Set<Map.Entry<MobClass, Integer>> entries = Sets.newHashSet(spawns.entrySet());
+		Iterator<Map.Entry<MobClass, Integer>> entries = spawns.entrySet().iterator();
 		AtomicReference<Map.Entry<MobClass, Integer>> entry = new AtomicReference<>(null);
 		AtomicInteger current = new AtomicInteger(0);
 		new BukkitRunnable()
@@ -80,16 +77,15 @@ public class Wave implements Serializable
 			@Override
 			public void run()
 			{
-				if (entry.get() == null || current.incrementAndGet() == entry.get().getValue())
+				if (entry.get() == null || current.incrementAndGet() >= entry.get().getValue())
 				{
-					if (entries.isEmpty())
+					if (!entries.hasNext())
 					{
 						Bukkit.getScheduler().runTaskLater(MobDefense.instance(), () -> MobDefense.instance().startNextWave(), MobDefense.instance().getWaveTime() * 20L);
 						cancel();
 						return;
 					}
-					entry.set(entries.iterator().next());
-					entries.remove(entry.get());
+					entry.set(entries.next());
 				}
 				Creature c = (Creature) Bukkit.getWorlds().get(0).spawnEntity(MobDefense.instance().getSpawn().clone(), entry.get().getKey().getType());
 				c.setCustomName(entry.get().getKey().getDisplayName());
