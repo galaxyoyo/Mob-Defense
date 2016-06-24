@@ -39,6 +39,7 @@ import org.bukkit.plugin.InvalidPluginException;
 import org.bukkit.plugin.java.JavaPlugin;
 import org.bukkit.potion.PotionData;
 import org.bukkit.potion.PotionType;
+import org.bukkit.scheduler.BukkitTask;
 import org.bukkit.scoreboard.DisplaySlot;
 import org.bukkit.scoreboard.Objective;
 import org.mcstats.Metrics;
@@ -71,6 +72,7 @@ public class MobDefense extends JavaPlugin
 	private List<Wave> waves = Lists.newArrayList();
 	private Wave currentWave;
 	private Objective objective;
+	private BukkitTask nextWaveTask;
 
 	@Override
 	public void onLoad()
@@ -533,6 +535,12 @@ public class MobDefense extends JavaPlugin
 			}
 		}
 
+		if (nextWaveTask != null)
+		{
+			nextWaveTask.cancel();
+			nextWaveTask = null;
+		}
+
 		objective.getScore("Wave").setScore(currentWave.getNumber());
 		currentWave.start();
 	}
@@ -760,7 +768,7 @@ public class MobDefense extends JavaPlugin
 
 		getServer().getPluginManager().callEvent(new GameStartedEvent());
 		Bukkit.broadcastMessage("[MobDefense] Game started!");
-		Bukkit.getScheduler().runTaskLater(this, this::startNextWave, waveTime * 20L);
+		nextWaveTask = Bukkit.getScheduler().runTaskLater(this, this::startNextWave, waveTime * 20L);
 	}
 
 	public Wave getCurrentWave()
@@ -794,5 +802,15 @@ public class MobDefense extends JavaPlugin
 	public int getTowerUpdateRate()
 	{
 		return towerUpdateRate;
+	}
+
+	public void setNextWaveTask(BukkitTask nextWaveTask)
+	{
+		this.nextWaveTask = nextWaveTask;
+	}
+
+	public boolean isStarted()
+	{
+		return objective != null;
 	}
 }

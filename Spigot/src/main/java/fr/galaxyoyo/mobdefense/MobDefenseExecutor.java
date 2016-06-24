@@ -38,6 +38,16 @@ public class MobDefenseExecutor implements CommandExecutor, TabCompleter
 			MobDefense.instance().stop(sender);
 			return true;
 		}
+		else if (args[0].equalsIgnoreCase("nextWave"))
+		{
+			if (!MobDefense.instance().isStarted())
+			{
+				sender.sendMessage(ChatColor.RED + "[MobDefense] Error: no game is started.");
+				return true;
+			}
+			MobDefense.instance().startNextWave();
+			return true;
+		}
 		else if (args[0].equalsIgnoreCase("setloc"))
 		{
 			if (!(sender instanceof Player))
@@ -113,7 +123,7 @@ public class MobDefenseExecutor implements CommandExecutor, TabCompleter
 		List<String> options;
 
 		if (args.length == 1)
-			options = Lists.newArrayList("start", "stop", "setloc");
+			options = Lists.newArrayList("start", "stop", "nextWave", "setloc");
 		else if (args.length == 2 && args[0].equalsIgnoreCase("setloc"))
 			options = Lists.newArrayList("spawn", "end", "playerSpawn", "npc");
 		else if (args.length == 3 && args[0].equalsIgnoreCase("setloc") && args[1].equalsIgnoreCase("npc"))
@@ -123,6 +133,7 @@ public class MobDefenseExecutor implements CommandExecutor, TabCompleter
 
 		String lastArg = args[args.length - 1];
 		options.removeIf(option -> !option.startsWith(lastArg.toLowerCase()));
+		options.removeIf(option -> MobDefense.instance().isStarted() ? option.equalsIgnoreCase("start") : option.equalsIgnoreCase("stop") || option.equalsIgnoreCase("nextWave"));
 
 		return options;
 	}

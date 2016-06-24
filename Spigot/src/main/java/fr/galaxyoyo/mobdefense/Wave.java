@@ -81,7 +81,8 @@ public class Wave implements Serializable
 				{
 					if (!entries.hasNext())
 					{
-						Bukkit.getScheduler().runTaskLater(MobDefense.instance(), () -> MobDefense.instance().startNextWave(), MobDefense.instance().getWaveTime() * 20L);
+						MobDefense.instance().setNextWaveTask(Bukkit.getScheduler().runTaskLater(MobDefense.instance(), () -> MobDefense.instance().startNextWave(), MobDefense
+								.instance().getWaveTime() * 20L));
 						cancel();
 						return;
 					}
