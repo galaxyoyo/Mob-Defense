@@ -52,7 +52,7 @@ permissions:
   mobdefense.command.setloc.npc.exchange:
     default: op
   mobdefense.demo:
-    default: op
+    default: false
     children:
       mobdefense.command.start: true
       mobdefense.command.stop: true

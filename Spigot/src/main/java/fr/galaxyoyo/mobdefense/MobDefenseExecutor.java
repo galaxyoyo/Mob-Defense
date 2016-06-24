@@ -229,7 +229,7 @@ public class MobDefenseExecutor implements CommandExecutor, TabCompleter
 		if (setloc)
 			cmd += ">";
 		if (!cmd.equals("/mobdefense <"))
-			sender.sendMessage(ChatColor.RED + "Usage: " + cmd);
+			sender.sendMessage(ChatColor.RED + "Usage: " + cmd + ">");
 		else
 			noPerm(sender);
 	}
