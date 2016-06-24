@@ -665,6 +665,7 @@ public class MobDefense extends JavaPlugin
 					tag.setInt("maxUses", Integer.MAX_VALUE);
 					tag.setByte("rewardExp", (byte) 0);
 					Object merchantRecipe = ReflectionUtils.newNMS("MerchantRecipe", new Class<?>[]{ReflectionUtils.getNMSClass("NBTTagCompound")}, tag.convertToNMS());
+					System.out.println(merchantRecipe);
 					//noinspection unchecked
 					recipes.add(merchantRecipe);
 				}

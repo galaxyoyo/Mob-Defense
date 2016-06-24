@@ -16,6 +16,7 @@ import org.bukkit.inventory.ItemStack;
 import org.bukkit.scheduler.BukkitRunnable;
 
 import java.io.Serializable;
+import java.util.Collection;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -136,14 +137,14 @@ public class Wave implements Serializable
 				Object handle = ReflectionUtils.invokeBukkitMethod("getHandle", c);
 				Object goalSelector = ReflectionUtils.getNMSField("EntityInsentient", handle, "goalSelector");
 				Object targetSelector = ReflectionUtils.getNMSField("EntityInsentient", handle, "targetSelector");
-				Set set = ReflectionUtils.getNMSField(goalSelector, "b");
-				set.clear();
-				set = ReflectionUtils.getNMSField(goalSelector, "c");
-				set.clear();
-				set = ReflectionUtils.getNMSField(targetSelector, "b");
-				set.clear();
-				set = ReflectionUtils.getNMSField(targetSelector, "c");
-				set.clear();
+				Collection pathfinders = ReflectionUtils.getNMSField(goalSelector, "b");
+				pathfinders.clear();
+				pathfinders = ReflectionUtils.getNMSField(goalSelector, "c");
+				pathfinders.clear();
+				pathfinders = ReflectionUtils.getNMSField(targetSelector, "b");
+				pathfinders.clear();
+				pathfinders = ReflectionUtils.getNMSField(targetSelector, "c");
+				pathfinders.clear();
 
 				creatureClasses.put(c, entry.get().getKey());
 				starts.put(c, MobDefense.instance().getSpawn().clone());
