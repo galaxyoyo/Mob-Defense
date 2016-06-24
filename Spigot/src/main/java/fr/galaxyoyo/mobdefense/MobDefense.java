@@ -315,13 +315,13 @@ public class MobDefense extends JavaPlugin
 				Wave wave1 = new Wave();
 				wave1.setNumber(1);
 				//noinspection OptionalGetWithoutIsPresent
-				wave1.getSpawns().put(mobClasses.values().stream().findAny().get(), 5);
+				wave1.getSpawns().put(mobClasses.values().stream().findAny().get(), 5.0D);
 				waves.add(wave1);
 
 				Wave wave2 = new Wave();
 				wave2.setNumber(2);
 				//noinspection OptionalGetWithoutIsPresent
-				wave2.getSpawns().put(mobClasses.values().stream().findAny().get(), 10);
+				wave2.getSpawns().put(mobClasses.values().stream().findAny().get(), 10.0D);
 				waves.add(wave2);
 			}
 			FileUtils.writeStringToFile(file, getGson().toJson(waves), StandardCharsets.UTF_8);
@@ -528,7 +528,8 @@ public class MobDefense extends JavaPlugin
 			else
 			{
 				currentWave.setNumber(currentWave.getNumber() + 1);
-				currentWave.getSpawns().entrySet().forEach(entry -> entry.setValue((int) (entry.getValue() * 1.2D)));
+				currentWave.getSpawns().entrySet().forEach(entry -> entry.setValue((entry.getValue() + entry.getValue() / (2 * Math.sqrt(currentWave.getNumber() - waves.size() + 1))
+				)));
 			}
 		}
 

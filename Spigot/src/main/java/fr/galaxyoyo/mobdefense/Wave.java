@@ -26,7 +26,7 @@ public class Wave implements Serializable
 	private static Map<Wave, Set<Creature>> waves = Maps.newHashMap();
 	private static Map<Creature, Wave> wavesByCreature = Maps.newHashMap();
 	private int number = -1;
-	private Map<MobClass, Integer> spawns = Maps.newHashMap();
+	private Map<MobClass, Double> spawns = Maps.newHashMap();
 	private Map<Creature, List<Tile>> creatureTiles = Maps.newHashMap();
 	private Map<Creature, Integer> creatureCurrentTile = Maps.newHashMap();
 	private Map<Creature, Location> starts = Maps.newHashMap();
@@ -57,7 +57,7 @@ public class Wave implements Serializable
 		}
 	}
 
-	public Map<MobClass, Integer> getSpawns()
+	public Map<MobClass, Double> getSpawns()
 	{
 		return spawns;
 	}
@@ -65,19 +65,19 @@ public class Wave implements Serializable
 	public void start()
 	{
 		AtomicInteger totalMobs = new AtomicInteger(0);
-		spawns.values().forEach(totalMobs::addAndGet);
+		spawns.values().forEach(delta -> totalMobs.addAndGet(delta.intValue()));
 		Bukkit.broadcastMessage("Starting wave #" + number + " (" + totalMobs.get() + (totalMobs.get() > 1 ? " mobs)" : " mob)"));
 
 		Set<Creature> creatures = Sets.newHashSet();
-		Iterator<Map.Entry<MobClass, Integer>> entries = spawns.entrySet().iterator();
-		AtomicReference<Map.Entry<MobClass, Integer>> entry = new AtomicReference<>(null);
+		Iterator<Map.Entry<MobClass, Double>> entries = spawns.entrySet().iterator();
+		AtomicReference<Map.Entry<MobClass, Double>> entry = new AtomicReference<>(null);
 		AtomicInteger current = new AtomicInteger(0);
 		new BukkitRunnable()
 		{
 			@Override
 			public void run()
 			{
-				if (entry.get() == null || current.incrementAndGet() >= entry.get().getValue())
+				if (entry.get() == null || current.incrementAndGet() >= entry.get().getValue().intValue())
 				{
 					if (!entries.hasNext())
 					{

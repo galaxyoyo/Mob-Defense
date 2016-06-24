@@ -22,11 +22,11 @@ public class WaveTypeAdapter extends TypeAdapter<Wave>
 		w.beginObject();
 		w.name("number").value(wave.getNumber());
 		w.name("spawns").beginArray();
-		for (Map.Entry<MobClass, Integer> spawn : wave.getSpawns().entrySet())
+		for (Map.Entry<MobClass, Double> spawn : wave.getSpawns().entrySet())
 		{
 			w.beginObject();
 			w.name("class").value(spawn.getKey().getName());
-			w.name("number").value(spawn.getValue());
+			w.name("number").value(spawn.getValue().intValue());
 			w.endObject();
 		}
 		w.endArray();
@@ -67,7 +67,7 @@ public class WaveTypeAdapter extends TypeAdapter<Wave>
 						}
 					}
 					r.endObject();
-					wave.getSpawns().put(mobClass, number);
+					wave.getSpawns().put(mobClass, (double) number);
 				}
 				r.endArray();
 			}
