@@ -216,6 +216,7 @@ public class Wave implements Serializable
 		}
 		catch (AStar.InvalidPathException ignored)
 		{
+			return false;
 		}
 		return true;
 	}

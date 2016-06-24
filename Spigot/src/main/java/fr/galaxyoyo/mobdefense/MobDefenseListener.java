@@ -171,6 +171,7 @@ public class MobDefenseListener implements Listener
 			ItemMeta meta = stack.getItemMeta();
 			meta.setDisplayName(t.getRegistration().getDisplayName());
 			meta.setLore(t.getRegistration().getLore());
+			meta.addItemFlags(ItemFlag.HIDE_PLACED_ON);
 			stack.setItemMeta(meta);
 			List<Material> list = Arrays.stream(Material.values()).filter(Material::isSolid).collect(Collectors.toList());
 			ItemStackUtils.setCanPlaceOn(stack, list.toArray(new Material[list.size()]));
