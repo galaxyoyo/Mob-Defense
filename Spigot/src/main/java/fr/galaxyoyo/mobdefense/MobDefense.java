@@ -610,7 +610,8 @@ public class MobDefense extends JavaPlugin
 					l.add(merchantRecipe);
 				}
 			}
-			npcTower.setRecipes(recipes);
+			if (!recipes.isEmpty())
+				npcTower.setRecipes(recipes);
 			npcTower.setCustomName("Towers");
 		}
 
@@ -657,7 +658,8 @@ public class MobDefense extends JavaPlugin
 					l.add(merchantRecipe);
 				}
 			}
-			npcUpgrades.setRecipes(recipes);
+			if (!recipes.isEmpty())
+				npcUpgrades.setRecipes(recipes);
 			npcUpgrades.setCustomName("Upgrades");
 		}
 
