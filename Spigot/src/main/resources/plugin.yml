@@ -6,7 +6,6 @@ after: NBTAPI
 
 commands:
   mobdefense:
-    permission: mobdefense.command
     aliases:
     - mobdef
     - mdef
@@ -14,5 +13,48 @@ commands:
     - md
 
 permissions:
-  mobdefense.command:
+  mobdefense.command.*:
     default: op
+    children:
+      mobdefense.command.start: true
+      mobdefense.command.stop: true
+      mobdefense.command.nextWave: true
+      mobdefense.command.setloc.*: true
+  mobdefense.command.start:
+    default: op
+  mobdefense.command.stop:
+    default: op
+  mobdefense.command.nextWave:
+    default: op
+  mobdefense.command.setloc.*:
+    default: op
+    children:
+      mobdefense.command.setloc.spawn: true
+      mobdefense.command.setloc.end: true
+      mobdefense.command.setloc.playerSpawn: true
+      mobdefense.command.setloc.npc.*: true
+  mobdefense.command.setloc.spawn:
+    default: op
+  mobdefense.command.setloc.end:
+    default: op
+  mobdefense.command.setloc.playerSpawn:
+    default: op
+  mobdefense.command.setloc.npc.*:
+    default: op
+    children:
+      mobdefense.command.setloc.npc.towers: true
+      mobdefense.command.setloc.npc.upgrades: true
+      mobdefense.command.setloc.npc.exchange: true
+  mobdefense.command.setloc.npc.towers:
+    default: op
+  mobdefense.command.setloc.npc.upgrades:
+    default: op
+  mobdefense.command.setloc.npc.exchange:
+    default: op
+  mobdefense.demo:
+    default: op
+    children:
+      mobdefense.command.start: true
+      mobdefense.command.stop: true
+      mobdefense.command.nextWave: true
+      mobdefense.command.setloc.*: false

@@ -66,6 +66,19 @@ public class MobDefenseListener implements Listener
 		if (event.getPlayer().isOp() && MobDefense.instance().getLatestVersion() != null)
 			event.getPlayer().sendMessage(ChatColor.RED + "[MobDefense] You're running an outdated version of MobDefense (" + MobDefense.instance().getDescription().getVersion()
 					+ "). Please update to " + MobDefense.instance().getLatestVersion() + ".");
+
+		if (Boolean.valueOf(System.getProperty("mobdefense.demo")) == Boolean.TRUE)
+		{
+			event.getPlayer().addAttachment(MobDefense.instance(), "mobdefense.demo", true);
+			event.getPlayer().sendMessage("[MobDefense] Hello!");
+			event.getPlayer().sendMessage("[MobDefense] You're on the test server of Mob Defense.");
+			event.getPlayer().sendMessage("[MobDefense] You are not opped, but you can run the /md command, which is normally provided for ops.");
+			event.getPlayer().sendMessage("[MobDefense] You're able to run this demo whenever you want, but don't forget that players can join when they want.");
+			event.getPlayer().sendMessage("[MobDefense] This server is made to test the plugin, not to play with it. So please leave the place to some other testers when you have " +
+					"finished to test it.");
+			event.getPlayer().sendMessage("[MobDefense] The configuration couldn't be modified, and /md setloc isn't available.");
+			event.getPlayer().sendMessage("[MobDefense] I hope you'll enjoy the plugin :)");
+		}
 	}
 
 	@EventHandler

@@ -25,6 +25,9 @@ public class MobDefenseExecutor implements CommandExecutor, TabCompleter
 
 		if (args[0].equalsIgnoreCase("start"))
 		{
+			if (!sender.hasPermission("mobdefense.command.start"))
+				return noPerm(sender);
+
 			if (!Wave.checkForPath())
 			{
 				sender.sendMessage(ChatColor.RED + "[MobDefense] Error: no path can be found. Please update the map.");
@@ -35,11 +38,17 @@ public class MobDefenseExecutor implements CommandExecutor, TabCompleter
 		}
 		else if (args[0].equalsIgnoreCase("stop"))
 		{
+			if (!sender.hasPermission("mobdefense.command.stop"))
+				return noPerm(sender);
+
 			MobDefense.instance().stop(sender);
 			return true;
 		}
 		else if (args[0].equalsIgnoreCase("nextWave"))
 		{
+			if (!sender.hasPermission("mobdefense.command.nextWave"))
+				return noPerm(sender);
+
 			if (!MobDefense.instance().isStarted())
 			{
 				sender.sendMessage(ChatColor.RED + "[MobDefense] Error: no game is started.");
@@ -71,11 +80,26 @@ public class MobDefenseExecutor implements CommandExecutor, TabCompleter
 			loc.setPitch(NumberConversions.floor(loc.getPitch() / 45) * 45);
 
 			if (args[1].equalsIgnoreCase("spawn"))
+			{
+				if (!sender.hasPermission("mobdefense.command.setloc.spawn"))
+					return noPerm(sender);
+
 				MobDefense.instance().setSpawn(loc);
+			}
 			else if (args[1].equalsIgnoreCase("end"))
+			{
+				if (!sender.hasPermission("mobdefense.command.setloc.end"))
+					return noPerm(sender);
+
 				MobDefense.instance().setEnd(loc);
+			}
 			else if (args[1].equalsIgnoreCase("playerSpawn"))
+			{
+				if (!sender.hasPermission("mobdefense.command.setloc.playerSpawn"))
+					return noPerm(sender);
+
 				MobDefense.instance().setPlayerSpawn(loc);
+			}
 			else if (args[1].equalsIgnoreCase("npc"))
 			{
 				if (args.length == 2)
@@ -85,11 +109,26 @@ public class MobDefenseExecutor implements CommandExecutor, TabCompleter
 				}
 
 				if (args[2].equalsIgnoreCase("towers"))
+				{
+					if (!sender.hasPermission("mobdefense.command.setloc.npc.towers"))
+						return noPerm(sender);
+
 					MobDefense.instance().setNpcTowerLoc(loc);
+				}
 				else if (args[2].equalsIgnoreCase("upgrades"))
+				{
+					if (!sender.hasPermission("mobdefense.command.setloc.npc.upgrades"))
+						return noPerm(sender);
+
 					MobDefense.instance().setNpcUpgradesLoc(loc);
+				}
 				else if (args[2].equalsIgnoreCase("exchange"))
+				{
+					if (!sender.hasPermission("mobdefense.command.setloc.npc.exchange"))
+						return noPerm(sender);
+
 					MobDefense.instance().setNpcExchangeLoc(loc);
+				}
 				else
 				{
 					printUsage(sender);
@@ -113,8 +152,92 @@ public class MobDefenseExecutor implements CommandExecutor, TabCompleter
 
 	public void printUsage(CommandSender sender)
 	{
-		sender.sendMessage(ChatColor.RED + "Usage : /mobdefense <start | stop | setloc <spawn | end | playerSpawn | npc <towers | " +
-				"upgrades | exchange>>>");
+		String cmd = "/mobdefense <";
+		if (sender.hasPermission("mobdefense.command.start"))
+			cmd += "start | ";
+		if (sender.hasPermission("mobdefense.command.stop"))
+			cmd += "stop | ";
+		if (sender.hasPermission("mobdefense.command.nextWave"))
+			cmd += "nextWave | ";
+		boolean setloc = false;
+		if (sender.hasPermission("mobdefense.command.setloc.spawn"))
+		{
+			setloc = true;
+			cmd += "setloc <spawn | ";
+		}
+		if (sender.hasPermission("mobdefense.command.setloc.end"))
+		{
+			if (!setloc)
+			{
+				setloc = true;
+				cmd += "setloc <";
+			}
+			cmd += "end | ";
+		}
+		if (sender.hasPermission("mobdefense.command.setloc.playerSpawn"))
+		{
+			if (!setloc)
+			{
+				setloc = true;
+				cmd += "setloc <";
+			}
+			cmd += "playerSpawn | ";
+		}
+		boolean npc = false;
+		if (sender.hasPermission("mobdefense.command.setloc.npc.towers"))
+		{
+			if (!setloc)
+			{
+				setloc = true;
+				cmd += "setloc <";
+			}
+			npc = true;
+			cmd += "npc <towers | ";
+		}
+		if (sender.hasPermission("mobdefense.command.setloc.npc.upgrades"))
+		{
+			if (!setloc)
+			{
+				setloc = true;
+				cmd += "setloc <";
+			}
+			if (!npc)
+			{
+				npc = true;
+				cmd += "npc <";
+			}
+			cmd += "upgrades | ";
+		}
+		if (sender.hasPermission("mobdefense.command.setloc.npc.exchange"))
+		{
+			if (!setloc)
+			{
+				setloc = true;
+				cmd += "setloc <";
+			}
+			if (!npc)
+			{
+				npc = true;
+				cmd += "npc <";
+			}
+			cmd += "exchange";
+		}
+		if (cmd.endsWith(" | "))
+			cmd = cmd.substring(0, cmd.length() - 3);
+		if (npc)
+			cmd += ">";
+		if (setloc)
+			cmd += ">";
+		if (!cmd.equals("/mobdefense <"))
+			sender.sendMessage(ChatColor.RED + "Usage: " + cmd);
+		else
+			noPerm(sender);
+	}
+
+	public boolean noPerm(CommandSender sender)
+	{
+		sender.sendMessage(ChatColor.RED + "You don't have the permission to run this command.");
+		return true;
 	}
 
 	@Override
