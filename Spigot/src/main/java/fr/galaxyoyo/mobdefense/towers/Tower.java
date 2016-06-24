@@ -223,8 +223,13 @@ public abstract class Tower
 		else
 			clazz = (Class<T>) Arrow.class;
 		range *= rangeMultiplier / speedMultiplier;
-		T arrow = location.getWorld().spawnArrow(location.clone().add(face.getModX() + 0.5D, 0.5D, face.getModZ() + 0.5D), new Vector((range - 1) * face.getModX(), 0,
-				(range - 1) * face.getModZ()), speedMultiplier, -2, clazz);
+		Location loc = location.clone().add(face.getModX() + 0.5D, 0.5D, face.getModZ() + 0.5D);
+		Vector vec = new Vector((range - 1) * face.getModX(), 0, (range - 1) * face.getModZ());
+		T arrow;
+		if (clazz == Arrow.class)
+			arrow = (T) location.getWorld().spawnArrow(loc, vec, speedMultiplier, -2);
+		else
+			arrow = location.getWorld().spawnArrow(loc, vec, speedMultiplier, -2, clazz);
 		if (type != null)
 			((TippedArrow) arrow).setBasePotionData(new PotionData(type, type.isExtendable() && extended, type.isUpgradeable() && upgraded));
 		else if (spectralGlowingTicks > 0)

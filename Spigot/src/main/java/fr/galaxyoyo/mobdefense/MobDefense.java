@@ -207,6 +207,16 @@ public class MobDefense extends JavaPlugin
 		{
 			NMSUtils.ServerVersion version = NMSUtils.getServerVersion();
 			getLogger().info("You're running Minecraft server " + version.name() + ", for Minecraft " + version.getServerName() + ".");
+			if (version.isBefore1_9())
+			{
+				getLogger().warning("**************************************************************************************************");
+				getLogger().warning("Warning: the 1.8 version of MobDefense contains less features as 1.9 and 1.10, like tipped arrows.");
+				getLogger().warning("It mays contain some compatibility issues. I'm able to fix these, so please report  them.");
+				getLogger().warning("But please note that in some versions, this compatiblity will be removed.");
+				getLogger().warning("If you want a better gameplay, please update your server to 1.9.4 or 1.10 (1.10 recomended).");
+				getLogger().warning("There's no plugin update required.");
+				getLogger().warning("**************************************************************************************************");
+			}
 		}
 		catch (UnsupportedClassVersionError error)
 		{
