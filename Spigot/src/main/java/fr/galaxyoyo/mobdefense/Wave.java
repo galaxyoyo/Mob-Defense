@@ -225,7 +225,7 @@ public class Wave implements Serializable
 		Location start = starts.get(c);
 		Tile currentTile = creatureTiles.get(c).get(creatureCurrentTile.get(c));
 		Tile next = currentTile;
-		if (currentTile.getLocation(starts.get(c)).distanceSquared(c.getLocation()) < 2)
+		if (currentTile.getLocation(starts.get(c)).distanceSquared(c.getLocation()) < 2 * Math.pow(creatureClasses.get(c).getSpeed(), 2))
 		{
 			int tileId = creatureCurrentTile.get(c) + 1;
 			if (tileId < creatureTiles.get(c).size())
