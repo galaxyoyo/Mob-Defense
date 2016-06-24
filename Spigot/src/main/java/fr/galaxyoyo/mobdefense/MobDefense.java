@@ -531,7 +531,6 @@ public class MobDefense extends JavaPlugin
 			{
 				currentWave.setNumber(currentWave.getNumber() + 1);
 				currentWave.getSpawns().entrySet().forEach(entry -> entry.setValue((entry.getValue() + entry.getValue() / (Math.sqrt(currentWave.getNumber() - waves.size() + 1)))));
-				System.out.println(currentWave.getSpawns().values());
 			}
 		}
 
