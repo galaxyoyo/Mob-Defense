@@ -101,7 +101,8 @@ public class Wave implements Serializable
 				if (c instanceof Zombie)
 				{
 					((Zombie) c).setBaby(false);
-					((Zombie) c).setVillagerProfession(NMSUtils.getServerVersion().isAfter1_10() ? Villager.Profession.NORMAL : null);
+					if (NMSUtils.getServerVersion().isAfter1_9())
+						((Zombie) c).setVillagerProfession(NMSUtils.getServerVersion().isAfter1_10() ? Villager.Profession.NORMAL : null);
 				}
 				if (c instanceof Skeleton)
 					((Skeleton) c).setSkeletonType(Skeleton.SkeletonType.NORMAL);
