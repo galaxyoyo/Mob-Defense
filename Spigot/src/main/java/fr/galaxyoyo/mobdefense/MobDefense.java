@@ -594,7 +594,7 @@ public class MobDefense extends JavaPlugin
 				result.setItemMeta(meta);
 				List<Material> list = Arrays.stream(Material.values()).filter(Material::isSolid).collect(Collectors.toList());
 				ItemStackUtils.setCanPlaceOn(result, list.toArray(new Material[list.size()]));
-				if (NMSUtils.getServerVersion().isAfter1_9())
+				if (NMSUtils.getServerVersion().isBefore1_9())
 				{
 					MerchantRecipe recipe = new MerchantRecipe(result, 0, Integer.MAX_VALUE, true);
 					recipe.setIngredients(Lists.newArrayList(tr.getCost()));
@@ -639,7 +639,7 @@ public class MobDefense extends JavaPlugin
 			NMSUtils.setEntityYaw(npcUpgrades, loc.getYaw());
 			npcUpgrades.setProfession(Villager.Profession.LIBRARIAN);
 			List recipes = Lists.newArrayList();
-			if (NMSUtils.getServerVersion().isAfter1_9())
+			if (NMSUtils.getServerVersion().isBefore1_9())
 			{
 				Object handle = ReflectionUtils.invokeBukkitMethod("getHandle", npcUpgrades);
 				recipes = ReflectionUtils.invokeNMSMethod("getOffers", handle, new Class<?>[]{ReflectionUtils.getNMSClass("EntityHuman")}, (Object) null);
@@ -665,7 +665,6 @@ public class MobDefense extends JavaPlugin
 					tag.setInt("maxUses", Integer.MAX_VALUE);
 					tag.setByte("rewardExp", (byte) 0);
 					Object merchantRecipe = ReflectionUtils.newNMS("MerchantRecipe", new Class<?>[]{ReflectionUtils.getNMSClass("NBTTagCompound")}, tag.convertToNMS());
-					System.out.println(merchantRecipe);
 					//noinspection unchecked
 					recipes.add(merchantRecipe);
 				}
