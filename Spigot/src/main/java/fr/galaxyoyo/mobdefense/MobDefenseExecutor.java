@@ -246,11 +246,51 @@ public class MobDefenseExecutor implements CommandExecutor, TabCompleter
 		List<String> options;
 
 		if (args.length == 1)
+		{
 			options = Lists.newArrayList("start", "stop", "nextWave", "setloc");
+			options.removeIf(option ->
+			{
+				if (option.equals("setloc"))
+				{
+					String[] subs = {"spawn", "end", "playerSpawn"};
+					for (String sub : subs)
+					{
+						if (sender.hasPermission("mobdefense.command.setloc." + sub))
+							return false;
+					}
+					subs = new String[]{"towers", "upgrades", "exchange"};
+					for (String sub : subs)
+					{
+						if (sender.hasPermission("mobdefense.command.setloc.npc." + sub))
+							return false;
+					}
+					return true;
+				}
+				return !sender.hasPermission("mobdefense.command." + option);
+			});
+		}
 		else if (args.length == 2 && args[0].equalsIgnoreCase("setloc"))
+		{
 			options = Lists.newArrayList("spawn", "end", "playerSpawn", "npc");
+			options.removeIf(option ->
+			{
+				if (option.equals("npc"))
+				{
+					String[] subs = {"towers", "upgrades", "exchange"};
+					for (String sub : subs)
+					{
+						if (sender.hasPermission("mobdefense.command.setloc.npc." + sub))
+							return false;
+					}
+				}
+				return !sender.hasPermission("mobdefense.command." + option);
+			});
+		}
 		else if (args.length == 3 && args[0].equalsIgnoreCase("setloc") && args[1].equalsIgnoreCase("npc"))
+		{
 			options = Lists.newArrayList("towers", "upgrades", "exchange");
+			options.removeIf(option -> !sender.hasPermission("mobdefense.command.setloc.npc." + option));
+		}
 		else
 			options = Lists.newArrayList();
 
