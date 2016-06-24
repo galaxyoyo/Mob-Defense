@@ -588,9 +588,27 @@ public class MobDefense extends JavaPlugin
 				result.setItemMeta(meta);
 				List<Material> list = Arrays.stream(Material.values()).filter(Material::isSolid).collect(Collectors.toList());
 				ItemStackUtils.setCanPlaceOn(result, list.toArray(new Material[list.size()]));
-				MerchantRecipe recipe = new MerchantRecipe(result, 0, Integer.MAX_VALUE, true);
-				recipe.setIngredients(Lists.newArrayList(tr.getCost()));
-				recipes.add(recipe);
+				if (NMSUtils.getServerVersion().isAfter1_9())
+				{
+					MerchantRecipe recipe = new MerchantRecipe(result, 0, Integer.MAX_VALUE, true);
+					recipe.setIngredients(Lists.newArrayList(tr.getCost()));
+					recipes.add(recipe);
+				}
+				else
+				{
+					TagCompound tag = new TagCompound();
+					tag.setCompound("buy", ItemStackUtils.getAllStackCompound(tr.getCost()[0]));
+					if (tr.getCost().length >= 2)
+						tag.setCompound("buyB", ItemStackUtils.getAllStackCompound(tr.getCost()[1]));
+					tag.setCompound("sell", ItemStackUtils.getAllStackCompound(result));
+					tag.setInt("maxUses", Integer.MAX_VALUE);
+					tag.setByte("rewardExp", (byte) 0);
+					Object merchantRecipe = ReflectionUtils.newNMS("MerchantRecipe", new Class<?>[]{ReflectionUtils.getNMSClass("NBTTagCompound")}, tag.convertToNMS());
+					Object handle = ReflectionUtils.invokeBukkitMethod("getHandle", npcTower);
+					List l = ReflectionUtils.invokeNMSMethod("getOffers", handle, new Class<?>[]{ReflectionUtils.getNMSClass("EntityHuman")}, (Object) null);
+					//noinspection unchecked
+					l.add(merchantRecipe);
+				}
 			}
 			npcTower.setRecipes(recipes);
 			npcTower.setCustomName("Towers");
@@ -617,9 +635,27 @@ public class MobDefense extends JavaPlugin
 			for (UpgradeRegistration ur : Upgrade.getUpgradeRegistrations())
 			{
 				ItemStack result = ur.getItem().clone();
-				MerchantRecipe recipe = new MerchantRecipe(result, 0, Integer.MAX_VALUE, true);
-				recipe.setIngredients(Lists.newArrayList(ur.getCost()));
-				recipes.add(recipe);
+				if (NMSUtils.getServerVersion().isAfter1_9())
+				{
+					MerchantRecipe recipe = new MerchantRecipe(result, 0, Integer.MAX_VALUE, true);
+					recipe.setIngredients(Lists.newArrayList(ur.getCost()));
+					recipes.add(recipe);
+				}
+				else
+				{
+					TagCompound tag = new TagCompound();
+					tag.setCompound("buy", ItemStackUtils.getAllStackCompound(ur.getCost()[0]));
+					if (ur.getCost().length >= 2)
+						tag.setCompound("buyB", ItemStackUtils.getAllStackCompound(ur.getCost()[1]));
+					tag.setCompound("sell", ItemStackUtils.getAllStackCompound(result));
+					tag.setInt("maxUses", Integer.MAX_VALUE);
+					tag.setByte("rewardExp", (byte) 0);
+					Object merchantRecipe = ReflectionUtils.newNMS("MerchantRecipe", new Class<?>[]{ReflectionUtils.getNMSClass("NBTTagCompound")}, tag.convertToNMS());
+					Object handle = ReflectionUtils.invokeBukkitMethod("getHandle", npcUpgrades);
+					List l = ReflectionUtils.invokeNMSMethod("getOffers", handle, new Class<?>[]{ReflectionUtils.getNMSClass("EntityHuman")}, (Object) null);
+					//noinspection unchecked
+					l.add(merchantRecipe);
+				}
 			}
 			npcUpgrades.setRecipes(recipes);
 			npcUpgrades.setCustomName("Upgrades");
@@ -642,24 +678,50 @@ public class MobDefense extends JavaPlugin
 			}
 			NMSUtils.setEntityYaw(npcExchange, loc.getYaw());
 			npcExchange.setProfession(Villager.Profession.BLACKSMITH);
-			MerchantRecipe nuggetToIngot = new MerchantRecipe(new ItemStack(Material.GOLD_INGOT), 0, Integer.MAX_VALUE, true);
-			MerchantRecipe ingotToNugget = new MerchantRecipe(new ItemStack(Material.GOLD_NUGGET, 9), 0, Integer.MAX_VALUE, true);
-			MerchantRecipe ingotToBlock = new MerchantRecipe(new ItemStack(Material.GOLD_BLOCK), 0, Integer.MAX_VALUE, true);
-			MerchantRecipe blockToIngot = new MerchantRecipe(new ItemStack(Material.GOLD_INGOT, 9), 0, Integer.MAX_VALUE, true);
-			MerchantRecipe blockToEmerald = new MerchantRecipe(new ItemStack(Material.EMERALD), 0, Integer.MAX_VALUE, true);
-			MerchantRecipe emeraldToBlock = new MerchantRecipe(new ItemStack(Material.GOLD_BLOCK, 9), 0, Integer.MAX_VALUE, true);
-			MerchantRecipe emeraldToEBlock = new MerchantRecipe(new ItemStack(Material.EMERALD_BLOCK), 0, Integer.MAX_VALUE, true);
-			MerchantRecipe eBlockToEmerald = new MerchantRecipe(new ItemStack(Material.EMERALD, 9), 0, Integer.MAX_VALUE, true);
-			nuggetToIngot.addIngredient(new ItemStack(Material.GOLD_NUGGET, 9));
-			ingotToNugget.addIngredient(new ItemStack(Material.GOLD_INGOT));
-			ingotToBlock.addIngredient(new ItemStack(Material.GOLD_INGOT, 9));
-			blockToIngot.addIngredient(new ItemStack(Material.GOLD_BLOCK));
-			blockToEmerald.addIngredient(new ItemStack(Material.GOLD_BLOCK, 9));
-			emeraldToBlock.addIngredient(new ItemStack(Material.EMERALD));
-			emeraldToEBlock.addIngredient(new ItemStack(Material.EMERALD, 9));
-			eBlockToEmerald.addIngredient(new ItemStack(Material.EMERALD_BLOCK));
-			npcExchange
-					.setRecipes(Lists.newArrayList(nuggetToIngot, ingotToNugget, ingotToBlock, blockToIngot, blockToEmerald, emeraldToBlock, emeraldToEBlock, eBlockToEmerald));
+			Material[] mats = new Material[]{Material.GOLD_NUGGET, Material.GOLD_INGOT, Material.GOLD_BLOCK, Material.EMERALD, Material.EMERALD_BLOCK};
+			if (NMSUtils.getServerVersion().isAfter1_9())
+			{
+				List<MerchantRecipe> recipes = Lists.newArrayList();
+				for (int j = 0; j < mats.length - 1; j++)
+				{
+					ItemStack cost = new ItemStack(mats[j + 1], 9);
+					ItemStack result = new ItemStack(mats[j + 1]);
+					MerchantRecipe recipe1 = new MerchantRecipe(result, 0, Integer.MAX_VALUE, true);
+					MerchantRecipe recipe2 = new MerchantRecipe(cost, 0, Integer.MAX_VALUE, true);
+					recipe1.addIngredient(cost);
+					recipe2.addIngredient(result);
+					recipes.add(recipe1);
+					recipes.add(recipe2);
+				}
+				npcExchange.setRecipes(recipes);
+			}
+			else
+			{
+				Object handle = ReflectionUtils.invokeBukkitMethod("getHandle", npcExchange);
+				List l = ReflectionUtils.invokeNMSMethod("getOffers", handle, new Class<?>[]{ReflectionUtils.getNMSClass("EntityHuman")}, (Object) null);
+				for (int j = 0; j < mats.length - 1; j++)
+				{
+					ItemStack cost = new ItemStack(mats[j + 1], 9);
+					ItemStack result = new ItemStack(mats[j + 1]);
+					TagCompound tag1 = new TagCompound();
+					tag1.setCompound("buy", ItemStackUtils.getAllStackCompound(cost));
+					tag1.setCompound("sell", ItemStackUtils.getAllStackCompound(result));
+					tag1.setInt("maxUses", Integer.MAX_VALUE);
+					tag1.setByte("rewardExp", (byte) 0);
+					TagCompound tag2 = new TagCompound();
+					tag2.setCompound("buy", ItemStackUtils.getAllStackCompound(result));
+					tag2.setCompound("sell", ItemStackUtils.getAllStackCompound(cost));
+					tag2.setInt("maxUses", Integer.MAX_VALUE);
+					tag2.setByte("rewardExp", (byte) 0);
+					Object merchantRecipe1 = ReflectionUtils.newNMS("MerchantRecipe", new Class<?>[]{ReflectionUtils.getNMSClass("NBTTagCompound")}, tag1.convertToNMS());
+					Object merchantRecipe2 = ReflectionUtils.newNMS("MerchantRecipe", new Class<?>[]{ReflectionUtils.getNMSClass("NBTTagCompound")}, tag2.convertToNMS());
+					//noinspection unchecked
+					l.add(merchantRecipe1);
+					//noinspection unchecked
+					l.add(merchantRecipe2);
+
+				}
+			}
 			npcExchange.setCustomName("Exchange");
 		}
 
