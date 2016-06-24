@@ -578,7 +578,7 @@ public class MobDefense extends JavaPlugin
 			NMSUtils.setEntityYaw(npcTower, loc.getYaw());
 			npcTower.setProfession(Villager.Profession.FARMER);
 			List recipes = Lists.newArrayList();
-			if (NMSUtils.getServerVersion().isAfter1_9())
+			if (NMSUtils.getServerVersion().isBefore1_9())
 			{
 				Object handle = ReflectionUtils.invokeBukkitMethod("getHandle", npcTower);
 				recipes = ReflectionUtils.invokeNMSMethod("getOffers", handle, new Class<?>[]{ReflectionUtils.getNMSClass("EntityHuman")}, (Object) null);
@@ -594,7 +594,7 @@ public class MobDefense extends JavaPlugin
 				result.setItemMeta(meta);
 				List<Material> list = Arrays.stream(Material.values()).filter(Material::isSolid).collect(Collectors.toList());
 				ItemStackUtils.setCanPlaceOn(result, list.toArray(new Material[list.size()]));
-				if (NMSUtils.getServerVersion().isBefore1_9())
+				if (NMSUtils.getServerVersion().isAfter1_9())
 				{
 					MerchantRecipe recipe = new MerchantRecipe(result, 0, Integer.MAX_VALUE, true);
 					recipe.setIngredients(Lists.newArrayList(tr.getCost()));
