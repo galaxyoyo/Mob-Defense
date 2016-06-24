@@ -67,7 +67,7 @@ public class MobDefenseListener implements Listener
 			event.getPlayer().sendMessage(ChatColor.RED + "[MobDefense] You're running an outdated version of MobDefense (" + MobDefense.instance().getDescription().getVersion()
 					+ "). Please update to " + MobDefense.instance().getLatestVersion() + ".");
 
-		if (Boolean.valueOf(System.getProperty("mobdefense.demo")) == Boolean.TRUE)
+		if (!event.getPlayer().isOp() && Boolean.valueOf(System.getProperty("mobdefense.demo")) == Boolean.TRUE)
 		{
 			event.getPlayer().addAttachment(MobDefense.instance(), "mobdefense.demo", true);
 			event.getPlayer().sendMessage("[MobDefense] Hello!");
