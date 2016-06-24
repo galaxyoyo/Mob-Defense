@@ -33,8 +33,10 @@ import org.bukkit.inventory.meta.ItemMeta;
 import org.bukkit.scoreboard.DisplaySlot;
 import org.bukkit.scoreboard.Score;
 
+import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 public class MobDefenseListener implements Listener
 {
@@ -170,6 +172,8 @@ public class MobDefenseListener implements Listener
 			meta.setDisplayName(t.getRegistration().getDisplayName());
 			meta.setLore(t.getRegistration().getLore());
 			stack.setItemMeta(meta);
+			List<Material> list = Arrays.stream(Material.values()).filter(Material::isSolid).collect(Collectors.toList());
+			ItemStackUtils.setCanPlaceOn(stack, list.toArray(new Material[list.size()]));
 			t.getLocation().getWorld().dropItem(t.getLocation(), stack);
 		}
 		Wave.getAllCreatures().forEach(Wave::recalculate);
