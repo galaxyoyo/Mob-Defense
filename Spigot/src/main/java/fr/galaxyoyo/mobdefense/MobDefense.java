@@ -577,7 +577,13 @@ public class MobDefense extends JavaPlugin
 			}
 			NMSUtils.setEntityYaw(npcTower, loc.getYaw());
 			npcTower.setProfession(Villager.Profession.FARMER);
-			List<MerchantRecipe> recipes = Lists.newArrayList();
+			List recipes = Lists.newArrayList();
+			if (NMSUtils.getServerVersion().isAfter1_9())
+			{
+				Object handle = ReflectionUtils.invokeBukkitMethod("getHandle", npcTower);
+				recipes = ReflectionUtils.invokeNMSMethod("getOffers", handle, new Class<?>[]{ReflectionUtils.getNMSClass("EntityHuman")}, (Object) null);
+				recipes.clear();
+			}
 			for (TowerRegistration tr : Tower.getTowerRegistrations())
 			{
 				ItemStack result = new ItemStack(Material.DISPENSER);
@@ -592,6 +598,7 @@ public class MobDefense extends JavaPlugin
 				{
 					MerchantRecipe recipe = new MerchantRecipe(result, 0, Integer.MAX_VALUE, true);
 					recipe.setIngredients(Lists.newArrayList(tr.getCost()));
+					//noinspection unchecked
 					recipes.add(recipe);
 				}
 				else
@@ -604,13 +611,12 @@ public class MobDefense extends JavaPlugin
 					tag.setInt("maxUses", Integer.MAX_VALUE);
 					tag.setByte("rewardExp", (byte) 0);
 					Object merchantRecipe = ReflectionUtils.newNMS("MerchantRecipe", new Class<?>[]{ReflectionUtils.getNMSClass("NBTTagCompound")}, tag.convertToNMS());
-					Object handle = ReflectionUtils.invokeBukkitMethod("getHandle", npcTower);
-					List l = ReflectionUtils.invokeNMSMethod("getOffers", handle, new Class<?>[]{ReflectionUtils.getNMSClass("EntityHuman")}, (Object) null);
 					//noinspection unchecked
-					l.add(merchantRecipe);
+					recipes.add(merchantRecipe);
 				}
 			}
-			if (!recipes.isEmpty())
+			if (NMSUtils.getServerVersion().isAfter1_9())
+				//noinspection unchecked
 				npcTower.setRecipes(recipes);
 			npcTower.setCustomName("Towers");
 		}
@@ -632,7 +638,13 @@ public class MobDefense extends JavaPlugin
 			}
 			NMSUtils.setEntityYaw(npcUpgrades, loc.getYaw());
 			npcUpgrades.setProfession(Villager.Profession.LIBRARIAN);
-			List<MerchantRecipe> recipes = Lists.newArrayList();
+			List recipes = Lists.newArrayList();
+			if (NMSUtils.getServerVersion().isAfter1_9())
+			{
+				Object handle = ReflectionUtils.invokeBukkitMethod("getHandle", npcUpgrades);
+				recipes = ReflectionUtils.invokeNMSMethod("getOffers", handle, new Class<?>[]{ReflectionUtils.getNMSClass("EntityHuman")}, (Object) null);
+				recipes.clear();
+			}
 			for (UpgradeRegistration ur : Upgrade.getUpgradeRegistrations())
 			{
 				ItemStack result = ur.getItem().clone();
@@ -640,6 +652,7 @@ public class MobDefense extends JavaPlugin
 				{
 					MerchantRecipe recipe = new MerchantRecipe(result, 0, Integer.MAX_VALUE, true);
 					recipe.setIngredients(Lists.newArrayList(ur.getCost()));
+					//noinspection unchecked
 					recipes.add(recipe);
 				}
 				else
@@ -652,13 +665,12 @@ public class MobDefense extends JavaPlugin
 					tag.setInt("maxUses", Integer.MAX_VALUE);
 					tag.setByte("rewardExp", (byte) 0);
 					Object merchantRecipe = ReflectionUtils.newNMS("MerchantRecipe", new Class<?>[]{ReflectionUtils.getNMSClass("NBTTagCompound")}, tag.convertToNMS());
-					Object handle = ReflectionUtils.invokeBukkitMethod("getHandle", npcUpgrades);
-					List l = ReflectionUtils.invokeNMSMethod("getOffers", handle, new Class<?>[]{ReflectionUtils.getNMSClass("EntityHuman")}, (Object) null);
 					//noinspection unchecked
-					l.add(merchantRecipe);
+					recipes.add(merchantRecipe);
 				}
 			}
-			if (!recipes.isEmpty())
+			if (NMSUtils.getServerVersion().isAfter1_9())
+				//noinspection unchecked
 				npcUpgrades.setRecipes(recipes);
 			npcUpgrades.setCustomName("Upgrades");
 		}
@@ -686,7 +698,7 @@ public class MobDefense extends JavaPlugin
 				List<MerchantRecipe> recipes = Lists.newArrayList();
 				for (int j = 0; j < mats.length - 1; j++)
 				{
-					ItemStack cost = new ItemStack(mats[j + 1], 9);
+					ItemStack cost = new ItemStack(mats[j], 9);
 					ItemStack result = new ItemStack(mats[j + 1]);
 					MerchantRecipe recipe1 = new MerchantRecipe(result, 0, Integer.MAX_VALUE, true);
 					MerchantRecipe recipe2 = new MerchantRecipe(cost, 0, Integer.MAX_VALUE, true);
@@ -701,9 +713,10 @@ public class MobDefense extends JavaPlugin
 			{
 				Object handle = ReflectionUtils.invokeBukkitMethod("getHandle", npcExchange);
 				List l = ReflectionUtils.invokeNMSMethod("getOffers", handle, new Class<?>[]{ReflectionUtils.getNMSClass("EntityHuman")}, (Object) null);
+				l.clear();
 				for (int j = 0; j < mats.length - 1; j++)
 				{
-					ItemStack cost = new ItemStack(mats[j + 1], 9);
+					ItemStack cost = new ItemStack(mats[j], 9);
 					ItemStack result = new ItemStack(mats[j + 1]);
 					TagCompound tag1 = new TagCompound();
 					tag1.setCompound("buy", ItemStackUtils.getAllStackCompound(cost));
