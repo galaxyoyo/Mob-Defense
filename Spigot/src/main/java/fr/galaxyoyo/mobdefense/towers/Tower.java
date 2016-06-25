@@ -105,13 +105,13 @@ public abstract class Tower
 
 				if (!build)
 				{
+					breakAt(tower.location);
+					Wave.getAllCreatures().forEach(Wave::recalculate);
 					ItemStack s = stack.clone();
 					s.setAmount(1);
-					breakAt(tower.location);
 					List<Material> list = Arrays.stream(Material.values()).filter(Material::isSolid).collect(Collectors.toList());
 					ItemStackUtils.setCanPlaceOn(s, list.toArray(new Material[list.size()]));
 					tower.getLocation().getWorld().dropItem(tower.getLocation(), s);
-					Wave.getAllCreatures().forEach(Wave::recalculate);
 				}
 			});
 			return tower;
