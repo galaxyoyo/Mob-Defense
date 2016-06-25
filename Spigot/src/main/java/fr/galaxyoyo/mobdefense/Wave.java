@@ -205,7 +205,7 @@ public class Wave implements Serializable
 			if (pf.getPathingResult() == PathingResult.NO_PATH)
 				return false;
 			List<Tile> tiles = pf.iterate();
-			if (tiles == null)
+			if (tiles == null || tiles.isEmpty())
 				return false;
 			wavesByCreature.get(c).starts.put(c, c.getLocation().clone());
 			wavesByCreature.get(c).creatureCurrentTile.put(c, 1);

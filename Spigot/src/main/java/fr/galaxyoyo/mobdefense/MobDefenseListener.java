@@ -134,6 +134,9 @@ public class MobDefenseListener implements Listener
 					break;
 				}
 			}
+
+			if (!event.canBuild())
+				Bukkit.getScheduler().runTask(MobDefense.instance(), () -> Wave.getAllCreatures().forEach(Wave::recalculate));
 		}
 
 		if (event.getBlockPlaced().getType() == Material.DISPENSER)
