@@ -147,7 +147,7 @@ public class AStar
 
 		// lava, fire, wheat and ladders cannot be walked on, and of course air
 		// 85, 107 and 113 stops npcs climbing fences and fence gates
-		if (i != 10 && i != 11 && i != 51 && i != 59 && i != 65 && i != 0 && i != 85 && i < 183 && i > 192 && i != 107 && i != 113 && !canBlockBeWalkedThrough(i))
+		if (i != 10 && i != 11 && i != 51 && i != 59 && i != 65 && i != 0 && i != 85 && (i < 183 || i > 192) && i != 107 && i != 113 && !canBlockBeWalkedThrough(i))
 		{
 			// make sure the blocks above are air
 
