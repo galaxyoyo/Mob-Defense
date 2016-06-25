@@ -52,6 +52,7 @@ import java.net.HttpURLConnection;
 import java.net.URL;
 import java.nio.charset.StandardCharsets;
 import java.util.*;
+import java.util.logging.Level;
 import java.util.stream.Collectors;
 
 public class MobDefense extends JavaPlugin
@@ -279,9 +280,20 @@ public class MobDefense extends JavaPlugin
 
 			File file = new File(getDataFolder(), "mobs.json");
 			if (file.exists())
-				//noinspection unchecked
-				((List<MobClass>) getGson().fromJson(FileUtils.readFileToString(file, StandardCharsets.UTF_8), new TypeToken<ArrayList<MobClass>>() {}.getType()))
-						.forEach(mobClass -> mobClasses.put(mobClass.getName(), mobClass));
+			{
+				try
+				{
+					//noinspection unchecked
+					((List<MobClass>) getGson().fromJson(FileUtils.readFileToString(file, StandardCharsets.UTF_8), new TypeToken<ArrayList<MobClass>>() {}.getType()))
+							.forEach(mobClass -> mobClasses.put(mobClass.getName(), mobClass));
+				}
+				catch (Exception ex)
+				{
+					getLogger().log(Level.SEVERE, "Error while loading mobs config, please check this one. Plugin will now be disabled.", ex);
+					getPluginLoader().disablePlugin(this);
+					return;
+				}
+			}
 			else
 			{
 				//noinspection ResultOfMethodCallIgnored
@@ -316,7 +328,18 @@ public class MobDefense extends JavaPlugin
 
 			file = new File(getDataFolder(), "waves.json");
 			if (file.exists())
-				waves.addAll(getGson().fromJson(FileUtils.readFileToString(file, StandardCharsets.UTF_8), new TypeToken<ArrayList<Wave>>() {}.getType()));
+			{
+				try
+				{
+					waves.addAll(getGson().fromJson(FileUtils.readFileToString(file, StandardCharsets.UTF_8), new TypeToken<ArrayList<Wave>>() {}.getType()));
+				}
+				catch (Exception ex)
+				{
+					getLogger().log(Level.SEVERE, "Error while loading waves config, please check this one. Plugin will now be disabled.", ex);
+					getPluginLoader().disablePlugin(this);
+					return;
+				}
+			}
 			else
 			{
 				Wave wave1 = new Wave();
@@ -335,9 +358,21 @@ public class MobDefense extends JavaPlugin
 
 			file = new File(getDataFolder(), "towers.json");
 			if (file.exists())
-				//noinspection unchecked
-				((ArrayList<TowerRegistration>) getGson().fromJson(FileUtils.readFileToString(file, StandardCharsets.UTF_8), new TypeToken<ArrayList<TowerRegistration>>() {}.getType
-						())).forEach(Tower::registerTower);
+			{
+				try
+				{
+					//noinspection unchecked
+					((ArrayList<TowerRegistration>) getGson()
+							.fromJson(FileUtils.readFileToString(file, StandardCharsets.UTF_8), new TypeToken<ArrayList<TowerRegistration>>() {}.getType()))
+							.forEach(Tower::registerTower);
+				}
+				catch (Exception ex)
+				{
+					getLogger().log(Level.SEVERE, "Error while loading towers config, please check this one. Plugin will now be disabled.", ex);
+					getPluginLoader().disablePlugin(this);
+					return;
+				}
+			}
 			else
 			{
 				TowerRegistration basic = new TowerRegistration("ArrowEffectTower", "Simple Tower", Lists.newArrayList("Launches basic arrows twice every second.", "It is the most " +
@@ -369,9 +404,20 @@ public class MobDefense extends JavaPlugin
 
 			file = new File(getDataFolder(), "upgrades.json");
 			if (file.exists())
-				//noinspection unchecked
-				((ArrayList<UpgradeRegistration>) getGson().fromJson(FileUtils.readFileToString(file, StandardCharsets.UTF_8), new TypeToken<ArrayList<UpgradeRegistration>>() {}
-						.getType())).forEach(Upgrade::registerUpgrade);
+			{
+				try
+				{
+					//noinspection unchecked
+					((ArrayList<UpgradeRegistration>) getGson().fromJson(FileUtils.readFileToString(file, StandardCharsets.UTF_8), new TypeToken<ArrayList<UpgradeRegistration>>() {}
+							.getType())).forEach(Upgrade::registerUpgrade);
+				}
+				catch (Exception ex)
+				{
+					getLogger().log(Level.SEVERE, "Error while loading upgrades config, please check this one. Plugin will now be disabled.", ex);
+					getPluginLoader().disablePlugin(this);
+					return;
+				}
+			}
 			else
 			{
 				ItemStack stack = new ItemStack(Material.BOW);
