@@ -6,6 +6,7 @@ import fr.galaxyoyo.mobdefense.MobDefense;
 import fr.galaxyoyo.mobdefense.NMSUtils;
 import fr.galaxyoyo.mobdefense.Wave;
 import fr.galaxyoyo.mobdefense.upgrades.Upgrade;
+import fr.galaxyoyo.spigot.nbtapi.ItemStackUtils;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.Material;
@@ -21,8 +22,10 @@ import org.bukkit.potion.PotionType;
 import org.bukkit.scheduler.BukkitTask;
 import org.bukkit.util.Vector;
 
+import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
+import java.util.stream.Collectors;
 
 public abstract class Tower
 {
@@ -77,7 +80,8 @@ public abstract class Tower
 			byte data = loc.getBlock().getState().getData().getData();
 			Tower tower = registration.newInstance(towerLoc);
 			towersByLocation.put(towerLoc, tower);
-			Bukkit.getScheduler().runTask(MobDefense.instance(), () -> {
+			Bukkit.getScheduler().runTask(MobDefense.instance(), () ->
+			{
 				//noinspection deprecation
 				towerLoc.getBlock().setTypeIdAndData(Material.DISPENSER.getId(), data, true);
 				loc.getBlock().setType(tower.getRegistration().getMaterial());
@@ -102,7 +106,10 @@ public abstract class Tower
 				if (!build)
 				{
 					breakAt(tower.location);
-					Bukkit.getScheduler().runTask(MobDefense.instance(), () -> Wave.getAllCreatures().forEach(Wave::recalculate));
+					List<Material> list = Arrays.stream(Material.values()).filter(Material::isSolid).collect(Collectors.toList());
+					ItemStackUtils.setCanPlaceOn(stack, list.toArray(new Material[list.size()]));
+					tower.getLocation().getWorld().dropItem(tower.getLocation(), stack);
+					Wave.getAllCreatures().forEach(Wave::recalculate);
 				}
 			});
 			return tower;

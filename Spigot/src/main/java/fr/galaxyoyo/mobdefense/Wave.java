@@ -223,14 +223,36 @@ public class Wave implements Serializable
 		Location start = starts.get(c);
 		Tile currentTile = creatureTiles.get(c).get(creatureCurrentTile.get(c));
 		Tile next = currentTile;
-		if (currentTile.getLocation(starts.get(c)).distanceSquared(c.getLocation()) < 2)
+		int tileId = (int) (creatureCurrentTile.get(c) + creatureClasses.get(c).getSpeed());
+		if (tileId < creatureTiles.get(c).size())
 		{
-			int tileId = (int) (creatureCurrentTile.get(c) + creatureClasses.get(c).getSpeed());
-			if (tileId < creatureTiles.get(c).size())
+			next = creatureTiles.get(c).get(tileId);
+			Location currentLoc = currentTile.getLocation(start);
+			Location nextLoc = next.getLocation(start);
+			if (nextLoc.distanceSquared(c.getLocation()) > currentLoc.distanceSquared(c.getLocation()))
 			{
-				creatureCurrentTile.put(c, tileId);
-				next = creatureTiles.get(c).get(tileId);
+				int xDif = nextLoc.getBlockX() - currentLoc.getBlockX();
+				int zDif = nextLoc.getBlockZ() - currentLoc.getBlockZ();
+				if (zDif == 0 && xDif != 0)
+				{
+					if (xDif < 0 && c.getLocation().getX() > currentLoc.getX()
+							|| xDif > 0 && c.getLocation().getX() < currentLoc.getX())
+					{
+						next = currentTile;
+						tileId = creatureCurrentTile.get(c);
+					}
+				}
+				else if (zDif != 0 && xDif == 0)
+				{
+					if (zDif < 0 && c.getLocation().getZ() > currentLoc.getZ()
+							|| zDif > 0 && c.getLocation().getZ() < currentLoc.getZ())
+					{
+						next = currentTile;
+						tileId = creatureCurrentTile.get(c);
+					}
+				}
 			}
+			creatureCurrentTile.put(c, tileId);
 		}
 		Object handle = ReflectionUtils.invokeBukkitMethod("getHandle", c);
 		Object navigation = ReflectionUtils.invokeNMSMethod("EntityInsentient", "getNavigation", handle, new Class<?>[0]);
