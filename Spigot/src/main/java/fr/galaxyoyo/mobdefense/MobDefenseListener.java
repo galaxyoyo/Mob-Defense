@@ -118,32 +118,9 @@ public class MobDefenseListener implements Listener
 			});
 		}
 
-		if (!Wave.checkForPath())
-		{
-			event.setCancelled(true);
-			event.setBuild(false);
-		}
-		else
-		{
-			for (Creature c : Wave.getAllCreatures())
-			{
-				if (!Wave.recalculate(c))
-				{
-					event.setCancelled(true);
-					event.setBuild(false);
-					break;
-				}
-			}
-
-			if (!event.canBuild())
-				Bukkit.getScheduler().runTask(MobDefense.instance(), () -> Wave.getAllCreatures().forEach(Wave::recalculate));
-		}
-
 		if (event.getBlockPlaced().getType() == Material.DISPENSER)
 		{
-			if (!event.canBuild())
-				Tower.breakAt(event.getBlockPlaced().getLocation());
-			else if (event.getPlayer().getGameMode() != GameMode.CREATIVE)
+			if (event.getPlayer().getGameMode() != GameMode.CREATIVE)
 			{
 				ItemStack stack = event.getItemInHand();
 				if (stack.getAmount() > 1)

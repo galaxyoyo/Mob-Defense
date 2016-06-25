@@ -48,8 +48,7 @@ public class Wave implements Serializable
 		try
 		{
 			AStar as = new AStar(MobDefense.instance().getSpawn().clone().subtract(0, 1, 0), MobDefense.instance().getEnd().clone().subtract(0, 1, 0), 100);
-			as.iterate();
-			return as.getPathingResult() == PathingResult.SUCCESS;
+			return as.iterate().size() > 0 && as.getPathingResult() == PathingResult.SUCCESS;
 		}
 		catch (AStar.InvalidPathException e)
 		{

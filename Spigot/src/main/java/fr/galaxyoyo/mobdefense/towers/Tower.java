@@ -4,12 +4,14 @@ import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
 import fr.galaxyoyo.mobdefense.MobDefense;
 import fr.galaxyoyo.mobdefense.NMSUtils;
+import fr.galaxyoyo.mobdefense.Wave;
 import fr.galaxyoyo.mobdefense.upgrades.Upgrade;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.block.BlockFace;
 import org.bukkit.entity.Arrow;
+import org.bukkit.entity.Creature;
 import org.bukkit.entity.SpectralArrow;
 import org.bukkit.entity.TippedArrow;
 import org.bukkit.inventory.ItemStack;
@@ -81,6 +83,27 @@ public abstract class Tower
 				loc.getBlock().setType(tower.getRegistration().getMaterial());
 				tower.dispenser = (Dispenser) tower.getLocation().getBlock().getState().getData();
 				tower.loop = Bukkit.getScheduler().runTaskTimer(MobDefense.instance(), tower::onTick0, 1L, 1L);
+
+				boolean build = true;
+				if (!Wave.checkForPath())
+					build = false;
+				else
+				{
+					for (Creature c : Wave.getAllCreatures())
+					{
+						if (!Wave.recalculate(c))
+						{
+							build = false;
+							break;
+						}
+					}
+
+					if (!build)
+					{
+						breakAt(tower.location);
+						Bukkit.getScheduler().runTask(MobDefense.instance(), () -> Wave.getAllCreatures().forEach(Wave::recalculate));
+					}
+				}
 			});
 			return tower;
 		}
