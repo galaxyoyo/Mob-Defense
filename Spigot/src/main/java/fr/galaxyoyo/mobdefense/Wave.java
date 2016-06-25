@@ -233,7 +233,7 @@ public class Wave implements Serializable
 			{
 				int xDif = nextLoc.getBlockX() - currentLoc.getBlockX();
 				int zDif = nextLoc.getBlockZ() - currentLoc.getBlockZ();
-				if (zDif == 0 && xDif != 0)
+				if (xDif != 0)
 				{
 					if (xDif < 0 && c.getLocation().getX() > currentLoc.getX()
 							|| xDif > 0 && c.getLocation().getX() < currentLoc.getX())
@@ -242,7 +242,7 @@ public class Wave implements Serializable
 						tileId = creatureCurrentTile.get(c);
 					}
 				}
-				else if (zDif != 0 && xDif == 0)
+				if (zDif != 0)
 				{
 					if (zDif < 0 && c.getLocation().getZ() > currentLoc.getZ()
 							|| zDif > 0 && c.getLocation().getZ() < currentLoc.getZ())
