@@ -97,12 +97,12 @@ public abstract class Tower
 							break;
 						}
 					}
+				}
 
-					if (!build)
-					{
-						breakAt(tower.location);
-						Bukkit.getScheduler().runTask(MobDefense.instance(), () -> Wave.getAllCreatures().forEach(Wave::recalculate));
-					}
+				if (!build)
+				{
+					breakAt(tower.location);
+					Bukkit.getScheduler().runTask(MobDefense.instance(), () -> Wave.getAllCreatures().forEach(Wave::recalculate));
 				}
 			});
 			return tower;
