@@ -235,7 +235,7 @@ public class Wave implements Serializable
 				int zDif = nextLoc.getBlockZ() - currentLoc.getBlockZ();
 				if (xDif != 0)
 				{
-					if (xDif < 0 && c.getLocation().getX() > currentLoc.getX()
+					if (xDif < 0 && c.getLocation().getX() > currentLoc.getX() + 1
 							|| xDif > 0 && c.getLocation().getX() < currentLoc.getX())
 					{
 						next = currentTile;
@@ -244,7 +244,7 @@ public class Wave implements Serializable
 				}
 				if (zDif != 0)
 				{
-					if (zDif < 0 && c.getLocation().getZ() > currentLoc.getZ()
+					if (zDif < 0 && c.getLocation().getZ() > currentLoc.getZ() + 1
 							|| zDif > 0 && c.getLocation().getZ() < currentLoc.getZ())
 					{
 						next = currentTile;
