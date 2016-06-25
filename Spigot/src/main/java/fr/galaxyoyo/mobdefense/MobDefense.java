@@ -182,6 +182,11 @@ public class MobDefense extends JavaPlugin
 		}
 
 		Bukkit.broadcastMessage("[MobDefense] Game ended.");
+		if (Boolean.valueOf(System.getProperty("mobdefense.demo")))
+		{
+			Bukkit.broadcastMessage("[MobDefense] The demo is now ended. I hope you enjoyed the plugin :)");
+			Bukkit.broadcastMessage("[MobDefense] In every case, please leave a comment on the forum :)");
+		}
 
 		for (Tower tower : Tower.getAllTowers())
 			Tower.breakAt(tower.getLocation());
