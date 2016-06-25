@@ -151,7 +151,7 @@ public class AStar
 		{
 			// make sure the blocks above are air
 
-			if (b.getRelative(0, 1, 0).getTypeId() == 107)
+			if (b.getRelative(0, 1, 0).getType().name().contains("FENCE_GATE"))
 			{
 				// fench gate check, if closed continue
 				Gate g = new Gate(b.getRelative(0, 1, 0).getData());
