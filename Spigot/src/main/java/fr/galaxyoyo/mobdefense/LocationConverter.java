@@ -1,6 +1,7 @@
 package fr.galaxyoyo.mobdefense;
 
 import net.cubespace.Yamler.Config.Converter.Converter;
+import net.cubespace.Yamler.Config.InternalConverter;
 import net.cubespace.Yamler.Config.InvalidConfigurationException;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
@@ -9,6 +10,10 @@ import java.lang.reflect.ParameterizedType;
 
 public class LocationConverter implements Converter
 {
+	public LocationConverter(InternalConverter converter)
+	{
+	}
+
 	@Override
 	public Object toConfig(Class<?> clazz, Object obj, ParameterizedType type) throws Exception
 	{
