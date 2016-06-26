@@ -286,13 +286,6 @@ public class MobDefense extends JavaPlugin
 				latestVersion = version;
 			}
 
-			if (!getDataFolder().isDirectory())
-				//noinspection ResultOfMethodCallIgnored
-				getDataFolder().mkdir();
-			File configFile = new File(getDataFolder(), "config.yml");
-			if (!configFile.exists())
-				IOUtils.copy(getClass().getResourceAsStream("/config.yml"), FileUtils.openOutputStream(configFile));
-
 			World world = Bukkit.getWorlds().get(0);
 			config = new Configuration();
 
