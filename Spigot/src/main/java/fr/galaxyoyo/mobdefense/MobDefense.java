@@ -15,7 +15,6 @@ import fr.galaxyoyo.spigot.nbtapi.EntityUtils;
 import fr.galaxyoyo.spigot.nbtapi.ItemStackUtils;
 import fr.galaxyoyo.spigot.nbtapi.ReflectionUtils;
 import fr.galaxyoyo.spigot.nbtapi.TagCompound;
-import net.cubespace.Yamler.Config.InvalidConfigurationException;
 import net.md_5.bungee.api.ChatColor;
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.io.IOUtils;
@@ -542,9 +541,10 @@ public class MobDefense extends JavaPlugin
 			Metrics metrics = new Metrics(this);
 			metrics.start();
 		}
-		catch (IOException | InvalidConfigurationException ex)
+		catch (Exception ex)
 		{
-			ex.printStackTrace();
+			getLogger().log(Level.SEVERE, "An error occured while enabling Mob Defense. Please report it. The plugin will disable now.", ex);
+			getServer().getPluginManager().disablePlugin(this);
 		}
 	}
 
