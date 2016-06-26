@@ -809,6 +809,9 @@ public class MobDefense extends JavaPlugin
 			npcExchange.setCustomName("Exchange");
 		}
 
+		objective = Bukkit.getScoreboardManager().getMainScoreboard().getObjective("mobdefense");
+		if (objective != null)
+			objective.unregister();
 		objective = Bukkit.getScoreboardManager().getMainScoreboard().registerNewObjective("mobdefense", "dummy");
 		objective.setDisplayName("[MobDefense]");
 		objective.setDisplaySlot(DisplaySlot.SIDEBAR);
