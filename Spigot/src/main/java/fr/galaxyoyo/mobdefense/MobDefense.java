@@ -124,7 +124,7 @@ public class MobDefense extends JavaPlugin
 			try
 			{
 				File file = new File("plugins", "Yamler.jar");
-				URL url = getLatestDownloadURL("yamler", 24908);
+				URL url = getLatestDownloadURL("yamler", 315);
 				HttpURLConnection co = (HttpURLConnection) url.openConnection();
 				co.setRequestMethod("GET");
 				co.setRequestProperty("User-Agent", "Mozilla/5.0");
