@@ -60,7 +60,7 @@ public class MobDefenseListener implements Listener
 		event.getPlayer().getInventory().addItem(pickaxe);
 		if (NMSUtils.getServerVersion().isAfter1_9())
 			event.getPlayer().setCollidable(false);
-		event.getPlayer().teleport(MobDefense.instance().getPlayerSpawn());
+		event.getPlayer().teleport(MobDefense.instance().getConfiguration().getPlayerSpawn());
 		event.getPlayer().setGameMode(GameMode.ADVENTURE);
 
 		if (event.getPlayer().isOp() && MobDefense.instance().getLatestVersion() != null)

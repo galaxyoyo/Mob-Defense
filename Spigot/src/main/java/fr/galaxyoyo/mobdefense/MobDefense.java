@@ -15,6 +15,7 @@ import fr.galaxyoyo.spigot.nbtapi.EntityUtils;
 import fr.galaxyoyo.spigot.nbtapi.ItemStackUtils;
 import fr.galaxyoyo.spigot.nbtapi.ReflectionUtils;
 import fr.galaxyoyo.spigot.nbtapi.TagCompound;
+import net.cubespace.Yamler.Config.InvalidConfigurationException;
 import net.md_5.bungee.api.ChatColor;
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.io.IOUtils;
@@ -23,7 +24,6 @@ import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.World;
 import org.bukkit.command.CommandSender;
-import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.enchantments.Enchantment;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.EntityType;
@@ -61,15 +61,7 @@ public class MobDefense extends JavaPlugin
 	private String latestVersion;
 	private Gson gson;
 	private Map<String, MobClass> mobClasses = Maps.newHashMap();
-	private Location playerSpawn;
-	private Location spawn, end;
-	private int startMoney;
-	private int waveTime;
-	private int baseLives;
-	private Location npcTowerLoc;
-	private Location npcUpgradesLoc;
-	private Location npcExchangeLoc;
-	private int towerUpdateRate;
+	private Configuration config;
 	private List<Wave> waves = Lists.newArrayList();
 	private Wave currentWave;
 	private Objective objective;
@@ -82,6 +74,7 @@ public class MobDefense extends JavaPlugin
 		JavaPlugin nbtapi = (JavaPlugin) getServer().getPluginManager().getPlugin("NBTAPI");
 		String latestNBTAPIVersion = getLatestSpigotVersion(24908);
 		boolean needToUpdate = nbtapi == null;
+		boolean needToReload = false;
 		if (nbtapi != null && new Version(nbtapi.getDescription().getVersion()).compareTo(new Version(latestNBTAPIVersion)) < 0)
 		{
 			needToUpdate = true;
@@ -115,8 +108,50 @@ public class MobDefense extends JavaPlugin
 				e.printStackTrace();
 			}
 
-			Bukkit.reload();
+			needToReload = true;
 		}
+
+		JavaPlugin yamler = (JavaPlugin) getServer().getPluginManager().getPlugin("Yamler");
+		String latestYamlerVersion = getLatestSpigotVersion(315);
+		needToUpdate = yamler == null;
+		if (yamler != null && new Version(yamler.getDescription().getVersion()).compareTo(new Version(latestYamlerVersion)) < 0)
+		{
+			needToUpdate = true;
+			getServer().getPluginManager().disablePlugin(nbtapi);
+		}
+		if (needToUpdate)
+		{
+			getLogger().info("Downloading version " + latestNBTAPIVersion + " of Yamler ...");
+			try
+			{
+				File file = new File("plugins", "Yamler.jar");
+				URL url = getLatestDownloadURL("yamler", 24908);
+				HttpURLConnection co = (HttpURLConnection) url.openConnection();
+				co.setRequestMethod("GET");
+				co.setRequestProperty("User-Agent", "Mozilla/5.0");
+				co.setRequestProperty("Connection", "Close");
+				co.connect();
+				FileUtils.copyInputStreamToFile(co.getInputStream(), file);
+				co.disconnect();
+				getServer().getPluginManager().loadPlugin(file);
+			}
+			catch (IOException e)
+			{
+				getLogger().severe("Unable to download Yamler library. Make sure you have the latest version of MobDefense and have an Internet connection.");
+				getLogger().severe("Plugin will disable now.");
+				e.printStackTrace();
+				getServer().getPluginManager().disablePlugin(this);
+			}
+			catch (InvalidPluginException | InvalidDescriptionException e)
+			{
+				e.printStackTrace();
+			}
+
+			needToReload = true;
+		}
+
+		if (needToReload)
+			Bukkit.reload();
 	}
 
 	private String getLatestSpigotVersion(int resourceId)
@@ -260,23 +295,7 @@ public class MobDefense extends JavaPlugin
 				IOUtils.copy(getClass().getResourceAsStream("/config.yml"), FileUtils.openOutputStream(configFile));
 
 			World world = Bukkit.getWorlds().get(0);
-			YamlConfiguration config = (YamlConfiguration) getConfig();
-			String playerSpawnStr = config.getString("player-spawn-loc", LocationConverter.instance().toString(world.getSpawnLocation()));
-			playerSpawn = LocationConverter.instance().fromString(playerSpawnStr);
-			String spawnStr = config.getString("spawn-loc", LocationConverter.instance().toString(world.getSpawnLocation()));
-			spawn = LocationConverter.instance().fromString(spawnStr);
-			String endStr = config.getString("end-loc", LocationConverter.instance().toString(world.getSpawnLocation()));
-			end = LocationConverter.instance().fromString(endStr);
-			String towerLoc = config.getString("npc-tower-loc", LocationConverter.instance().toString(world.getSpawnLocation()));
-			npcTowerLoc = LocationConverter.instance().fromString(towerLoc);
-			String upgradesLoc = config.getString("npc-upgrades-loc", LocationConverter.instance().toString(world.getSpawnLocation()));
-			npcUpgradesLoc = LocationConverter.instance().fromString(upgradesLoc);
-			String exchangeLoc = config.getString("npc-exchange-loc", LocationConverter.instance().toString(world.getSpawnLocation()));
-			npcExchangeLoc = LocationConverter.instance().fromString(exchangeLoc);
-			towerUpdateRate = config.getInt("tower-update-rate", 20);
-			startMoney = config.getInt("start-money", 50);
-			waveTime = config.getInt("wave-time", 42);
-			baseLives = config.getInt("lives", 10);
+			config = new Configuration();
 
 			File file = new File(getDataFolder(), "mobs.json");
 			if (file.exists())
@@ -486,8 +505,22 @@ public class MobDefense extends JavaPlugin
 				UpgradeRegistration speed8 = new UpgradeRegistration("SpeedUpgrade", stack.clone(), new ItemStack[]{new ItemStack(Material.GOLD_INGOT, 3), new ItemStack(Material
 						.GOLD_NUGGET, 5)}, Collections.singletonMap("multiplier", 8.0D));
 				Upgrade.registerUpgrade(speed8);
-				stack.setType(Material.POWERED_RAIL);
+				stack.setType(Material.TNT);
 				meta = stack.getItemMeta();
+				meta.setDisplayName("Critical Upgrade");
+				meta.setLore(Lists.newArrayList(ChatColor.RESET + "Put 25 % of arrows critical arrows"));
+				stack.setItemMeta(meta);
+				UpgradeRegistration critical = new UpgradeRegistration("CriticalUpgrade", stack.clone(), new ItemStack[]{new ItemStack(Material.GOLD_INGOT, 3)}, Collections
+						.singletonMap
+						("percentage", 0.25));
+				Upgrade.registerUpgrade(critical);
+				stack.setType(Material.MAGMA_CREAM);
+				meta.setDisplayName("Fire Upgrade");
+				meta.setLore(Lists.newArrayList(ChatColor.RESET + "Put 25 % of arrows fire arrows"));
+				stack.setItemMeta(meta);
+				UpgradeRegistration fire = new UpgradeRegistration("FireUpgrade", stack.clone(), new ItemStack[]{new ItemStack(Material.GOLD_INGOT, 5)}, Collections.singletonMap
+						("percentage", 0.25));
+				Upgrade.registerUpgrade(fire);
 				meta.setDisplayName("Extended Potion Upgrade");
 				meta.setLore(Lists.newArrayList(ChatColor.RESET + "Extend all potion effects", ChatColor.RESET + "of arrows of potion towers"));
 				stack.setItemMeta(meta);
@@ -509,7 +542,7 @@ public class MobDefense extends JavaPlugin
 			Metrics metrics = new Metrics(this);
 			metrics.start();
 		}
-		catch (IOException ex)
+		catch (IOException | InvalidConfigurationException ex)
 		{
 			ex.printStackTrace();
 		}
@@ -520,48 +553,14 @@ public class MobDefense extends JavaPlugin
 		return gson;
 	}
 
+	public Configuration getConfiguration()
+	{
+		return config;
+	}
+
 	public String getLatestVersion()
 	{
 		return latestVersion;
-	}
-
-	public Location getPlayerSpawn()
-	{
-		return playerSpawn;
-	}
-
-	protected void setPlayerSpawn(Location location)
-	{
-		this.playerSpawn = location;
-		getConfig().set("player-spawn-loc", LocationConverter.instance().toString(location));
-	}
-
-	public Location getSpawn()
-	{
-		return spawn;
-	}
-
-	protected void setSpawn(Location location)
-	{
-		this.spawn = location;
-		getConfig().set("spawn-loc", LocationConverter.instance().toString(location));
-	}
-
-	public Location getEnd()
-	{
-		return end;
-	}
-
-	protected void setEnd(Location location)
-	{
-		this.end = location;
-		getConfig().set("end-loc", LocationConverter.instance().toString(location));
-	}
-
-	@SuppressWarnings("unused")
-	public int getBaseLives()
-	{
-		return baseLives;
 	}
 
 	public MobClass getMobClass(String name)
@@ -604,7 +603,7 @@ public class MobDefense extends JavaPlugin
 			return;
 		}
 
-		Random random = ReflectionUtils.getNMSField("World", ReflectionUtils.invokeBukkitMethod("getHandle", Bukkit.getWorlds().get(0)), "random");
+		Random random = getRandomInstance();
 
 		Player giveTo;
 		if (sender instanceof Player)
@@ -621,7 +620,7 @@ public class MobDefense extends JavaPlugin
 				giveTo = players.get(random.nextInt(players.size()));
 		}
 
-		int remainingMoney = startMoney;
+		int remainingMoney = config.getStartMoney();
 		while (remainingMoney > 0)
 		{
 			giveTo.getInventory().addItem(new ItemStack(Material.GOLD_NUGGET, Math.min(remainingMoney, 64)));
@@ -632,7 +631,7 @@ public class MobDefense extends JavaPlugin
 
 		for (int i = 0; i < 3; ++i)
 		{
-			Location loc = npcTowerLoc.clone().add(random.nextDouble() * 3.0D - 1.5D, 0, random.nextDouble() * 3.0D - 1.5D);
+			Location loc = config.getNpcTowerLoc().clone().add(random.nextDouble() * 3.0D - 1.5D, 0, random.nextDouble() * 3.0D - 1.5D);
 			Villager npcTower = (Villager) world.spawnEntity(loc, EntityType.VILLAGER);
 			if (NMSUtils.getServerVersion().isAfter1_9())
 			{
@@ -693,7 +692,7 @@ public class MobDefense extends JavaPlugin
 
 		for (int i = 0; i < 3; ++i)
 		{
-			Location loc = npcUpgradesLoc.clone().add(random.nextDouble() * 3.0D - 1.5D, 0, random.nextDouble() * 3.0D - 1.5D);
+			Location loc = config.getNpcUpgradesLoc().clone().add(random.nextDouble() * 3.0D - 1.5D, 0, random.nextDouble() * 3.0D - 1.5D);
 			Villager npcUpgrades = (Villager) world.spawnEntity(loc, EntityType.VILLAGER);
 			if (NMSUtils.getServerVersion().isAfter1_9())
 			{
@@ -747,7 +746,7 @@ public class MobDefense extends JavaPlugin
 
 		for (int i = 0; i < 3; ++i)
 		{
-			Location loc = npcExchangeLoc.clone().add(random.nextDouble() * 4.0D - 1.0D, 0, random.nextDouble() * 3.0D - 1.5D);
+			Location loc = config.getNpcExchangeLoc().clone().add(random.nextDouble() * 4.0D - 1.0D, 0, random.nextDouble() * 3.0D - 1.5D);
 			Villager npcExchange = (Villager) world.spawnEntity(loc, EntityType.VILLAGER);
 			if (NMSUtils.getServerVersion().isAfter1_9())
 			{
@@ -814,45 +813,22 @@ public class MobDefense extends JavaPlugin
 		objective.setDisplayName("[MobDefense]");
 		objective.setDisplaySlot(DisplaySlot.SIDEBAR);
 		objective.getScore(ChatColor.RED.toString()).setScore(999);
-		objective.getScore("Lives").setScore(baseLives);
+		objective.getScore("Lives").setScore(config.getLives());
 		objective.getScore("Wave").setScore(0);
 
 		getServer().getPluginManager().callEvent(new GameStartedEvent());
 		Bukkit.broadcastMessage("[MobDefense] Game started!");
-		nextWaveTask = Bukkit.getScheduler().runTaskLater(this, this::startNextWave, waveTime * 20L);
+		nextWaveTask = Bukkit.getScheduler().runTaskLater(this, this::startNextWave, config.getWaveTime() * 20L);
+	}
+
+	public Random getRandomInstance()
+	{
+		return ReflectionUtils.getNMSField("World", ReflectionUtils.invokeBukkitMethod("getHandle", Bukkit.getWorlds().get(0)), "random");
 	}
 
 	public Wave getCurrentWave()
 	{
 		return currentWave;
-	}
-
-	public int getWaveTime()
-	{
-		return waveTime;
-	}
-
-	protected void setNpcTowerLoc(Location location)
-	{
-		this.npcTowerLoc = location;
-		getConfig().set("npc-tower-loc", LocationConverter.instance().toString(location));
-	}
-
-	protected void setNpcUpgradesLoc(Location location)
-	{
-		this.npcUpgradesLoc = location;
-		getConfig().set("npc-upgrades-loc", LocationConverter.instance().toString(location));
-	}
-
-	protected void setNpcExchangeLoc(Location location)
-	{
-		this.npcExchangeLoc = location;
-		getConfig().set("npc-exchange-loc", LocationConverter.instance().toString(location));
-	}
-
-	public int getTowerUpdateRate()
-	{
-		return towerUpdateRate;
 	}
 
 	public void setNextWaveTask(BukkitTask nextWaveTask)

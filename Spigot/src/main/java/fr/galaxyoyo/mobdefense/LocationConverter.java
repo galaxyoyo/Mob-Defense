@@ -1,31 +1,27 @@
 package fr.galaxyoyo.mobdefense;
 
+import net.cubespace.Yamler.Config.Converter.Converter;
+import net.cubespace.Yamler.Config.InvalidConfigurationException;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
 
-public class LocationConverter
+import java.lang.reflect.ParameterizedType;
+
+public class LocationConverter implements Converter
 {
-	private static LocationConverter instance = new LocationConverter();
-
-	private LocationConverter()
+	@Override
+	public Object toConfig(Class<?> clazz, Object obj, ParameterizedType type) throws Exception
 	{
-	}
-
-	public static LocationConverter instance()
-	{
-		return instance;
-	}
-
-	public String toString(Location loc)
-	{
+		Location loc = (Location) obj;
 		return loc.getX() + ":" + loc.getY() + ":" + loc.getZ() + ":" + loc.getYaw() + ":" + loc.getPitch();
 	}
 
-	public Location fromString(String string)
+	@Override
+	public Object fromConfig(Class<?> clazz, Object obj, ParameterizedType type) throws Exception
 	{
 		try
 		{
-			String[] split = string.split(":");
+			String[] split = obj.toString().split(":");
 			if (split.length != 5)
 			{
 				throw new IllegalArgumentException("CONFIGURATION ERROR : Location must be provided as x:y:z:yaw:pitch, it seems that there are " + split.length + " arguments, " +
@@ -37,9 +33,13 @@ public class LocationConverter
 		}
 		catch (Throwable t)
 		{
-			MobDefense.instance().getLogger().severe(t.getMessage());
-			Bukkit.shutdown();
-			return new Location(Bukkit.getWorlds().get(0), 0, 0, 0);
+			throw new InvalidConfigurationException(t);
 		}
+	}
+
+	@Override
+	public boolean supports(Class<?> type)
+	{
+		return Location.class.isAssignableFrom(type);
 	}
 }

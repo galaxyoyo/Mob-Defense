@@ -47,7 +47,10 @@ public class Wave implements Serializable
 	{
 		try
 		{
-			AStar as = new AStar(MobDefense.instance().getSpawn().clone().subtract(0, 1, 0), MobDefense.instance().getEnd().clone().subtract(0, 1, 0), 100);
+			AStar as =
+					new AStar(MobDefense.instance().getConfiguration().getSpawn().clone().subtract(0, 1, 0), MobDefense.instance().getConfiguration().getEnd().clone().subtract(0, 1,
+							0),
+							100);
 			List<Tile> list = as.iterate();
 			return list != null && !list.isEmpty() && as.getPathingResult() == PathingResult.SUCCESS;
 		}
@@ -82,13 +85,13 @@ public class Wave implements Serializable
 					if (!entries.hasNext())
 					{
 						MobDefense.instance().setNextWaveTask(Bukkit.getScheduler().runTaskLater(MobDefense.instance(), () -> MobDefense.instance().startNextWave(), MobDefense
-								.instance().getWaveTime() * 20L));
+								.instance().getConfiguration().getWaveTime() * 20L));
 						cancel();
 						return;
 					}
 					entry.set(entries.next());
 				}
-				Creature c = (Creature) Bukkit.getWorlds().get(0).spawnEntity(MobDefense.instance().getSpawn().clone(), entry.get().getKey().getType());
+				Creature c = (Creature) Bukkit.getWorlds().get(0).spawnEntity(MobDefense.instance().getConfiguration().getSpawn().clone(), entry.get().getKey().getType());
 				c.setCustomName(entry.get().getKey().getDisplayName());
 				c.setCustomNameVisible(true);
 				c.setMaxHealth(entry.get().getKey().getHP());
@@ -147,7 +150,7 @@ public class Wave implements Serializable
 				pathfinders.clear();
 
 				creatureClasses.put(c, entry.get().getKey());
-				starts.put(c, MobDefense.instance().getSpawn().clone());
+				starts.put(c, MobDefense.instance().getConfiguration().getSpawn().clone());
 				creatureCurrentTile.put(c, 1);
 				creatureTiles.put(c, Lists.newArrayList());
 				recalculate(c);
@@ -171,7 +174,7 @@ public class Wave implements Serializable
 							return;
 						}
 
-						if (c.getLocation().distanceSquared(MobDefense.instance().getEnd()) < 2)
+						if (c.getLocation().distanceSquared(MobDefense.instance().getConfiguration().getEnd()) < 2)
 						{
 							c.remove();
 							Wave w = Wave.this;
@@ -201,7 +204,7 @@ public class Wave implements Serializable
 	{
 		try
 		{
-			AStar pf = new AStar(c.getLocation().clone().subtract(0, 1, 0), MobDefense.instance().getEnd().clone().subtract(0, 1, 0), 100);
+			AStar pf = new AStar(c.getLocation().clone().subtract(0, 1, 0), MobDefense.instance().getConfiguration().getEnd().clone().subtract(0, 1, 0), 100);
 			if (pf.getPathingResult() == PathingResult.NO_PATH)
 				return false;
 			List<Tile> tiles = pf.iterate();

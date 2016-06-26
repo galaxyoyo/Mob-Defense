@@ -84,21 +84,21 @@ public class MobDefenseExecutor implements CommandExecutor, TabCompleter
 				if (!sender.hasPermission("mobdefense.command.setloc.spawn"))
 					return noPerm(sender);
 
-				MobDefense.instance().setSpawn(loc);
+				MobDefense.instance().getConfiguration().setSpawn(loc);
 			}
 			else if (args[1].equalsIgnoreCase("end"))
 			{
 				if (!sender.hasPermission("mobdefense.command.setloc.end"))
 					return noPerm(sender);
 
-				MobDefense.instance().setEnd(loc);
+				MobDefense.instance().getConfiguration().setEnd(loc);
 			}
 			else if (args[1].equalsIgnoreCase("playerSpawn"))
 			{
 				if (!sender.hasPermission("mobdefense.command.setloc.playerSpawn"))
 					return noPerm(sender);
 
-				MobDefense.instance().setPlayerSpawn(loc);
+				MobDefense.instance().getConfiguration().setPlayerSpawn(loc);
 			}
 			else if (args[1].equalsIgnoreCase("npc"))
 			{
@@ -113,21 +113,21 @@ public class MobDefenseExecutor implements CommandExecutor, TabCompleter
 					if (!sender.hasPermission("mobdefense.command.setloc.npc.towers"))
 						return noPerm(sender);
 
-					MobDefense.instance().setNpcTowerLoc(loc);
+					MobDefense.instance().getConfiguration().setNpcTowerLoc(loc);
 				}
 				else if (args[2].equalsIgnoreCase("upgrades"))
 				{
 					if (!sender.hasPermission("mobdefense.command.setloc.npc.upgrades"))
 						return noPerm(sender);
 
-					MobDefense.instance().setNpcUpgradesLoc(loc);
+					MobDefense.instance().getConfiguration().setNpcUpgradesLoc(loc);
 				}
 				else if (args[2].equalsIgnoreCase("exchange"))
 				{
 					if (!sender.hasPermission("mobdefense.command.setloc.npc.exchange"))
 						return noPerm(sender);
 
-					MobDefense.instance().setNpcExchangeLoc(loc);
+					MobDefense.instance().getConfiguration().setNpcExchangeLoc(loc);
 				}
 				else
 				{
