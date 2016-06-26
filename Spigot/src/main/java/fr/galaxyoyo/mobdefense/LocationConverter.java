@@ -10,7 +10,7 @@ import java.lang.reflect.ParameterizedType;
 
 public class LocationConverter implements Converter
 {
-	public LocationConverter(InternalConverter converter)
+	public LocationConverter(@SuppressWarnings("UnusedParameters") InternalConverter converter)
 	{
 	}
 
