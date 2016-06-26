@@ -142,7 +142,6 @@ public class MobDefenseExecutor implements CommandExecutor, TabCompleter
 			}
 
 			sender.sendMessage("[MobDefense] Location successfully defined!");
-			MobDefense.instance().saveConfig();
 			return true;
 		}
 
