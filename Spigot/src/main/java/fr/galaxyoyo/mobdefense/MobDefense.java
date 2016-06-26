@@ -113,7 +113,7 @@ public class MobDefense extends JavaPlugin
 		JavaPlugin yamler = (JavaPlugin) getServer().getPluginManager().getPlugin("Yamler");
 		String latestYamlerVersion = getLatestSpigotVersion(315);
 		needToUpdate = yamler == null;
-		if (yamler != null && new Version(yamler.getDescription().getVersion().replace("-SNAPSHOT", "")).compareTo(new Version(latestYamlerVersion)) < 0)
+		if (yamler != null && new Version(yamler.getDescription().getVersion().replaceAll("-SNAPSHOT-b\\d+", "")).compareTo(new Version(latestYamlerVersion)) < 0)
 		{
 			needToUpdate = true;
 			getServer().getPluginManager().disablePlugin(nbtapi);
