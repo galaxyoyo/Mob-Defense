@@ -124,7 +124,7 @@ public class MobDefense extends JavaPlugin
 			try
 			{
 				File file = new File("plugins", "Yamler.jar");
-				URL url = getLatestDownloadURL("yamler", 315);
+				URL url = new URL("http://ci.md-5.net/job/Yamler/lastSuccessfulBuild/artifact/Yamler-Bukkit/target/Yamler-Bukkit-2.4.0-SNAPSHOT.jar");
 				HttpURLConnection co = (HttpURLConnection) url.openConnection();
 				co.setRequestMethod("GET");
 				co.setRequestProperty("User-Agent", "Mozilla/5.0");
@@ -188,8 +188,8 @@ public class MobDefense extends JavaPlugin
 			co.disconnect();
 			String innerLabel = content.substring(content.indexOf("<label class=\"downloadButton \">"));
 			innerLabel = innerLabel.substring(0, innerLabel.indexOf("</label>"));
-			String downloadURL = innerLabel.substring(innerLabel.indexOf("<a class=\"inner\" href=\"") + 23);
-			downloadURL = downloadURL.substring(0, downloadURL.indexOf("\">"));
+			String downloadURL = innerLabel.substring(innerLabel.indexOf("<a href=\"") + 9);
+			downloadURL = downloadURL.substring(0, downloadURL.indexOf("\" class=\"inner\">"));
 			downloadURL = "https://www.spigotmc.org/" + downloadURL;
 			return new URL(downloadURL);
 		}
