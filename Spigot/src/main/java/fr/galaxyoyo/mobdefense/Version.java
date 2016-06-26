@@ -1,5 +1,7 @@
 package fr.galaxyoyo.mobdefense;
 
+import javax.annotation.Nullable;
+
 public class Version implements Comparable<Version>
 {
 
@@ -10,24 +12,18 @@ public class Version implements Comparable<Version>
 		if (version == null)
 			throw new IllegalArgumentException("Version can not be null");
 		if (!version.matches("[0-9]+(\\.[0-9]+)*"))
-			throw new IllegalArgumentException("Invalid version format");
+			throw new IllegalArgumentException("Invalid version format (" + version + ")");
 		this.version = version;
 	}
 
 	@Override
 	public boolean equals(Object that)
 	{
-		if (this == that)
-			return true;
-		if (that == null)
-			return false;
-		if (this.getClass() != that.getClass())
-			return false;
-		return this.compareTo((Version) that) == 0;
+		return this == that || that != null && this.getClass() == that.getClass() && this.compareTo((Version) that) == 0;
 	}
 
 	@Override
-	public int compareTo(Version that)
+	public int compareTo(@Nullable Version that)
 	{
 		if (that == null)
 			return 1;
