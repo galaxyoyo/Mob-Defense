@@ -70,6 +70,7 @@ public class MobDefense extends JavaPlugin
 	public void onLoad()
 	{
 		instance = this;
+		Messages.setPreferredLanguage(Locale.getDefault().getLanguage());
 		Messages msgs = Messages.getMessages();
 		getLogger().info(msgs.getGreetings());
 		JavaPlugin nbtapi = (JavaPlugin) getServer().getPluginManager().getPlugin("NBTAPI");
