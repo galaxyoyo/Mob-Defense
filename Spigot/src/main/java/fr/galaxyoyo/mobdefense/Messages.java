@@ -3,6 +3,7 @@ package fr.galaxyoyo.mobdefense;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
+import net.cubespace.Yamler.Config.InvalidConfigurationException;
 import net.cubespace.Yamler.Config.YamlConfig;
 import org.bukkit.Bukkit;
 import org.bukkit.command.CommandSender;
@@ -226,7 +227,7 @@ public abstract class Messages extends YamlConfig implements Serializable
 			}
 			catch (Exception ex)
 			{
-				MobDefense.instance().getLogger().warning(String.format(msgs.getNotFoundMessage(), method));
+				MobDefense.instance().getLogger().warning(String.format(getMessages().getNotFoundMessage(), method));
 			}
 		}
 	}
@@ -363,6 +364,14 @@ public abstract class Messages extends YamlConfig implements Serializable
 			CONFIG_HEADER = new String[]{"##################################################",
 					"####### Messages shown by english players ########",
 					"##################################################"};
+			try
+			{
+				save();
+			}
+			catch (InvalidConfigurationException e)
+			{
+				e.printStackTrace();
+			}
 		}
 
 		@Override
@@ -512,6 +521,15 @@ public abstract class Messages extends YamlConfig implements Serializable
 			CONFIG_HEADER = new String[]{"##################################################",
 					"##### Messages affichés aux joueurs français #####",
 					"##################################################"};
+
+			try
+			{
+				save();
+			}
+			catch (InvalidConfigurationException e)
+			{
+				e.printStackTrace();
+			}
 		}
 
 		@Override
