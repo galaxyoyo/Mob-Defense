@@ -223,11 +223,12 @@ public abstract class Messages extends YamlConfig implements Serializable
 			Messages msgs = Messages.getMessages(sender);
 			try
 			{
-				sender.sendMessage("[MobDefense] " + String.format((String) Messages.class.getDeclaredMethod(method).invoke(msgs), args));
+				sender.sendMessage("[MobDefense] " + String.format((String) msgs.getClass().getDeclaredMethod(method).invoke(msgs), args));
 			}
 			catch (Exception ex)
 			{
 				MobDefense.instance().getLogger().warning(String.format(getMessages().getNotFoundMessage(), method));
+				ex.printStackTrace();
 			}
 		}
 	}
