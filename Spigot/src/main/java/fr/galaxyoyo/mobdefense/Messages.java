@@ -199,8 +199,6 @@ public abstract class Messages extends YamlConfig implements Serializable
 
 		public MessageProperty(String key, Object... args)
 		{
-			if (!key.startsWith("get"))
-				key = "get" + (char) (key.charAt(0) | 0x20) + key.substring(1);
 			String[] split = key.split("-");
 			if (split.length > 1)
 			{
@@ -210,10 +208,12 @@ public abstract class Messages extends YamlConfig implements Serializable
 					if (!key.isEmpty() && s.length() == 1)
 						s = s.toUpperCase();
 					else if (!key.isEmpty())
-						s = (char) (s.charAt(0) | 0x20) + s.substring(1);
+						s = Character.toUpperCase(s.charAt(0)) + s.substring(1);
 					key += s;
 				}
 			}
+			if (!key.startsWith("get"))
+				key = "get" + Character.toUpperCase(key.charAt(0)) + key.substring(1);
 			this.method = key;
 			this.args = args;
 		}
