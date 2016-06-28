@@ -256,7 +256,6 @@ public class MobDefense extends JavaPlugin
 			getLogger().severe(Messages.getMessages().getDisablingPluginMessage());
 			e.printStackTrace();
 		}
-		Messages.setPreferredLanguage(config.getPreferredLanguage());
 		Messages msgs = Messages.getMessages();
 		getLogger().info(msgs.getConfigLoaded() + msgs.getLocale().getDisplayName());
 
