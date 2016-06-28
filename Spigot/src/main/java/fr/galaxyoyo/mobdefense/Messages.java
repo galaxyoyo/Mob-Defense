@@ -366,7 +366,7 @@ public abstract class Messages extends YamlConfig implements Serializable
 					"##################################################"};
 			try
 			{
-				save();
+				init();
 			}
 			catch (InvalidConfigurationException e)
 			{
@@ -393,8 +393,7 @@ public abstract class Messages extends YamlConfig implements Serializable
 		private String disablingPluginMessage = "Le plugin va désormais de désactiver.";
 		@Getter
 		private String unableToDownload = "Impossible de télécharger la bibliothèque %s. Vérifiez que vous possédiez bien la dernière version de MobDefense et que vous disposez " +
-				"d'une" +
-				" connexion Internet.";
+				"d'une connexion Internet.";
 		@Getter
 		private String configLoaded = "Configuration chargée ! Langue des messages dans la console : ";
 		@Getter
@@ -524,7 +523,7 @@ public abstract class Messages extends YamlConfig implements Serializable
 
 			try
 			{
-				save();
+				init();
 			}
 			catch (InvalidConfigurationException e)
 			{
