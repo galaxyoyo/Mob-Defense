@@ -69,6 +69,7 @@ public class MobDefense extends JavaPlugin
 	@Override
 	public void onLoad()
 	{
+		instance = this;
 		Messages msgs = Messages.getMessages();
 		getLogger().info(msgs.getGreetings());
 		JavaPlugin nbtapi = (JavaPlugin) getServer().getPluginManager().getPlugin("NBTAPI");
@@ -244,8 +245,6 @@ public class MobDefense extends JavaPlugin
 	@Override
 	public void onEnable()
 	{
-		instance = this;
-
 		try
 		{
 			config = new Configuration();

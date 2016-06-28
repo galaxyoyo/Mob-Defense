@@ -359,7 +359,7 @@ public abstract class Messages extends YamlConfig implements Serializable
 
 		private MessagesEN()
 		{
-			CONFIG_FILE = new File(MobDefense.instance().getDataFolder().getAbsolutePath() + File.separatorChar + "messages", "fr.yml");
+			CONFIG_FILE = new File(MobDefense.instance().getDataFolder().getAbsolutePath() + File.separatorChar + "messages", "en.yml");
 			CONFIG_HEADER = new String[]{"##################################################",
 					"####### Messages shown by english players ########",
 					"##################################################"};
