@@ -6,6 +6,7 @@ import lombok.Getter;
 import net.cubespace.Yamler.Config.InvalidConfigurationException;
 import net.cubespace.Yamler.Config.YamlConfig;
 import org.bukkit.Bukkit;
+import org.bukkit.ChatColor;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 
@@ -228,7 +229,7 @@ public abstract class Messages extends YamlConfig implements Serializable
 			{
 				Field f = msgs.getClass().getDeclaredField(field);
 				f.setAccessible(true);
-				sender.sendMessage("[MobDefense] " + String.format((String) f.get(msgs), args));
+				sender.sendMessage("[MobDefense] " + ChatColor.translateAlternateColorCodes('&', String.format((String) f.get(msgs), args)));
 				f.setAccessible(false);
 			}
 			catch (Exception ex)

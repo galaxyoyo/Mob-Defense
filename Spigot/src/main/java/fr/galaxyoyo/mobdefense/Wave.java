@@ -69,7 +69,7 @@ public class Wave implements Serializable
 	{
 		AtomicInteger totalMobs = new AtomicInteger(0);
 		spawns.values().forEach(delta -> totalMobs.addAndGet(delta.intValue()));
-		Messages.broadcast("starting-wave", number, totalMobs.get() + (totalMobs.get() > 1 ? " mobs)" : " mob"));
+		Messages.broadcast("starting-wave", number, totalMobs.get() + (totalMobs.get() > 1 ? " mobs" : " mob"));
 
 		Set<Creature> creatures = Sets.newHashSet();
 		Iterator<Map.Entry<MobClass, Double>> entries = spawns.entrySet().iterator();
