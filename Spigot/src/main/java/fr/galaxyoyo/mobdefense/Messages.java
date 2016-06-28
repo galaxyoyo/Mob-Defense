@@ -236,56 +236,92 @@ public abstract class Messages extends YamlConfig implements Serializable
 	public static class MessagesEN extends Messages
 	{
 		@Getter
-		private String greetings = "You're running the MobDefense plugin, by galaxyoyo. Thanks for buying it!";
+		protected String greetings = "You're running the MobDefense plugin, by galaxyoyo. Thanks for buying it!";
 		@Getter
-		private String downloadingMessage = "Downloading version %s of %s ...";
+		protected String downloadingMessage = "Downloading version %s of %s ...";
 		@Getter
-		private String disablingPluginMessage = "Plugin will disable now.";
+		protected String disablingPluginMessage = "Plugin will disable now.";
 		@Getter
-		private String unableToDownload = "Unable to download %s library. Make sure you have the latest version of MobDefense and have an Internet connection.";
+		protected String unableToDownload = "Unable to download %s library. Make sure you have the latest version of MobDefense and have an Internet connection.";
 		@Getter
-		private String configLoaded = "Configuration Loaded! Messages console language: ";
+		protected String configLoaded = "Configuration Loaded! Messages console language: ";
 		@Getter
-		private String locationConfigError = "CONFIGURATION ERROR : Location must be provided as x:y:z:yaw:pitch, it seems that there are %d arguments, required 5";
+		protected String locationConfigError = "CONFIGURATION ERROR : Location must be provided as x:y:z:yaw:pitch, it seems that there are %d arguments, required 5";
 		@Getter
-		private String configLoadError = "An error occured while loading configuration file.";
+		protected String configLoadError = "An error occured while loading configuration file.";
 		@Getter
-		private String checkingServerVersion = "Checking server version ...";
+		protected String checkingServerVersion = "Checking server version ...";
 		@Getter
-		private String minecraftRunningVersion = "You're running Minecraft server %s, for Minecraft %s.";
+		protected String minecraftRunningVersion = "You're running Minecraft server %s, for Minecraft %s.";
 		@Getter
-		private String warning18 = "Warning: the 1.8 version of MobDefense contains less features as 1.9 and 1.10, like tipped arrows.\n" +
+		protected String warning18 = "Warning: the 1.8 version of MobDefense contains less features as 1.9 and 1.10, like tipped arrows.\n" +
 				"It mays contain some compatibility issues. I'm able to fix these, so please report them.\n" +
 				"But please note that in a later update, this compatiblity will be removed.\n" +
 				"If you want a better gameplay, please update your server to 1.9.4 or 1.10 (1.10 recomended).\n" +
 				"There's no plugin update required.";
 		@Getter
-		private String unsupportedServerVersion = "You're running Minecraft server %s. This version is unsupported by MobDefense now.";
+		protected String unsupportedServerVersion = "You're running Minecraft server %s. This version is unsupported by MobDefense now.";
 		@Getter
-		private String outdatedVersion = "This plugin is outdated. The latest version is %s and you're running %s. Please update, there're maybe some fixes or new features.";
+		protected String outdatedVersion = "This plugin is outdated. The latest version is %s and you're running %s. Please update, there're maybe some fixes or new features.";
 		@Getter
-		private String mobsConfigLoadError = "Error while loading mobs config, please check this one.";
+		protected String mobsConfigLoadError = "Error while loading mobs config, please check this one.";
 		@Getter
-		private String wavesConfigLoadError = "Error while loading waves config, please check this one.";
+		protected String wavesConfigLoadError = "Error while loading waves config, please check this one.";
 		@Getter
-		private String towersConfigLoadError = "Error while loading towers config, please check this one.";
+		protected String towersConfigLoadError = "Error while loading towers config, please check this one.";
 		@Getter
-		private String upgradesConfigLoadError = "Error while loading upgrades config, please check this one.";
+		protected String upgradesConfigLoadError = "Error while loading upgrades config, please check this one.";
 		@Getter
-		private String generalError = "An error occured while enabling Mob Defense. Please report it.";
+		protected String generalError = "An error occured while enabling Mob Defense. Please report it.";
 		@Getter
-		private String notFoundMessage = "The message \"%s\" wasn't found.";
+		protected String notFoundMessage = "The message \"%s\" wasn't found.";
 		@Getter
-		private String gameAlreadyStarted = "&cA game is already started!";
+		protected String gameAlreadyStarted = "&cA game is already started!";
 		@Getter
-		private String noPlayerToStart = "&cAny player is connected to start the game!";
+		protected String noPlayerToStart = "&cAny player is connected to start the game!";
 		@Getter
-		private String noGame = "&cNo game is running!";
+		protected String noGame = "&cNo game is running!";
 		@Getter
-		private String gameStarted = "Game started!";
+		protected String gameStarted = "Game started!";
+		@Getter
+		protected String startingWave = "Starting wave #%d (%s)";
+		@Getter
+		protected String gameEnded = "Game ended.";
+		@Getter
+		protected String noItemType = "No item type!";
+		@Getter
+		protected String noPath = "&cNo path could be found. Please update the map.";
+		@Getter
+		protected String onlyPlayers = "&cOnly players are able set positions.";
+		@Getter
+		protected String locationsSuccessDefined = "Location successfully defined!";
+		@Getter
+		protected String noPermission = "&cYou don't have the permission to run this command.";
+		@Getter
+		protected String npcTowerName = "Towers";
+		@Getter
+		protected String npcUpgradesName = "Upgrades";
+		@Getter
+		protected String npcExchangeName = "Exchange";
+		@Getter
+		protected String bypassedTowers = "%s bypassed the towers! %d lives left";
+		@Getter
+		protected String bypassedTowersOneLeft = "%s bypassed the towers! One life left";
+		@Getter
+		protected String bypassedTowersEnd = "%s bypassed the towers! &cYou survived %d waves.";
+		@Getter
+		protected String percentageUpgradeWarning = "Warning: percentage %d must be included between 0 and 1. Considering 1 (100 %). Please check %d config.";
+		@Getter
+		protected String towerClassNotFound = "Unable to find the tower class '%s'. Please update config.";
+		@Getter
+		protected String notATowerClass = "The class '%s' was found but isn't a tower class. Please update config.";
+		@Getter
+		protected String upgradeClassNotFound = "Unable to find the upgrade class '%s'. Please update config.";
+		@Getter
+		protected String notAnUpgradeClass = "The class '%s' was found but isn't an upgrade class. Please update config.";
 		@SuppressWarnings("MismatchedReadAndWriteOfArray")
 		@Getter
-		private transient String[] demoLogging = {"Hello!",
+		protected transient String[] demoLogging = {"Hello!",
 				"You're on the test server of Mob Defense.",
 				"You are not opped, but you can run the /md command, which is normally provided for ops.",
 				"You're able to run this demo whenever you want, but don't forget that players can join when they want.",
@@ -293,67 +329,31 @@ public abstract class Messages extends YamlConfig implements Serializable
 				"The configuration couldn't be modified, and /md setloc isn't available.",
 				"I hope you'll enjoy the plugin :)"};
 		@Getter
-		private String startingWave = "Starting wave #%d (%s)";
-		@Getter
-		private String gameEnded = "Game ended.";
-		@Getter
-		private transient String[] demoEnded = "The demo is now ended. I hope you enjoyed the plugin :)\nIn every case, please leave a comment on the forum :)".split("\n");
-		@Getter
-		private String noItemType = "No item type!";
-		@Getter
-		private String noPath = "&cNo path could be found. Please update the map.";
-		@Getter
-		private String onlyPlayers = "&cOnly players are able set positions.";
-		@Getter
-		private String locationsSuccessDefined = "Location successfully defined!";
-		@Getter
-		private String noPermission = "&cYou don't have the permission to run this command.";
-		@Getter
-		private String npcTowerName = "Towers";
-		@Getter
-		private String npcUpgradesName = "Upgrades";
-		@Getter
-		private String npcExchangeName = "Exchange";
-		@Getter
-		private String bypassedTowers = "%s bypassed the towers! %d lives left";
-		@Getter
-		private String bypassedTowersOneLeft = "%s bypassed the towers! One life left";
-		@Getter
-		private String bypassedTowersEnd = "%s bypassed the towers! &cYou survived %d waves.";
-		@Getter
-		private String percentageUpgradeWarning = "Warning: percentage %d must be included between 0 and 1. Considering 1 (100 %). Please check %d config.";
-		@Getter
-		private String towerClassNotFound = "Unable to find the tower class '%s'. Please update config.";
-		@Getter
-		private String notATowerClass = "The class '%s' was found but isn't a tower class. Please update config.";
-		@Getter
-		private String upgradeClassNotFound = "Unable to find the upgrade class '%s'. Please update config.";
-		@Getter
-		private String notAnUpgradeClass = "The class '%s' was found but isn't an upgrade class. Please update config.";
+		protected transient String[] demoEnded = "The demo is now ended. I hope you enjoyed the plugin :)\nIn every case, please leave a comment on the forum :)".split("\n");
 /*		@Getter
-		private String playerSpawnConfigComment = "Location of player spawn (x:y:z:yaw:pitch)";
+		protected String playerSpawnConfigComment = "Location of player spawn (x:y:z:yaw:pitch)";
 		@Getter
-		private String spawnConfigComment = "Location of mob spawn (x:y:z:yaw:pitch)";
+		protected String spawnConfigComment = "Location of mob spawn (x:y:z:yaw:pitch)";
 		@Getter
-		private String endConfigComment = "Location of mob objective (x:y:z:yaw:pitch)";
+		protected String endConfigComment = "Location of mob objective (x:y:z:yaw:pitch)";
 		@Getter
-		private String startMoneyConfigComment = "The amount of gold nuggets you start with";
+		protected String startMoneyConfigComment = "The amount of gold nuggets you start with";
 		@Getter
-		private String waveTimeConfigComment = "The time (in seconds) between each wave, after the last mob of\nlast wave spawned";
+		protected String waveTimeConfigComment = "The time (in seconds) between each wave, after the last mob of\nlast wave spawned";
 		@Getter
-		private String livesConfigComment = "The number of mobs that can reach the end point before you loose";
+		protected String livesConfigComment = "The number of mobs that can reach the end point before you loose";
 		@Getter
-		private String npcTowerLocConfigComment = "Location of towers seller (x:y:z:yaw:pitch)";
+		protected String npcTowerLocConfigComment = "Location of towers seller (x:y:z:yaw:pitch)";
 		@Getter
-		private String npcUpgradesLocConfigComment = "Location of tower upgrades seller (x:y:z:yaw:pitch)";
+		protected String npcUpgradesLocConfigComment = "Location of tower upgrades seller (x:y:z:yaw:pitch)";
 		@Getter
-		private String npcExchangeLocConfigComment = "Location of exchanger (x:y:z:yaw:pitch)";
+		protected String npcExchangeLocConfigComment = "Location of exchanger (x:y:z:yaw:pitch)";
 		@Getter
-		private String towerUpdateRateConfigComment = "Tower update rate, in ticks";
+		protected String towerUpdateRateConfigComment = "Tower update rate, in ticks";
 		@Getter
-		private String preferredLanguageConfigComment = "Preferred language code for messages (default: en; supporteds: en, fr)";
+		protected String preferredLanguageConfigComment = "Preferred language code for messages (default: en; supporteds: en, fr)";
 		@Getter
-		private String forcePreferredLanguageConfigComment = "If true, players will receive messages in the language of the server.\nIf false, players will receive messages in their
+		protected String forcePreferredLanguageConfigComment = "If true, players will receive messages in the language of the server.\nIf false, players will receive messages in their
 		 " +
 				"own language (if available).";*/
 
@@ -385,60 +385,100 @@ public abstract class Messages extends YamlConfig implements Serializable
 	public static class MessagesFR extends Messages
 	{
 		@Getter
-		private String greetings = "Vous jouez avec le plugin MobDefense, créé par galaxyoyo. Merci de l'avoir acheté !";
+		protected String greetings = "Vous jouez avec le plugin MobDefense, créé par galaxyoyo. Merci de l'avoir acheté !";
 		@Getter
-		private String downloadingMessage = "Téléchargement de la version %s de %s ...";
+		protected String downloadingMessage = "Téléchargement de la version %s de %s ...";
 		@Getter
-		private String disablingPluginMessage = "Le plugin va désormais de désactiver.";
+		protected String disablingPluginMessage = "Le plugin va désormais de désactiver.";
 		@Getter
-		private String unableToDownload = "Impossible de télécharger la bibliothèque %s. Vérifiez que vous possédiez bien la dernière version de MobDefense et que vous disposez " +
+		protected String unableToDownload = "Impossible de télécharger la bibliothèque %s. Vérifiez que vous possédiez bien la dernière version de MobDefense et que vous disposez " +
 				"d'une connexion Internet.";
 		@Getter
-		private String configLoaded = "Configuration chargée ! Langue des messages dans la console : ";
+		protected String configLoaded = "Configuration chargée ! Langue des messages dans la console : ";
 		@Getter
-		private String locationConfigError = "ERREUR DE CONFIGURATION : Un lieu doit être défini suivant la façon suivante : x:y:z:yaw:pitch. Il n'y a que %d arguments, pour 5 " +
+		protected String locationConfigError = "ERREUR DE CONFIGURATION : Un lieu doit être défini suivant la façon suivante : x:y:z:yaw:pitch. Il n'y a que %d arguments, pour 5 " +
 				"requis.";
 		@Getter
-		private String configLoadError = "Une erreur est survenue lors du chargement du fichier de configuration.";
+		protected String configLoadError = "Une erreur est survenue lors du chargement du fichier de configuration.";
 		@Getter
-		private String checkingServerVersion = "Vérification de la version du serveur ...";
+		protected String checkingServerVersion = "Vérification de la version du serveur ...";
 		@Getter
-		private String minecraftRunningVersion = "Vous lancez un serveur Minecraft en version %s, pour Minecraft %s.";
+		protected String minecraftRunningVersion = "Vous lancez un serveur Minecraft en version %s, pour Minecraft %s.";
 		@Getter
-		private String warning18 = "Attention : la version 1.8 de MobDefense contient moins de fonctionnalités que la 1.9 et la 1.10, comme les flèches de potions.\n" +
+		protected String warning18 = "Attention : la version 1.8 de MobDefense contient moins de fonctionnalités que la 1.9 et la 1.10, comme les flèches de potions.\n" +
 				"Il peut y avoir quelques problèmes de compatibilité, dont je serais apte de corriger, reportez-les donc s'il vous plaît.\n" +
 				"Mais attention, dans une lointaine mise à jour, cette compatibilité sera supprimée.\n" +
 				"Si vous voulez un meilleur gameplay, merci de mettre à jour votre serveur en 1.9.4 ou 1.10 (1.10.2 recommandée).\n" +
 				"Aucune mise à jour du plugin n'est requise pour cela.";
 		@Getter
-		private String unsupportedServerVersion = "La version de votre serveur est %s. Cette version n'est actuellement pas supportée par MobDefense.";
+		protected String unsupportedServerVersion = "La version de votre serveur est %s. Cette version n'est actuellement pas supportée par MobDefense.";
 		@Getter
-		private String outdatedVersion = "Ce plugin n'est plus à jour. La dernière version est la %s et vous possèdez la %s. Merci de mettre à jour, il y a probablement de nouvelles" +
+		protected String outdatedVersion = "Ce plugin n'est plus à jour. La dernière version est la %s et vous possèdez la %s. Merci de mettre à jour, il y a probablement de " +
+				"nouvelles" +
 				" " +
 				"fonctionnalités ou de nouveaux fix.";
 		@Getter
-		private String mobsConfigLoadError = "Erreur lors du chargement de la configuration des mobs, merci de vérifier ce fichier.";
+		protected String mobsConfigLoadError = "Erreur lors du chargement de la configuration des mobs, merci de vérifier ce fichier.";
 		@Getter
-		private String wavesConfigLoadError = "Erreur lors du chargement de la configuration des vagues, merci de vérifier ce fichier.";
+		protected String wavesConfigLoadError = "Erreur lors du chargement de la configuration des vagues, merci de vérifier ce fichier.";
 		@Getter
-		private String towersConfigLoadError = "Erreur lors du chargement de la configuration des tours, merci de vérifier ce fichier.";
+		protected String towersConfigLoadError = "Erreur lors du chargement de la configuration des tours, merci de vérifier ce fichier.";
 		@Getter
-		private String upgradesConfigLoadError = "Erreur lors du chargement de la configuration des améliorations, merci de vérifier ce fichier.";
+		protected String upgradesConfigLoadError = "Erreur lors du chargement de la configuration des améliorations, merci de vérifier ce fichier.";
 		@Getter
-		private String generalError = "Une erreur est survenue lors de l'activatin de MobDefense. Merci de la reporter.";
+		protected String generalError = "Une erreur est survenue lors de l'activatin de MobDefense. Merci de la reporter.";
 		@Getter
-		private String notFoundMessage = "Le message \"%s\" n'a pas été trouvé.";
+		protected String notFoundMessage = "Le message \"%s\" n'a pas été trouvé.";
 		@Getter
-		private String gameAlreadyStarted = "&cUne partie est déjà en cours !";
+		protected String gameAlreadyStarted = "&cUne partie est déjà en cours !";
 		@Getter
-		private String noPlayerToStart = "&cAucun joueur n'est connecté pour démarrer la partie !";
+		protected String noPlayerToStart = "&cAucun joueur n'est connecté pour démarrer la partie !";
 		@Getter
-		private String noGame = "&cAucune partie n'est en cours !";
+		protected String noGame = "&cAucune partie n'est en cours !";
 		@Getter
-		private String gameStarted = "[MobDefense] Partie démarrée !";
+		protected String gameStarted = "[MobDefense] Partie démarrée !";
+		@Getter
+		protected String startingWave = "Démarrage de la vague n°%d (%s)";
+		@Getter
+		protected String gameEnded = "[MobDefense] Partie terminée.";
+		@Getter
+		protected String noItemType = "Aucun type d'item défini !";
+		@Getter
+		protected String noPath = "&cAucun chemin n'a pu être trouvé. Merci de mettre à jour votre carte.";
+		@Getter
+		protected String onlyPlayers = "&cSeuls les joueurs sont capables de modifier les positions.";
+		@Getter
+		protected String locationsSuccessDefined = "Position définie avec succès !";
+		@Getter
+		protected String noPermission = "&cVous n'avez pas la permission d'utiliser cette commande.";
+		@Getter
+		protected String npcTowerName = "Tours";
+		@Getter
+		protected String npcUpgradesName = "Améliorations";
+		@Getter
+		protected String npcExchangeName = "Échange";
+		@Getter
+		protected String bypassedTowers = "%s a surmonté les tours ! %d vies restantes";
+		@Getter
+		protected String bypassedTowersOneLeft = "%s a surmonté les tours ! Une vie restante";
+		@Getter
+		protected String bypassedTowersEnd = "%s a surmonté les tours ! &cVous avez survécu %d vagues.";
+		@Getter
+		protected String percentageUpgradeWarning = "Attention : la proportion %d doit être comprise entre 0 et 1. Définie à 1 (100 %) par défaut. Merci de vérifier la configuration" +
+				" " +
+				"de" +
+				" %s.";
+		@Getter
+		protected String towerClassNotFound = "Impossible de trouver la classe de tour '%s'. Merci de mettre à jour la configuration.";
+		@Getter
+		protected String notATowerClass = "La classe '%s' a bien été trouvée, mais n'est pas une classe de tour. Merci de mettre à jour la configuration.";
+		@Getter
+		protected String upgradeClassNotFound = "Impossible de trouver la classe d'amélioration '%s'. Merci de mettre à jour la configuration.";
+		@Getter
+		protected String notAnUpgradeClass = "La classe '%s' a bien été trouvée, mais n'est pas une classe d'amélioration. Merci de mettre à jour la configuration.";
 		@SuppressWarnings("MismatchedReadAndWriteOfArray")
 		@Getter
-		private transient String[] demoLogging = {"Bonjour !",
+		protected transient String[] demoLogging = {"Bonjour !",
 				"Vous êtes sur le serveur de test de Mob Defense.",
 				"Vous n'êtes pas opérateur, mais vous pouvez lancer la commande /md, qui n'est réservée d'habitude uniquement aux opérateurs.",
 				"Vous pouvez lancer cette démonstration quand vous le souhaitez, mais n'oubliez pas que des joueurs peuvent rejoindre ce serveur à tout moment.",
@@ -447,70 +487,32 @@ public abstract class Messages extends YamlConfig implements Serializable
 				"La configuration ne peut être modifiée, et la commande /md setloc n'est pas disponible.",
 				"J'espère que vous apprécierez le plugin :)"};
 		@Getter
-		private String startingWave = "Démarrage de la vague n°%d (%s)";
-		@Getter
-		private String gameEnded = "[MobDefense] Partie terminée.";
-		@Getter
-		private transient String[] demoEnded = "La démo est désormais terminée. J'espère que ce plugin vous aura plu :)\nDans tous les cas, merci de laisser un post sur le forum :)"
+		protected transient String[] demoEnded = "La démo est désormais terminée. J'espère que ce plugin vous aura plu :)\nDans tous les cas, merci de laisser un post sur le forum :)"
 				.split("\n");
-		@Getter
-		private String noItemType = "Aucun type d'item défini !";
-		@Getter
-		private String noPath = "&cAucun chemin n'a pu être trouvé. Merci de mettre à jour votre carte.";
-		@Getter
-		private String onlyPlayers = "&cSeuls les joueurs sont capables de modifier les positions.";
-		@Getter
-		private String locationsSuccessDefined = "Position définie avec succès !";
-		@Getter
-		private String noPermission = "&cVous n'avez pas la permission d'utiliser cette commande.";
-		@Getter
-		private String npcTowerName = "Tours";
-		@Getter
-		private String npcUpgradesName = "Améliorations";
-		@Getter
-		private String npcExchangeName = "Échange";
-		@Getter
-		private String bypassedTowers = "%s a surmonté les tours ! %d vies restantes";
-		@Getter
-		private String bypassedTowersOneLeft = "%s a surmonté les tours ! Une vie restante";
-		@Getter
-		private String bypassedTowersEnd = "%s a surmonté les tours ! &cVous avez survécu %d vagues.";
-		@Getter
-		private String percentageUpgradeWarning = "Attention : la proportion %d doit être comprise entre 0 et 1. Définie à 1 (100 %) par défaut. Merci de vérifier la configuration " +
-				"de" +
-				" %s.";
-		@Getter
-		private String towerClassNotFound = "Impossible de trouver la classe de tour '%s'. Merci de mettre à jour la configuration.";
-		@Getter
-		private String notATowerClass = "La classe '%s' a bien été trouvée, mais n'est pas une classe de tour. Merci de mettre à jour la configuration.";
-		@Getter
-		private String upgradeClassNotFound = "Impossible de trouver la classe d'amélioration '%s'. Merci de mettre à jour la configuration.";
-		@Getter
-		private String notAnUpgradeClass = "La classe '%s' a bien été trouvée, mais n'est pas une classe d'amélioration. Merci de mettre à jour la configuration.";
 /*		@Getter
-		private String playerSpawnConfigComment = "Position du spawn des joueurs (x:y:z:yaw:pitch)";
+		protected String playerSpawnConfigComment = "Position du spawn des joueurs (x:y:z:yaw:pitch)";
 		@Getter
-		private String spawnConfigComment = "Position du spawn des mobs (x:y:z:yaw:pitch)";
+		protected String spawnConfigComment = "Position du spawn des mobs (x:y:z:yaw:pitch)";
 		@Getter
-		private String endConfigComment = "Position de l'objectif des mobs (x:y:z:yaw:pitch)";
+		protected String endConfigComment = "Position de l'objectif des mobs (x:y:z:yaw:pitch)";
 		@Getter
-		private String startMoneyConfigComment = "Combien de pépites d'or les joueurs reçoivent";
+		protected String startMoneyConfigComment = "Combien de pépites d'or les joueurs reçoivent";
 		@Getter
-		private String waveTimeConfigComment = "Le temps (en secondes) entre chaque vague, après que\nla dernière vague soit terminée";
+		protected String waveTimeConfigComment = "Le temps (en secondes) entre chaque vague, après que\nla dernière vague soit terminée";
 		@Getter
-		private String livesConfigComment = "Le nombre de mobs qui peuvent atteindre la fin avant de perdre";
+		protected String livesConfigComment = "Le nombre de mobs qui peuvent atteindre la fin avant de perdre";
 		@Getter
-		private String npcTowerLocConfigComment = "Position du vendeur de tours (x:y:z:yaw:pitch)";
+		protected String npcTowerLocConfigComment = "Position du vendeur de tours (x:y:z:yaw:pitch)";
 		@Getter
-		private String npcUpgradesLocConfigComment = "Position du vendeur d'améliorations (x:y:z:yaw:pitch)";
+		protected String npcUpgradesLocConfigComment = "Position du vendeur d'améliorations (x:y:z:yaw:pitch)";
 		@Getter
-		private String npcExchangeLocConfigComment = "Position du monnayeur (x:y:z:yaw:pitch)";
+		protected String npcExchangeLocConfigComment = "Position du monnayeur (x:y:z:yaw:pitch)";
 		@Getter
-		private String towerUpdateRateConfigComment = "Délai entre chaque mise à jour des tours, en ticks";
+		protected String towerUpdateRateConfigComment = "Délai entre chaque mise à jour des tours, en ticks";
 		@Getter
-		private String preferredLanguageConfigComment = "Langue préférée des messages (défaut : en; supportés : en, fr)";
+		protected String preferredLanguageConfigComment = "Langue préférée des messages (défaut : en; supportés : en, fr)";
 		@Getter
-		private String forcePreferredLanguageConfigComment = "Si oui, les joueurs vont recevoir des messages dans la langue ci-dessus.\n" +
+		protected String forcePreferredLanguageConfigComment = "Si oui, les joueurs vont recevoir des messages dans la langue ci-dessus.\n" +
 				"Si non, les joueurs vont recevoir des messages dans leur propre langue (si disponible).";*/
 
 		private MessagesFR()
