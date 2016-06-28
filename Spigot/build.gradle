@@ -24,7 +24,7 @@ buildscript {
         mavenLocal()
     }
     dependencies {
-        classpath group: 'net.sf.proguard', name: 'proguard-gradle', version: '5.2.1'
+        classpath 'net.sf.proguard:proguard-gradle:5.2.1'
     }
 }
 
@@ -39,10 +39,10 @@ repositories {
         url 'http://repo.mcstats.org/content/repositories/public/'
     }
     maven {
-        url 'http://repo.md-5.net/content/groups/public/'
+        url 'http://arathia.fr/maven/'
     }
     maven {
-        url 'http://arathia.fr/maven/'
+        url 'http://repo.md-5.net/content/groups/public/'
     }
 }
 
@@ -59,6 +59,7 @@ dependencies {
     included 'org.mcstats.bukkit:metrics:R8-SNAPSHOT'
     compile 'fr.galaxyoyo.spigot:nbtapi:1.0.5'
     compile 'net.cubespace:Yamler-Core:2.4.0-SNAPSHOT'
+    compile 'org.projectlombok:lombok:1.16.8'
 }
 
 task fatjar(type: Jar) {

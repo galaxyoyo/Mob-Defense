@@ -1,5 +1,6 @@
 package fr.galaxyoyo.mobdefense.upgrades;
 
+import fr.galaxyoyo.mobdefense.Messages;
 import fr.galaxyoyo.mobdefense.MobDefense;
 import fr.galaxyoyo.mobdefense.towers.Tower;
 import org.bukkit.event.EventException;
@@ -43,12 +44,12 @@ public final class UpgradeRegistration implements Serializable
 		}
 		catch (ClassNotFoundException ex)
 		{
-			MobDefense.instance().getLogger().severe("Unable to find the upgrade class '" + className + "'. Please update config.");
+			MobDefense.instance().getLogger().severe(String.format(Messages.getMessages().getUpgradeClassNotFound(), className));
 			return false;
 		}
 		catch (ClassCastException ex)
 		{
-			MobDefense.instance().getLogger().severe("The class '" + className + "' was found but isn't an upgrade class. Please update config.");
+			MobDefense.instance().getLogger().severe(String.format(Messages.getMessages().getNotAnUpgradeClass(), className));
 			return false;
 		}
 

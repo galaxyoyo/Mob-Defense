@@ -28,10 +28,7 @@ public class LocationConverter implements Converter
 		{
 			String[] split = obj.toString().split(":");
 			if (split.length != 5)
-			{
-				throw new IllegalArgumentException("CONFIGURATION ERROR : Location must be provided as x:y:z:yaw:pitch, it seems that there are " + split.length + " arguments, " +
-						"required 5");
-			}
+				throw new IllegalArgumentException(String.format(Messages.getMessages().getLocationConfigError(), split.length));
 
 			return new Location(Bukkit.getWorlds().get(0), Double.parseDouble(split[0]), Double.parseDouble(split[1]), Double.parseDouble(split[2]), Float.parseFloat(split[3]),
 					Float.parseFloat(split[4]));

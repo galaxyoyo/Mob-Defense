@@ -278,7 +278,7 @@ public class ItemStackTypeAdapter extends TypeAdapter<ItemStack>
 		}
 		r.endObject();
 
-		assert type != null : "type is missing!";
+		assert type != null : Messages.getMessages().getNoItemType();
 		ItemStack stack = new ItemStack(type, amount, (short) durability);
 		stack.addUnsafeEnchantments(enchantments);
 		ItemMeta meta = stack.getItemMeta();

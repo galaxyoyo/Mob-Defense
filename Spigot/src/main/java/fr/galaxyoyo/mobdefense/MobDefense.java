@@ -15,6 +15,7 @@ import fr.galaxyoyo.spigot.nbtapi.EntityUtils;
 import fr.galaxyoyo.spigot.nbtapi.ItemStackUtils;
 import fr.galaxyoyo.spigot.nbtapi.ReflectionUtils;
 import fr.galaxyoyo.spigot.nbtapi.TagCompound;
+import net.cubespace.Yamler.Config.InvalidConfigurationException;
 import net.md_5.bungee.api.ChatColor;
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.io.IOUtils;
@@ -69,7 +70,8 @@ public class MobDefense extends JavaPlugin
 	@Override
 	public void onLoad()
 	{
-		getLogger().info("You're running the MobDefense plugin, by galaxyoyo. Thanks for buying it!");
+		Messages msgs = Messages.getMessages();
+		getLogger().info(msgs.getGreetings());
 		JavaPlugin nbtapi = (JavaPlugin) getServer().getPluginManager().getPlugin("NBTAPI");
 		String latestNBTAPIVersion = getLatestSpigotVersion(24908);
 		boolean needToUpdate = nbtapi == null;
@@ -81,7 +83,7 @@ public class MobDefense extends JavaPlugin
 		}
 		if (needToUpdate)
 		{
-			getLogger().info("Downloading version " + latestNBTAPIVersion + " of NBTAPI ...");
+			getLogger().info(String.format(msgs.getDownloadingMessage(), latestNBTAPIVersion, "NBTAPI"));
 			try
 			{
 				File file = new File("plugins", "NBTAPI.jar");
@@ -97,8 +99,8 @@ public class MobDefense extends JavaPlugin
 			}
 			catch (IOException e)
 			{
-				getLogger().severe("Unable to download NBTAPI library. Make sure you have the latest version of MobDefense and have an Internet connection.");
-				getLogger().severe("Plugin will disable now.");
+				getLogger().severe(String.format(msgs.getUnableToDownload(), "NBTAPI"));
+				getLogger().severe(msgs.getDisablingPluginMessage());
 				e.printStackTrace();
 				getServer().getPluginManager().disablePlugin(this);
 			}
@@ -116,11 +118,11 @@ public class MobDefense extends JavaPlugin
 		if (yamler != null && new Version(yamler.getDescription().getVersion().replaceAll("-SNAPSHOTb-\\d+", "")).compareTo(new Version(latestYamlerVersion)) < 0)
 		{
 			needToUpdate = true;
-			getServer().getPluginManager().disablePlugin(nbtapi);
+			getServer().getPluginManager().disablePlugin(yamler);
 		}
 		if (needToUpdate)
 		{
-			getLogger().info("Downloading version " + latestNBTAPIVersion + " of Yamler ...");
+			getLogger().info(String.format(msgs.getDownloadingMessage(), latestYamlerVersion, "Yamler"));
 			try
 			{
 				File file = new File("plugins", "Yamler.jar");
@@ -136,8 +138,8 @@ public class MobDefense extends JavaPlugin
 			}
 			catch (IOException e)
 			{
-				getLogger().severe("Unable to download Yamler library. Make sure you have the latest version of MobDefense and have an Internet connection.");
-				getLogger().severe("Plugin will disable now.");
+				getLogger().severe(String.format(msgs.getUnableToDownload(), "Yamler"));
+				getLogger().severe(msgs.getDisablingPluginMessage());
 				e.printStackTrace();
 				getServer().getPluginManager().disablePlugin(this);
 			}
@@ -212,15 +214,16 @@ public class MobDefense extends JavaPlugin
 		if (objective == null)
 		{
 			if (sender != null)
-				sender.sendMessage("[MobDefense] No game is running!");
+				sender.sendMessage("[MobDefense] " + Messages.getMessages(sender).getNoGame());
 			return;
 		}
 
-		Bukkit.broadcastMessage("[MobDefense] Game ended.");
+		Messages.broadcast("game-ended");
+
 		if (Boolean.valueOf(System.getProperty("mobdefense.demo")))
 		{
-			Bukkit.broadcastMessage("[MobDefense] The demo is now ended. I hope you enjoyed the plugin :)");
-			Bukkit.broadcastMessage("[MobDefense] In every case, please leave a comment on the forum :)");
+			Messages.broadcast("demo-ended-1");
+			Messages.broadcast("demo-ended-2");
 		}
 
 		for (Tower tower : Tower.getAllTowers())
@@ -244,25 +247,37 @@ public class MobDefense extends JavaPlugin
 	{
 		instance = this;
 
-		getLogger().info("Checking server version ...");
+		try
+		{
+			config = new Configuration();
+		}
+		catch (InvalidConfigurationException e)
+		{
+			getLogger().severe(Messages.getMessages().getConfigLoadError());
+			getLogger().severe(Messages.getMessages().getDisablingPluginMessage());
+			e.printStackTrace();
+		}
+		Messages.setPreferredLanguage(config.getPreferredLanguage());
+		Messages msgs = Messages.getMessages();
+		getLogger().info(msgs.getConfigLoaded() + msgs.getLocale().getDisplayName());
+
+		getLogger().info(msgs.getCheckingServerVersion());
 		try
 		{
 			NMSUtils.ServerVersion version = NMSUtils.getServerVersion();
-			getLogger().info("You're running Minecraft server " + version.name() + ", for Minecraft " + version.getServerName() + ".");
+			getLogger().info(String.format(msgs.getMinecraftRunningVersion(), version.name(), version.getServerName()));
 			if (version.isBefore1_9())
 			{
 				getLogger().warning("**************************************************************************************************");
-				getLogger().warning("Warning: the 1.8 version of MobDefense contains less features as 1.9 and 1.10, like tipped arrows.");
-				getLogger().warning("It mays contain some compatibility issues. I'm able to fix these, so please report  them.");
-				getLogger().warning("But please note that in some versions, this compatiblity will be removed.");
-				getLogger().warning("If you want a better gameplay, please update your server to 1.9.4 or 1.10 (1.10 recomended).");
-				getLogger().warning("There's no plugin update required.");
+				for (String line : msgs.getWarning18().split("\n"))
+					getLogger().warning(line);
 				getLogger().warning("**************************************************************************************************");
 			}
 		}
 		catch (UnsupportedClassVersionError error)
 		{
-			getLogger().severe("You're running Minecraft server " + error.getMessage() + ". This version is unsupported by MobDefense now. This plugin will now be disabled.");
+			getLogger().severe(String.format(msgs.getUnsupportedServerVersion(), error.getMessage()));
+			getLogger().severe(msgs.getDisablingPluginMessage());
 			getServer().getPluginManager().disablePlugin(this);
 			return;
 		}
@@ -280,14 +295,11 @@ public class MobDefense extends JavaPlugin
 			String version = getLatestSpigotVersion(25068);
 			if (new Version(getDescription().getVersion()).compareTo(new Version(version)) < 0)
 			{
-				getLogger().warning(
-						"This plugin is outdated. The last version is " + version + " and you're running " + getDescription().getVersion() + ". Please update, there're maybe some " +
-								"fixes or new features.");
+				getLogger().warning(String.format(msgs.getOutdatedVersion(), version, getDescription().getVersion()));
 				latestVersion = version;
 			}
 
 			World world = Bukkit.getWorlds().get(0);
-			config = new Configuration();
 
 			File file = new File(getDataFolder(), "mobs.json");
 			if (file.exists())
@@ -300,7 +312,7 @@ public class MobDefense extends JavaPlugin
 				}
 				catch (Exception ex)
 				{
-					getLogger().log(Level.SEVERE, "Error while loading mobs config, please check this one. Plugin will now be disabled.", ex);
+					getLogger().log(Level.SEVERE, msgs.getMobsConfigLoadError() + " " + msgs.getDisablingPluginMessage(), ex);
 					getPluginLoader().disablePlugin(this);
 					return;
 				}
@@ -346,7 +358,7 @@ public class MobDefense extends JavaPlugin
 				}
 				catch (Exception ex)
 				{
-					getLogger().log(Level.SEVERE, "Error while loading waves config, please check this one. Plugin will now be disabled.", ex);
+					getLogger().log(Level.SEVERE, msgs.getWavesConfigLoadError() + " " + msgs.getDisablingPluginMessage(), ex);
 					getPluginLoader().disablePlugin(this);
 					return;
 				}
@@ -379,7 +391,7 @@ public class MobDefense extends JavaPlugin
 				}
 				catch (Exception ex)
 				{
-					getLogger().log(Level.SEVERE, "Error while loading towers config, please check this one. Plugin will now be disabled.", ex);
+					getLogger().log(Level.SEVERE, msgs.getTowersConfigLoadError() + " " + msgs.getDisablingPluginMessage(), ex);
 					getPluginLoader().disablePlugin(this);
 					return;
 				}
@@ -424,7 +436,7 @@ public class MobDefense extends JavaPlugin
 				}
 				catch (Exception ex)
 				{
-					getLogger().log(Level.SEVERE, "Error while loading upgrades config, please check this one. Plugin will now be disabled.", ex);
+					getLogger().log(Level.SEVERE, msgs.getUpgradesConfigLoadError() + " " + msgs.getDisablingPluginMessage(), ex);
 					getPluginLoader().disablePlugin(this);
 					return;
 				}
@@ -504,7 +516,7 @@ public class MobDefense extends JavaPlugin
 				stack.setItemMeta(meta);
 				UpgradeRegistration critical = new UpgradeRegistration("CriticalUpgrade", stack.clone(), new ItemStack[]{new ItemStack(Material.GOLD_INGOT, 3)}, Collections
 						.singletonMap
-						("percentage", 0.25));
+								("percentage", 0.25));
 				Upgrade.registerUpgrade(critical);
 				stack.setType(Material.MAGMA_CREAM);
 				meta.setDisplayName("Fire Upgrade");
@@ -537,7 +549,7 @@ public class MobDefense extends JavaPlugin
 		}
 		catch (Exception ex)
 		{
-			getLogger().log(Level.SEVERE, "An error occured while enabling Mob Defense. Please report it. The plugin will disable now.", ex);
+			getLogger().log(Level.SEVERE, msgs.getGeneralError() + " " + msgs.getDisablingPluginMessage(), ex);
 			getServer().getPluginManager().disablePlugin(this);
 		}
 	}
@@ -593,7 +605,7 @@ public class MobDefense extends JavaPlugin
 	{
 		if (objective != null)
 		{
-			sender.sendMessage(ChatColor.RED + "A game is already started!");
+			sender.sendMessage(ChatColor.translateAlternateColorCodes('c', Messages.getMessages(sender).getGameAlreadyStarted()));
 			return;
 		}
 
@@ -607,7 +619,7 @@ public class MobDefense extends JavaPlugin
 			List<Player> players = Lists.newArrayList(Bukkit.getOnlinePlayers());
 			if (players.isEmpty())
 			{
-				sender.sendMessage(ChatColor.RED + "Any player is connected to start the game!");
+				sender.sendMessage(ChatColor.translateAlternateColorCodes('&', Messages.getMessages(sender).getNoPlayerToStart()));
 				return;
 			}
 			else
@@ -681,7 +693,7 @@ public class MobDefense extends JavaPlugin
 			if (NMSUtils.getServerVersion().isAfter1_9())
 				//noinspection unchecked
 				npcTower.setRecipes(recipes);
-			npcTower.setCustomName("Towers");
+			npcTower.setCustomName(Messages.getMessages().getNpcTowerName());
 		}
 
 		for (int i = 0; i < 3; ++i)
@@ -735,7 +747,7 @@ public class MobDefense extends JavaPlugin
 			if (NMSUtils.getServerVersion().isAfter1_9())
 				//noinspection unchecked
 				npcUpgrades.setRecipes(recipes);
-			npcUpgrades.setCustomName("Upgrades");
+			npcUpgrades.setCustomName(Messages.getMessages().getNpcUpgradesName());
 		}
 
 		for (int i = 0; i < 3; ++i)
@@ -800,7 +812,7 @@ public class MobDefense extends JavaPlugin
 
 				}
 			}
-			npcExchange.setCustomName("Exchange");
+			npcExchange.setCustomName(Messages.getMessages().getNpcExchangeName());
 		}
 
 		objective = Bukkit.getScoreboardManager().getMainScoreboard().getObjective("mobdefense");
@@ -814,7 +826,7 @@ public class MobDefense extends JavaPlugin
 		objective.getScore("Wave").setScore(0);
 
 		getServer().getPluginManager().callEvent(new GameStartedEvent());
-		Bukkit.broadcastMessage("[MobDefense] Game started!");
+		Messages.broadcast("game-started");
 		nextWaveTask = Bukkit.getScheduler().runTaskLater(this, this::startNextWave, config.getWaveTime() * 20L);
 	}
 

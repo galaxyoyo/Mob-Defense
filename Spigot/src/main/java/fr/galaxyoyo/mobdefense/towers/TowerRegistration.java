@@ -1,5 +1,6 @@
 package fr.galaxyoyo.mobdefense.towers;
 
+import fr.galaxyoyo.mobdefense.Messages;
 import fr.galaxyoyo.mobdefense.MobDefense;
 import net.md_5.bungee.api.ChatColor;
 import org.bukkit.Location;
@@ -50,12 +51,12 @@ public final class TowerRegistration implements Serializable
 		}
 		catch (ClassNotFoundException ex)
 		{
-			MobDefense.instance().getLogger().severe("Unable to find the tower class '" + className + "'. Please update config.");
+			MobDefense.instance().getLogger().severe(String.format(Messages.getMessages().getTowerClassNotFound(), className));
 			return false;
 		}
 		catch (ClassCastException ex)
 		{
-			MobDefense.instance().getLogger().severe("The class '" + className + "' was found but isn't a tower class. Please update config.");
+			MobDefense.instance().getLogger().severe(String.format(Messages.getMessages().getNotATowerClass(), className));
 			return false;
 		}
 

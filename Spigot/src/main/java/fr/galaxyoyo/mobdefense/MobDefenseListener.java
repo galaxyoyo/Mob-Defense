@@ -70,14 +70,8 @@ public class MobDefenseListener implements Listener
 		if (!event.getPlayer().isOp() && Boolean.valueOf(System.getProperty("mobdefense.demo")) == Boolean.TRUE)
 		{
 			event.getPlayer().addAttachment(MobDefense.instance(), "mobdefense.demo", true);
-			event.getPlayer().sendMessage("[MobDefense] Hello!");
-			event.getPlayer().sendMessage("[MobDefense] You're on the test server of Mob Defense.");
-			event.getPlayer().sendMessage("[MobDefense] You are not opped, but you can run the /md command, which is normally provided for ops.");
-			event.getPlayer().sendMessage("[MobDefense] You're able to run this demo whenever you want, but don't forget that players can join when they want.");
-			event.getPlayer().sendMessage("[MobDefense] This server is made to test the plugin, not to play with it. So please leave the place to some other testers when you have " +
-					"finished to test it.");
-			event.getPlayer().sendMessage("[MobDefense] The configuration couldn't be modified, and /md setloc isn't available.");
-			event.getPlayer().sendMessage("[MobDefense] I hope you'll enjoy the plugin :)");
+			for (String line : Messages.getMessages(event.getPlayer()).getDemoLogging())
+				event.getPlayer().sendMessage("[MobDefense] " + line);
 		}
 	}
 
@@ -381,14 +375,15 @@ public class MobDefenseListener implements Listener
 	{
 		Score score = Bukkit.getScoreboardManager().getMainScoreboard().getObjective(DisplaySlot.SIDEBAR).getScore("Lives");
 		score.setScore(score.getScore() - 1);
-		if (score.getScore() > 0)
-			Bukkit.broadcastMessage("[MobDefense] " + event.getEntity().getCustomName() + " bypassed the towers! " + score.getScore() + " "
-					+ (score.getScore() > 1 ? "lives" : "life") + " left");
+		if (score.getScore() > 1)
+			Messages.broadcast("bypassed-towers", event.getEntity().getCustomName(), score.getScore());
+		else if (score.getScore() > 0)
+			Messages.broadcast("bypassed-towers-one-left", event.getEntity().getCustomName());
 		else
 		{
 			Wave currentWave = MobDefense.instance().getCurrentWave();
-			Bukkit.broadcastMessage("[MobDefense] " + event.getEntity().getCustomName() + " bypassed the towers! " + ChatColor.RED + "You survived "
-					+ currentWave.getNumber() + " wave" + (currentWave.getNumber() > 1 ? "s." : "."));
+			Messages.broadcast("bypassed-towers-end", event.getEntity().getCustomName(), Bukkit.getScoreboardManager().getMainScoreboard().getObjective(DisplaySlot.SIDEBAR).getScore
+					("Wave").getScore());
 			MobDefense.instance().stop(null);
 		}
 	}

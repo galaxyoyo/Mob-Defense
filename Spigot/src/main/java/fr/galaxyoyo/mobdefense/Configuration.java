@@ -1,45 +1,66 @@
 package fr.galaxyoyo.mobdefense;
 
+import lombok.Getter;
 import net.cubespace.Yamler.Config.*;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
 
 import java.io.File;
 import java.io.Serializable;
+import java.util.Locale;
 
 public class Configuration extends YamlConfig implements Serializable
 {
 	private static final transient Location SPAWN_LOC = Bukkit.getWorlds().get(0).getSpawnLocation();
 
+	@Getter
 	@Comment("Location of player spawn (x:y:z:yaw:pitch)")
 	private Location playerSpawn = SPAWN_LOC;
 
+	@Getter
 	@Comment("Location of mob spawn (x:y:z:yaw:pitch)")
 	private Location spawn = SPAWN_LOC;
 
+	@Getter
 	@Comment("Location of mob objective (x:y:z:yaw:pitch)")
 	private Location end = SPAWN_LOC;
 
+	@Getter
 	@Comment("The amount of gold nuggets you start with")
 	private int startMoney = 150;
 
+	@Getter
 	@Comments({"The time (in seconds) between each wave, after the last mob of", "last wave spawned"})
 	private int waveTime = 42;
 
+	@Getter
 	@Comment("The number of mobs that can reach the end point before you loose")
 	private int lives = 10;
 
+	@Getter
 	@Comment("Location of towers seller (x:y:z:yaw:pitch)")
 	private Location npcTowerLoc = SPAWN_LOC;
 
+	@Getter
 	@Comment("Location of tower upgrades seller (x:y:z:yaw:pitch)")
 	private Location npcUpgradesLoc = SPAWN_LOC;
 
+	@Getter
 	@Comment("Location of exchanger (x:y:z:yaw:pitch)")
 	private Location npcExchangeLoc = SPAWN_LOC;
 
+	@Getter
 	@Comment("Tower update rate, in ticks")
 	private int towerUpdateRate = 20;
+
+	@Getter
+	@Comment("Preferred language code for messages (default: en; supporteds: en, fr)")
+	private String preferredLanguage = Locale.getDefault().getLanguage().toLowerCase();
+
+	@Getter
+	@Comment("If true, players will receive messages in the language of the server.\nIf false, players will receive messages in their " +
+			"own language (if available).")
+	private boolean forcePreferredLanguage = false;
 
 	public Configuration() throws InvalidConfigurationException
 	{
@@ -56,11 +77,6 @@ public class Configuration extends YamlConfig implements Serializable
 			e.printStackTrace();
 		}
 		init();
-	}
-
-	public Location getPlayerSpawn()
-	{
-		return playerSpawn;
 	}
 
 	public void setPlayerSpawn(Location spawn)
@@ -82,20 +98,10 @@ public class Configuration extends YamlConfig implements Serializable
 		}
 	}
 
-	public Location getSpawn()
-	{
-		return spawn;
-	}
-
 	public void setSpawn(Location spawn)
 	{
 		this.spawn = spawn;
 		save();
-	}
-
-	public Location getEnd()
-	{
-		return end;
 	}
 
 	public void setEnd(Location end)
@@ -104,35 +110,10 @@ public class Configuration extends YamlConfig implements Serializable
 		save();
 	}
 
-	public int getStartMoney()
-	{
-		return startMoney;
-	}
-
-	public int getWaveTime()
-	{
-		return waveTime;
-	}
-
-	public int getLives()
-	{
-		return lives;
-	}
-
-	public Location getNpcTowerLoc()
-	{
-		return npcTowerLoc;
-	}
-
 	public void setNpcTowerLoc(Location loc)
 	{
 		this.npcTowerLoc = loc;
 		save();
-	}
-
-	public Location getNpcUpgradesLoc()
-	{
-		return npcUpgradesLoc;
 	}
 
 	public void setNpcUpgradesLoc(Location loc)
@@ -141,19 +122,9 @@ public class Configuration extends YamlConfig implements Serializable
 		save();
 	}
 
-	public Location getNpcExchangeLoc()
-	{
-		return npcExchangeLoc;
-	}
-
 	public void setNpcExchangeLoc(Location loc)
 	{
 		this.npcExchangeLoc = loc;
 		save();
-	}
-
-	public int getTowerUpdateRate()
-	{
-		return towerUpdateRate;
 	}
 }

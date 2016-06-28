@@ -30,7 +30,7 @@ public class MobDefenseExecutor implements CommandExecutor, TabCompleter
 
 			if (!Wave.checkForPath())
 			{
-				sender.sendMessage(ChatColor.RED + "[MobDefense] Error: no path can be found. Please update the map.");
+				sender.sendMessage(ChatColor.RED + "[MobDefense] " + Messages.getMessages(sender).getNoPath());
 				return true;
 			}
 			MobDefense.instance().start(sender);
@@ -51,7 +51,7 @@ public class MobDefenseExecutor implements CommandExecutor, TabCompleter
 
 			if (!MobDefense.instance().isStarted())
 			{
-				sender.sendMessage(ChatColor.RED + "[MobDefense] Error: no game is started.");
+				sender.sendMessage(ChatColor.RED + "[MobDefense] " + Messages.getMessages(sender).getNoGame());
 				return true;
 			}
 			MobDefense.instance().startNextWave();
@@ -61,7 +61,7 @@ public class MobDefenseExecutor implements CommandExecutor, TabCompleter
 		{
 			if (!(sender instanceof Player))
 			{
-				sender.sendMessage(ChatColor.RED + "[MobDefense] Only players are able set positions.");
+				sender.sendMessage(ChatColor.RED + "[MobDefense] " + Messages.getMessages(sender).getOnlyPlayers());
 				return true;
 			}
 
@@ -141,7 +141,7 @@ public class MobDefenseExecutor implements CommandExecutor, TabCompleter
 				return true;
 			}
 
-			sender.sendMessage("[MobDefense] Location successfully defined!");
+			sender.sendMessage("[MobDefense] " + Messages.getMessages(sender).getLocationsSuccessDefined());
 			return true;
 		}
 
@@ -235,7 +235,7 @@ public class MobDefenseExecutor implements CommandExecutor, TabCompleter
 
 	public boolean noPerm(CommandSender sender)
 	{
-		sender.sendMessage(ChatColor.RED + "You don't have the permission to run this command.");
+		sender.sendMessage(Messages.getMessages(sender).getNoPermission());
 		return true;
 	}
 
