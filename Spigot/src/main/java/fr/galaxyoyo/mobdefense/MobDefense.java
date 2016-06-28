@@ -230,7 +230,17 @@ public class MobDefense extends JavaPlugin
 		for (Tower tower : Tower.getAllTowers())
 			Tower.breakAt(tower.getLocation());
 		Bukkit.getWorlds().get(0).getEntities().stream().filter(entity -> entity.getType() != EntityType.PLAYER).forEach(Entity::remove);
-		Bukkit.getOnlinePlayers().forEach(player -> player.getInventory().clear());
+		Bukkit.getOnlinePlayers().forEach(player ->
+		{
+			ItemStack pickaxe = new ItemStack(Material.DIAMOND_PICKAXE);
+			ItemMeta meta = pickaxe.getItemMeta();
+			meta.spigot().setUnbreakable(true);
+			meta.addItemFlags(ItemFlag.values());
+			pickaxe.setItemMeta(meta);
+			ItemStackUtils.setCanDestroy(pickaxe, Material.DISPENSER);
+			player.getInventory().clear();
+			player.getInventory().addItem(pickaxe);
+		});
 		getServer().getPluginManager().callEvent(new GameStoppedEvent(currentWave == null ? 0 : currentWave.getNumber()));
 		currentWave = null;
 		objective.unregister();
