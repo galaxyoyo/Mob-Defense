@@ -194,7 +194,7 @@ public abstract class Messages extends YamlConfig implements Serializable
 
 	public static class MessageProperty
 	{
-		private final String method;
+		private final String field;
 		private final Object[] args;
 
 		public MessageProperty(String key, Object... args)
@@ -212,9 +212,7 @@ public abstract class Messages extends YamlConfig implements Serializable
 					key += s;
 				}
 			}
-			if (!key.startsWith("get"))
-				key = "get" + Character.toUpperCase(key.charAt(0)) + key.substring(1);
-			this.method = key;
+			this.field = key;
 			this.args = args;
 		}
 
@@ -223,11 +221,11 @@ public abstract class Messages extends YamlConfig implements Serializable
 			Messages msgs = Messages.getMessages(sender);
 			try
 			{
-				sender.sendMessage("[MobDefense] " + String.format((String) msgs.getClass().getDeclaredMethod(method).invoke(msgs), args));
+				sender.sendMessage("[MobDefense] " + String.format((String) msgs.getClass().getDeclaredField(field).get(msgs), args));
 			}
 			catch (Exception ex)
 			{
-				MobDefense.instance().getLogger().warning(String.format(getMessages().getNotFoundMessage(), method));
+				MobDefense.instance().getLogger().warning(String.format(getMessages().getNotFoundMessage(), field));
 				ex.printStackTrace();
 			}
 		}
