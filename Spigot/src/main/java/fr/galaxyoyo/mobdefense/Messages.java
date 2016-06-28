@@ -436,11 +436,11 @@ public abstract class Messages extends YamlConfig implements Serializable
 		@Getter
 		protected String noGame = "&cAucune partie n'est en cours !";
 		@Getter
-		protected String gameStarted = "[MobDefense] Partie démarrée !";
+		protected String gameStarted = "Partie démarrée !";
 		@Getter
 		protected String startingWave = "Démarrage de la vague n°%d (%s)";
 		@Getter
-		protected String gameEnded = "[MobDefense] Partie terminée.";
+		protected String gameEnded = "Partie terminée.";
 		@Getter
 		protected String noItemType = "Aucun type d'item défini !";
 		@Getter
