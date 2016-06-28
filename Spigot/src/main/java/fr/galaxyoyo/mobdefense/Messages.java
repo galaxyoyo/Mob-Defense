@@ -144,6 +144,10 @@ public abstract class Messages extends YamlConfig implements Serializable
 
 	public abstract String getNpcExchangeName();
 
+	public abstract String getLives();
+
+	public abstract String getWave();
+
 	@SuppressWarnings("unused")
 	public abstract String getBypassedTowers();
 
@@ -308,6 +312,10 @@ public abstract class Messages extends YamlConfig implements Serializable
 		@Getter
 		private String npcExchangeName = "Exchange";
 		@Getter
+		private String lives = "Lives";
+		@Getter
+		private String wave = "Wave";
+		@Getter
 		private String bypassedTowers = "%s bypassed the towers! %d lives left";
 		@Getter
 		private String bypassedTowersOneLeft = "%s bypassed the towers! One life left";
@@ -461,6 +469,10 @@ public abstract class Messages extends YamlConfig implements Serializable
 		private String npcUpgradesName = "Améliorations";
 		@Getter
 		private String npcExchangeName = "Échange";
+		@Getter
+		private String lives = "Vies";
+		@Getter
+		private String wave = "Vague";
 		@Getter
 		private String bypassedTowers = "%s a surmonté les tours ! %d vies restantes";
 		@Getter

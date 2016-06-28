@@ -373,7 +373,7 @@ public class MobDefenseListener implements Listener
 	@EventHandler
 	public void onEntityGone(EntityGoneEvent event)
 	{
-		Score score = Bukkit.getScoreboardManager().getMainScoreboard().getObjective(DisplaySlot.SIDEBAR).getScore("Lives");
+		Score score = Bukkit.getScoreboardManager().getMainScoreboard().getObjective(DisplaySlot.SIDEBAR).getScore(Messages.getMessages().getLives());
 		score.setScore(score.getScore() - 1);
 		if (score.getScore() > 1)
 			Messages.broadcast("bypassed-towers", event.getEntity().getCustomName(), score.getScore());
@@ -382,8 +382,7 @@ public class MobDefenseListener implements Listener
 		else
 		{
 			Wave currentWave = MobDefense.instance().getCurrentWave();
-			Messages.broadcast("bypassed-towers-end", event.getEntity().getCustomName(), Bukkit.getScoreboardManager().getMainScoreboard().getObjective(DisplaySlot.SIDEBAR).getScore
-					("Wave").getScore());
+			Messages.broadcast("bypassed-towers-end", event.getEntity().getCustomName(), currentWave.getNumber());
 			MobDefense.instance().stop(null);
 		}
 	}

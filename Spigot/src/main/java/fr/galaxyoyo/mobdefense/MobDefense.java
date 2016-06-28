@@ -596,7 +596,7 @@ public class MobDefense extends JavaPlugin
 			nextWaveTask = null;
 		}
 
-		objective.getScore("Wave").setScore(currentWave.getNumber());
+		objective.getScore(Messages.getMessages().getWave()).setScore(currentWave.getNumber());
 		currentWave.start();
 	}
 
@@ -821,8 +821,8 @@ public class MobDefense extends JavaPlugin
 		objective.setDisplayName("[MobDefense]");
 		objective.setDisplaySlot(DisplaySlot.SIDEBAR);
 		objective.getScore(ChatColor.RED.toString()).setScore(999);
-		objective.getScore("Lives").setScore(config.getLives());
-		objective.getScore("Wave").setScore(0);
+		objective.getScore(Messages.getMessages().getLives()).setScore(config.getLives());
+		objective.getScore(Messages.getMessages().getWave()).setScore(0);
 
 		getServer().getPluginManager().callEvent(new GameStartedEvent());
 		Messages.broadcast("game-started");
