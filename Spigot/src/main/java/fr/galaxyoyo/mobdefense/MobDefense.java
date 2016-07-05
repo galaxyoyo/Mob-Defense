@@ -70,13 +70,50 @@ public class MobDefense extends JavaPlugin
 	public void onLoad()
 	{
 		instance = this;
+
+		JavaPlugin yamler = (JavaPlugin) getServer().getPluginManager().getPlugin("Yamler");
+		String latestYamlerVersion = getLatestSpigotVersion(315);
+		boolean needToUpdate = yamler == null;
+		boolean needToReload = false;
+		if (yamler != null && new Version(yamler.getDescription().getVersion().replaceAll("-SNAPSHOTb-\\d+", "")).compareTo(new Version(latestYamlerVersion)) < 0)
+		{
+			needToUpdate = true;
+			getServer().getPluginManager().disablePlugin(yamler);
+		}
+		if (needToUpdate)
+		{
+			try
+			{
+				File file = new File("plugins", "Yamler.jar");
+				URL url = new URL("http://ci.md-5.net/job/Yamler/lastSuccessfulBuild/artifact/Yamler-Bukkit/target/Yamler-Bukkit-2.4.0-SNAPSHOT.jar");
+				HttpURLConnection co = (HttpURLConnection) url.openConnection();
+				co.setRequestMethod("GET");
+				co.setRequestProperty("User-Agent", "Mozilla/5.0");
+				co.setRequestProperty("Connection", "Close");
+				co.connect();
+				FileUtils.copyInputStreamToFile(co.getInputStream(), file);
+				co.disconnect();
+				getServer().getPluginManager().loadPlugin(file);
+			}
+			catch (IOException e)
+			{
+				e.printStackTrace();
+				getServer().getPluginManager().disablePlugin(this);
+			}
+			catch (InvalidPluginException | InvalidDescriptionException e)
+			{
+				e.printStackTrace();
+			}
+
+			needToReload = true;
+		}
+
 		Messages.setPreferredLanguage(Locale.getDefault().getLanguage());
 		Messages msgs = Messages.getMessages();
 		getLogger().info(msgs.getGreetings());
 		JavaPlugin nbtapi = (JavaPlugin) getServer().getPluginManager().getPlugin("NBTAPI");
 		String latestNBTAPIVersion = getLatestSpigotVersion(24908);
-		boolean needToUpdate = nbtapi == null;
-		boolean needToReload = false;
+		needToUpdate = nbtapi == null;
 		if (nbtapi != null && new Version(nbtapi.getDescription().getVersion()).compareTo(new Version(latestNBTAPIVersion)) < 0)
 		{
 			needToUpdate = true;
@@ -101,45 +138,6 @@ public class MobDefense extends JavaPlugin
 			catch (IOException e)
 			{
 				getLogger().severe(String.format(msgs.getUnableToDownload(), "NBTAPI"));
-				getLogger().severe(msgs.getDisablingPluginMessage());
-				e.printStackTrace();
-				getServer().getPluginManager().disablePlugin(this);
-			}
-			catch (InvalidPluginException | InvalidDescriptionException e)
-			{
-				e.printStackTrace();
-			}
-
-			needToReload = true;
-		}
-
-		JavaPlugin yamler = (JavaPlugin) getServer().getPluginManager().getPlugin("Yamler");
-		String latestYamlerVersion = getLatestSpigotVersion(315);
-		needToUpdate = yamler == null;
-		if (yamler != null && new Version(yamler.getDescription().getVersion().replaceAll("-SNAPSHOTb-\\d+", "")).compareTo(new Version(latestYamlerVersion)) < 0)
-		{
-			needToUpdate = true;
-			getServer().getPluginManager().disablePlugin(yamler);
-		}
-		if (needToUpdate)
-		{
-			getLogger().info(String.format(msgs.getDownloadingMessage(), latestYamlerVersion, "Yamler"));
-			try
-			{
-				File file = new File("plugins", "Yamler.jar");
-				URL url = new URL("http://ci.md-5.net/job/Yamler/lastSuccessfulBuild/artifact/Yamler-Bukkit/target/Yamler-Bukkit-2.4.0-SNAPSHOT.jar");
-				HttpURLConnection co = (HttpURLConnection) url.openConnection();
-				co.setRequestMethod("GET");
-				co.setRequestProperty("User-Agent", "Mozilla/5.0");
-				co.setRequestProperty("Connection", "Close");
-				co.connect();
-				FileUtils.copyInputStreamToFile(co.getInputStream(), file);
-				co.disconnect();
-				getServer().getPluginManager().loadPlugin(file);
-			}
-			catch (IOException e)
-			{
-				getLogger().severe(String.format(msgs.getUnableToDownload(), "Yamler"));
 				getLogger().severe(msgs.getDisablingPluginMessage());
 				e.printStackTrace();
 				getServer().getPluginManager().disablePlugin(this);
