@@ -1,5 +1,9 @@
 package fr.galaxyoyo.mobdefense;
 
+import com.comphenix.protocol.PacketType;
+import com.comphenix.protocol.ProtocolLibrary;
+import com.comphenix.protocol.events.PacketAdapter;
+import com.comphenix.protocol.events.PacketEvent;
 import fr.galaxyoyo.mobdefense.events.EntityGoneEvent;
 import fr.galaxyoyo.mobdefense.towers.Tower;
 import fr.galaxyoyo.mobdefense.upgrades.Upgrade;
@@ -70,11 +74,17 @@ public class MobDefenseListener implements Listener
 		if (!event.getPlayer().isOp() && Boolean.valueOf(System.getProperty("mobdefense.demo")) == Boolean.TRUE)
 		{
 			event.getPlayer().addAttachment(MobDefense.instance(), "mobdefense.demo", true);
-			Bukkit.getScheduler().runTask(MobDefense.instance(), () ->
+			ProtocolLibrary.getProtocolManager().addPacketListener(new PacketAdapter(MobDefense.instance(), PacketType.Play.Client.SETTINGS)
 			{
-				for (String line : Messages.getMessages(event.getPlayer()).getDemoLogging())
-					event.getPlayer().sendMessage("[MobDefense] " + line);
-				System.out.println((event.getPlayer()).spigot().getLocale());
+				@Override
+				public void onPacketReceiving(PacketEvent event)
+				{
+					System.out.println(event.getPacket().getStrings().getField(0));
+					for (String line : Messages.getMessages(event.getPlayer()).getDemoLogging())
+						event.getPlayer().sendMessage("[MobDefense] " + line);
+					System.out.println((event.getPlayer()).spigot().getLocale());
+					ProtocolLibrary.getProtocolManager().removePacketListener(this);
+				}
 			});
 		}
 	}

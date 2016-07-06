@@ -59,6 +59,7 @@ dependencies {
     included 'org.mcstats.bukkit:metrics:R8-SNAPSHOT'
     compile 'fr.galaxyoyo.spigot:nbtapi:1.0.5'
     compile 'net.cubespace:Yamler-Core:2.4.0-SNAPSHOT'
+    compile 'com.comphenix.protocol:ProtocolLib-API:4.0'
     compile 'org.projectlombok:lombok:1.16.8'
 }
 
