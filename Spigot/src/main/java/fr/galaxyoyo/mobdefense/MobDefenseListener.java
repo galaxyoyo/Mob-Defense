@@ -14,6 +14,7 @@ import org.bukkit.Bukkit;
 import org.bukkit.GameMode;
 import org.bukkit.Material;
 import org.bukkit.World;
+import org.bukkit.craftbukkit.v1_10_R1.entity.CraftPlayer;
 import org.bukkit.entity.Creature;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.EntityType;
@@ -79,14 +80,10 @@ public class MobDefenseListener implements Listener
 				@Override
 				public void onPacketReceiving(PacketEvent event)
 				{
-					System.out.println(event.getPacket().getStrings().read(0));
+					((CraftPlayer) event.getPlayer()).getHandle().locale = event.getPacket().getStrings().read(0);
+					for (String line : Messages.getMessages(event.getPlayer()).getDemoLogging())
+						event.getPlayer().sendMessage("[MobDefense] " + line);
 					ProtocolLibrary.getProtocolManager().removePacketListener(this);
-					Bukkit.getScheduler().runTask(MobDefense.instance(), () ->
-					{
-						for (String line : Messages.getMessages(event.getPlayer()).getDemoLogging())
-							event.getPlayer().sendMessage("[MobDefense] " + line);
-						System.out.println((event.getPlayer()).spigot().getLocale());
-					});
 				}
 			});
 		}
