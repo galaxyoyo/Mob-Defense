@@ -220,10 +220,7 @@ public class MobDefense extends JavaPlugin
 		Messages.broadcast("game-ended");
 
 		if (Boolean.valueOf(System.getProperty("mobdefense.demo")))
-		{
-			Messages.broadcast("demo-ended-1");
-			Messages.broadcast("demo-ended-2");
-		}
+			Messages.broadcast("demo-ended");
 
 		for (Tower tower : Tower.getAllTowers())
 			Tower.breakAt(tower.getLocation());

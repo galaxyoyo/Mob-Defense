@@ -8,6 +8,7 @@ import net.cubespace.Yamler.Config.YamlConfig;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.command.CommandSender;
+import org.bukkit.craftbukkit.libs.joptsimple.internal.Strings;
 import org.bukkit.entity.Player;
 
 import java.io.File;
@@ -229,7 +230,10 @@ public abstract class Messages extends YamlConfig implements Serializable
 			{
 				Field f = msgs.getClass().getDeclaredField(field);
 				f.setAccessible(true);
-				sender.sendMessage("[MobDefense] " + ChatColor.translateAlternateColorCodes('&', String.format((String) f.get(msgs), args)));
+				Object obj = f.get(msgs);
+				if (obj instanceof String[])
+					obj = Strings.join((String[]) obj, "\n");
+				sender.sendMessage("[MobDefense] " + ChatColor.translateAlternateColorCodes('&', String.format((String) obj, args)));
 				f.setAccessible(false);
 			}
 			catch (Exception ex)
