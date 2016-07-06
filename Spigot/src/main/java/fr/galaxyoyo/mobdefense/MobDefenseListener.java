@@ -70,9 +70,12 @@ public class MobDefenseListener implements Listener
 		if (!event.getPlayer().isOp() && Boolean.valueOf(System.getProperty("mobdefense.demo")) == Boolean.TRUE)
 		{
 			event.getPlayer().addAttachment(MobDefense.instance(), "mobdefense.demo", true);
-			for (String line : Messages.getMessages(event.getPlayer()).getDemoLogging())
-				event.getPlayer().sendMessage("[MobDefense] " + line);
-			System.out.println(event.getPlayer().spigot().getLocale());
+			Bukkit.getScheduler().runTask(MobDefense.instance(), () ->
+			{
+				for (String line : Messages.getMessages(event.getPlayer()).getDemoLogging())
+					event.getPlayer().sendMessage("[MobDefense] " + line);
+				System.out.println((event.getPlayer()).spigot().getLocale());
+			});
 		}
 	}
 
@@ -216,7 +219,8 @@ public class MobDefenseListener implements Listener
 					Optional<UpgradeRegistration> optional = Upgrade.getUpgradeRegistrations().stream().filter(upgradeRegistration -> upgradeRegistration.getItem().equals(stack))
 							.findAny();
 					event.setCancelled(!optional.isPresent());
-					optional.ifPresent(upgradeRegistration -> {
+					optional.ifPresent(upgradeRegistration ->
+					{
 						try
 						{
 							Upgrade upgrade = upgradeRegistration.newInstance(t);
@@ -258,7 +262,8 @@ public class MobDefenseListener implements Listener
 					Optional<UpgradeRegistration> optional = Upgrade.getUpgradeRegistrations().stream().filter(upgradeRegistration -> upgradeRegistration.getItem().equals(stack))
 							.findAny();
 					event.setCancelled(!optional.isPresent());
-					optional.ifPresent(upgradeRegistration -> {
+					optional.ifPresent(upgradeRegistration ->
+					{
 						try
 						{
 							Upgrade upgrade = upgradeRegistration.newInstance(t);
