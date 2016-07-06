@@ -72,6 +72,7 @@ public class MobDefenseListener implements Listener
 			event.getPlayer().addAttachment(MobDefense.instance(), "mobdefense.demo", true);
 			for (String line : Messages.getMessages(event.getPlayer()).getDemoLogging())
 				event.getPlayer().sendMessage("[MobDefense] " + line);
+			System.out.println(event.getPlayer().spigot().getLocale());
 		}
 	}
 
