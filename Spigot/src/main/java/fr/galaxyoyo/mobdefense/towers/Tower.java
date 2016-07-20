@@ -2,6 +2,7 @@ package fr.galaxyoyo.mobdefense.towers;
 
 import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
+import fr.galaxyoyo.mobdefense.Messages;
 import fr.galaxyoyo.mobdefense.MobDefense;
 import fr.galaxyoyo.mobdefense.NMSUtils;
 import fr.galaxyoyo.mobdefense.Wave;
@@ -25,10 +26,12 @@ import org.bukkit.util.Vector;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
+import java.util.Random;
 import java.util.stream.Collectors;
 
 public abstract class Tower
 {
+	private static final Random RANDOM = MobDefense.instance().getRandomInstance();
 	private static final List<TowerRegistration> towerRegistrations = Lists.newArrayList();
 	private static final Map<Location, Tower> towersByLocation = Maps.newHashMap();
 
@@ -40,6 +43,8 @@ public abstract class Tower
 	private double updateRate = 20;
 	private float rangeMultiplier = 1.0F;
 	private float speedMultiplier = 1.0F;
+	private double firePercentage = 0.0D;
+	private double criticalPercentage = 0.0D;
 	private List<Upgrade> upgrades = Lists.newArrayList(null, null, null, null, null, null, null, null, null);
 
 	protected Tower(TowerRegistration registration, Location location)
@@ -210,6 +215,30 @@ public abstract class Tower
 
 	public abstract void onTick();
 
+	protected void load0(Map<String, Object> parameters)
+	{
+		load(parameters);
+		rangeMultiplier = ((Number) parameters.getOrDefault("rangeMultiplier", 1.0F)).floatValue();
+		speedMultiplier = ((Number) parameters.getOrDefault("speedMultiplier", 1.0F)).floatValue();
+		updateRate = ((Number) parameters.getOrDefault("rate", MobDefense.instance().getConfiguration().getTowerUpdateRate())).intValue();
+		firePercentage = ((Number) parameters.getOrDefault("firePercentage", 1.0D)).doubleValue();
+		if (firePercentage > 1.0D)
+			firePercentage /= 100.0D;
+		if (firePercentage > 1.0D || firePercentage <= 0.0D)
+		{
+			MobDefense.instance().getLogger().warning(String.format(Messages.getMessages().getPercentageUpgradeWarning(), firePercentage, "Tower"));
+			firePercentage = 1.0D;
+		}
+		criticalPercentage = ((Number) parameters.getOrDefault("criticalPercentage", 1.0D)).doubleValue();
+		if (criticalPercentage > 1.0D)
+			criticalPercentage /= 100.0D;
+		if (criticalPercentage > 1.0D || criticalPercentage <= 0.0D)
+		{
+			MobDefense.instance().getLogger().warning(String.format(Messages.getMessages().getPercentageUpgradeWarning(), criticalPercentage, "Tower"));
+			criticalPercentage = 1.0D;
+		}
+	}
+
 	public abstract void load(Map<String, Object> parameters);
 
 	public Upgrade getUpgrade(int slot)
@@ -266,6 +295,10 @@ public abstract class Tower
 			((TippedArrow) arrow).setBasePotionData(new PotionData(type, type.isExtendable() && extended, type.isUpgradeable() && upgraded));
 		else if (spectralGlowingTicks > 0)
 			((SpectralArrow) arrow).setGlowingTicks((int) (spectralGlowingTicks * (extended ? 2.5D : 1.0D)));
+		if (getFirePercentage() > 0.0D && (getFirePercentage() >= 1.0D || RANDOM.nextDouble() <= getFirePercentage()))
+			arrow.setFireTicks(100);
+		if (getCriticalPercentage() > 0.0D && (getCriticalPercentage() >= 1.0D || RANDOM.nextDouble() <= getCriticalPercentage()))
+			arrow.setCritical(true);
 		getUpgrades().stream().filter(upgrade -> upgrade != null).forEach(upgrade -> upgrade.onTowerLaunchArrow(arrow));
 		return arrow;
 	}
@@ -273,6 +306,26 @@ public abstract class Tower
 	public Dispenser getDispenser()
 	{
 		return dispenser;
+	}
+
+	public double getFirePercentage()
+	{
+		return firePercentage;
+	}
+
+	public void setFirePercentage(double percentage)
+	{
+		this.firePercentage = Math.floor(percentage * 100000.0D) / 100000.0D;
+	}
+
+	public double getCriticalPercentage()
+	{
+		return criticalPercentage;
+	}
+
+	public void setCriticalPercentage(double percentage)
+	{
+		this.criticalPercentage = Math.floor(percentage * 100000.0D) / 100000.0D;
 	}
 
 	@SuppressWarnings("unused")

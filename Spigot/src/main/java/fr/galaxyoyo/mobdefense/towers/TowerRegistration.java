@@ -71,8 +71,7 @@ public final class TowerRegistration implements Serializable
 			Constructor<T> constructor = (Constructor<T>) clazz.getDeclaredConstructor(TowerRegistration.class, Location.class);
 			constructor.setAccessible(true);
 			T t = constructor.newInstance(this, loc);
-			t.setUpdateRate(((Number) parameters.getOrDefault("rate", MobDefense.instance().getConfiguration().getTowerUpdateRate())).intValue());
-			t.load(getParameters());
+			t.load0(getParameters());
 			return t;
 		}
 		catch (Exception ex)

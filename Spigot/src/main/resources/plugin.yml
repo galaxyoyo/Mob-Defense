@@ -1,6 +1,6 @@
 name: MobDefense
 main: fr.galaxyoyo.mobdefense.MobDefense
-version: 1.4.1
+version: 1.4.2
 author: galaxyoyo
 before: NBTAPI
 

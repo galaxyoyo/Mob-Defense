@@ -6,11 +6,9 @@ import fr.galaxyoyo.mobdefense.towers.Tower;
 import org.bukkit.entity.Arrow;
 
 import java.util.Map;
-import java.util.Random;
 
 public class FireUpgrade extends Upgrade
 {
-	private static final Random RANDOM = MobDefense.instance().getRandomInstance();
 	private double percentage;
 
 	protected FireUpgrade(UpgradeRegistration registration, Tower tower)
@@ -26,7 +24,7 @@ public class FireUpgrade extends Upgrade
 			percentage /= 100.0D;
 		if (percentage > 1.0D || percentage <= 0.0D)
 		{
-			MobDefense.instance().getLogger().warning(String.format(Messages.getMessages().getPercentageUpgradeWarning(), percentage, "CriticalUpgrade"));
+			MobDefense.instance().getLogger().warning(String.format(Messages.getMessages().getPercentageUpgradeWarning(), percentage, "FireUpgrade"));
 			percentage = 1.0D;
 		}
 	}
@@ -34,11 +32,13 @@ public class FireUpgrade extends Upgrade
 	@Override
 	public void apply()
 	{
+		getTower().setFirePercentage(getTower().getFirePercentage() + percentage);
 	}
 
 	@Override
 	public void disapply()
 	{
+		getTower().setFirePercentage(getTower().getFirePercentage() - percentage);
 	}
 
 	@Override
@@ -49,7 +49,5 @@ public class FireUpgrade extends Upgrade
 	@Override
 	public void onTowerLaunchArrow(Arrow arrow)
 	{
-		if (percentage == 1.0D || RANDOM.nextDouble() <= percentage)
-			arrow.setFireTicks(100);
 	}
 }
