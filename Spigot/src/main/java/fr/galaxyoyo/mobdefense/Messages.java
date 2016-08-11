@@ -33,14 +33,14 @@ public abstract class Messages extends YamlConfig implements Serializable
 	public static Messages getMessages(CommandSender sender)
 	{
 		if (sender instanceof Player)
-			return getMessages(((Player) sender).spigot().getLocale().split("_")[0]);
+			return getMessages(((Player) sender).spigot().getLocale());
 		else
 			return getMessages();
 	}
 
 	public static Messages getMessages(String language)
 	{
-		switch (language.toLowerCase())
+		switch (language.split("_")[0].toLowerCase())
 		{
 			case "en":
 				return EN;

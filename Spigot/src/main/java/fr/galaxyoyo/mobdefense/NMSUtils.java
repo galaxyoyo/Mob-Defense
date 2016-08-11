@@ -3,7 +3,6 @@ package fr.galaxyoyo.mobdefense;
 import com.comphenix.protocol.PacketType;
 import com.comphenix.protocol.wrappers.WrappedDataWatcher;
 import com.google.common.collect.Lists;
-import fr.galaxyoyo.spigot.nbtapi.ReflectionUtils;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.Villager;
@@ -44,8 +43,7 @@ public class NMSUtils
 							com.comphenix.protocol.wrappers.WrappedDataWatcher watcher = WrappedDataWatcher.getEntityWatcher(villager);
 							Messages msgs = Messages.getMessages(event.getPacket().getStrings().read(0));
 							String name = type == 2 ? msgs.getNpcExchangeName() : type == 1 ? msgs.getNpcUpgradesName() : msgs.getNpcTowerName();
-						//	Object serializer = ReflectionUtils.getNMSStaticField("DataWatcherRegistry", "d");
-							watcher.setObject(2, /* new WrappedDataWatcher.Serializer(String.class, serializer, false) , */name);
+							watcher.setObject(2, name);
 							pkt.getWatchableCollectionModifier().write(0, Lists.newArrayList(watcher));
 							com.comphenix.protocol.ProtocolLibrary.getProtocolManager().sendServerPacket(event.getPlayer(), pkt);
 						}
