@@ -1,8 +1,9 @@
 package fr.galaxyoyo.mobdefense;
 
+import com.comphenix.protocol.PacketType;
 import com.comphenix.protocol.wrappers.WrappedDataWatcher;
 import com.google.common.collect.Lists;
-import net.minecraft.server.v1_10_R1.DataWatcherRegistry;
+import fr.galaxyoyo.spigot.nbtapi.ReflectionUtils;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.Villager;
@@ -38,14 +39,13 @@ public class NMSUtils
 						try
 						{
 							com.comphenix.protocol.events.PacketContainer pkt =
-									new com.comphenix.protocol.events.PacketContainer(com.comphenix.protocol.PacketType.Play.Server.UPDATE_ATTRIBUTES);
+									new com.comphenix.protocol.events.PacketContainer(PacketType.Play.Server.ENTITY_METADATA);
 							pkt.getIntegers().write(0, villager.getEntityId());
-							//	Object nmsWatcher = ReflectionUtils.invokeNMSMethod("Entity", "getDataWatcher", ReflectionUtils.invokeBukkitMethod("getHandle", villager), new
-							// Class<?>[0], new Object[0]);
-							com.comphenix.protocol.wrappers.WrappedDataWatcher watcher = new WrappedDataWatcher(villager);
+							com.comphenix.protocol.wrappers.WrappedDataWatcher watcher = WrappedDataWatcher.getEntityWatcher(villager);
 							Messages msgs = Messages.getMessages(event.getPacket().getStrings().read(0));
 							String name = type == 2 ? msgs.getNpcExchangeName() : type == 1 ? msgs.getNpcUpgradesName() : msgs.getNpcTowerName();
-							watcher.setObject(2, new WrappedDataWatcher.Serializer(String.class, DataWatcherRegistry.d, false), name);
+						//	Object serializer = ReflectionUtils.getNMSStaticField("DataWatcherRegistry", "d");
+							watcher.setObject(2, /* new WrappedDataWatcher.Serializer(String.class, serializer, false) , */name);
 							pkt.getWatchableCollectionModifier().write(0, Lists.newArrayList(watcher));
 							com.comphenix.protocol.ProtocolLibrary.getProtocolManager().sendServerPacket(event.getPlayer(), pkt);
 						}
