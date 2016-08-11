@@ -1,5 +1,12 @@
 package fr.galaxyoyo.mobdefense;
 
+import com.comphenix.packetwrapper.WrapperPlayServerEntityMetadata;
+import com.comphenix.protocol.PacketType;
+import com.comphenix.protocol.ProtocolLibrary;
+import com.comphenix.protocol.events.PacketAdapter;
+import com.comphenix.protocol.events.PacketContainer;
+import com.comphenix.protocol.events.PacketEvent;
+import com.comphenix.protocol.wrappers.WrappedDataWatcher;
 import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
 import com.google.gson.Gson;
@@ -47,6 +54,7 @@ import java.io.BufferedReader;
 import java.io.File;
 import java.io.IOException;
 import java.io.InputStreamReader;
+import java.lang.reflect.InvocationTargetException;
 import java.net.HttpURLConnection;
 import java.net.URL;
 import java.nio.charset.StandardCharsets;
@@ -697,7 +705,32 @@ public class MobDefense extends JavaPlugin
 			if (NMSUtils.getServerVersion().isAfter1_9())
 				//noinspection unchecked
 				npcTower.setRecipes(recipes);
-			npcTower.setCustomName(Messages.getMessages().getNpcTowerName());
+			if (getServer().getPluginManager().isPluginEnabled("ProtocolLib"))
+			{
+				ProtocolLibrary.getProtocolManager().addPacketListener(new PacketAdapter(this, PacketType.Play.Client.SETTINGS)
+				{
+					@Override
+					public void onPacketReceiving(PacketEvent event)
+					{
+						PacketContainer pkt = new PacketContainer(PacketType.Play.Server.UPDATE_ATTRIBUTES);
+						WrapperPlayServerEntityMetadata w;
+						pkt.getIntegers().write(0, npcTower.getEntityId());
+						WrappedDataWatcher watcher = new WrappedDataWatcher(npcTower);
+						watcher.setObject(2, Messages.getMessages(event.getPacket().getStrings().read(0)).getNpcTowerName());
+						pkt.getWatchableCollectionModifier().write(0, Lists.newArrayList(watcher));
+						try
+						{
+							ProtocolLibrary.getProtocolManager().sendServerPacket(event.getPlayer(), pkt);
+						}
+						catch (InvocationTargetException e)
+						{
+							e.printStackTrace();
+						}
+					}
+				});
+			}
+			else
+				npcTower.setCustomName(Messages.getMessages().getNpcTowerName());
 		}
 
 		for (int i = 0; i < 3; ++i)
@@ -751,7 +784,33 @@ public class MobDefense extends JavaPlugin
 			if (NMSUtils.getServerVersion().isAfter1_9())
 				//noinspection unchecked
 				npcUpgrades.setRecipes(recipes);
-			npcUpgrades.setCustomName(Messages.getMessages().getNpcUpgradesName());
+
+			if (getServer().getPluginManager().isPluginEnabled("ProtocolLib"))
+			{
+				ProtocolLibrary.getProtocolManager().addPacketListener(new PacketAdapter(this, PacketType.Play.Client.SETTINGS)
+				{
+					@Override
+					public void onPacketReceiving(PacketEvent event)
+					{
+						PacketContainer pkt = new PacketContainer(PacketType.Play.Server.UPDATE_ATTRIBUTES);
+						WrapperPlayServerEntityMetadata w;
+						pkt.getIntegers().write(0, npcUpgrades.getEntityId());
+						WrappedDataWatcher watcher = new WrappedDataWatcher(npcUpgrades);
+						watcher.setObject(2, Messages.getMessages(event.getPacket().getStrings().read(0)).getNpcUpgradesName());
+						pkt.getWatchableCollectionModifier().write(0, Lists.newArrayList(watcher));
+						try
+						{
+							ProtocolLibrary.getProtocolManager().sendServerPacket(event.getPlayer(), pkt);
+						}
+						catch (InvocationTargetException e)
+						{
+							e.printStackTrace();
+						}
+					}
+				});
+			}
+			else
+				npcUpgrades.setCustomName(Messages.getMessages().getNpcUpgradesName());
 		}
 
 		for (int i = 0; i < 3; ++i)
@@ -816,7 +875,32 @@ public class MobDefense extends JavaPlugin
 
 				}
 			}
-			npcExchange.setCustomName(Messages.getMessages().getNpcExchangeName());
+			if (getServer().getPluginManager().isPluginEnabled("ProtocolLib"))
+			{
+				ProtocolLibrary.getProtocolManager().addPacketListener(new PacketAdapter(this, PacketType.Play.Client.SETTINGS)
+				{
+					@Override
+					public void onPacketReceiving(PacketEvent event)
+					{
+						PacketContainer pkt = new PacketContainer(PacketType.Play.Server.UPDATE_ATTRIBUTES);
+						WrapperPlayServerEntityMetadata w;
+						pkt.getIntegers().write(0, npcExchange.getEntityId());
+						WrappedDataWatcher watcher = new WrappedDataWatcher(npcExchange);
+						watcher.setObject(2, Messages.getMessages(event.getPacket().getStrings().read(0)).getNpcExchangeName());
+						pkt.getWatchableCollectionModifier().write(0, Lists.newArrayList(watcher));
+						try
+						{
+							ProtocolLibrary.getProtocolManager().sendServerPacket(event.getPlayer(), pkt);
+						}
+						catch (InvocationTargetException e)
+						{
+							e.printStackTrace();
+						}
+					}
+				});
+			}
+			else
+				npcExchange.setCustomName(Messages.getMessages().getNpcExchangeName());
 		}
 
 		objective = Bukkit.getScoreboardManager().getMainScoreboard().getObjective("mobdefense");
