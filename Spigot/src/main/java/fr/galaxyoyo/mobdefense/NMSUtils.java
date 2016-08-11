@@ -1,5 +1,6 @@
 package fr.galaxyoyo.mobdefense;
 
+import com.comphenix.protocol.wrappers.WrappedDataWatcher;
 import com.google.common.collect.Lists;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Entity;
@@ -40,7 +41,8 @@ public class NMSUtils
 						pkt.getIntegers().write(0, villager.getEntityId());
 						com.comphenix.protocol.wrappers.WrappedDataWatcher watcher = new com.comphenix.protocol.wrappers.WrappedDataWatcher(villager);
 						Messages msgs = Messages.getMessages(event.getPacket().getStrings().read(0));
-						watcher.setObject(2, null, type == 2 ? msgs.getNpcExchangeName() : type == 1 ? msgs.getNpcUpgradesName() : msgs.getNpcTowerName());
+						String name = type == 2 ? msgs.getNpcExchangeName() : type == 1 ? msgs.getNpcUpgradesName() : msgs.getNpcTowerName();
+						watcher.setObject(2, new WrappedDataWatcher.Serializer(String.class, name, false), name);
 						pkt.getWatchableCollectionModifier().write(0, Lists.newArrayList(watcher));
 						try
 						{
