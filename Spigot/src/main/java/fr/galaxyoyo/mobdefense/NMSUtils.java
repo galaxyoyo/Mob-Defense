@@ -120,6 +120,9 @@ public class NMSUtils
 			{
 				try
 				{
+					if (Bukkit.getScoreboardManager().getMainScoreboard().getObjective("mobdefense") == null)
+						return;
+
 					Messages srvMsgs = Messages.getMessages();
 					Messages oldMsgs = Messages.getMessages(event.getPlayer());
 					Messages newMsgs = Messages.getMessages(event.getPacket().getStrings().read(0));
