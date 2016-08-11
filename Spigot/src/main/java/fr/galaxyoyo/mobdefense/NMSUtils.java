@@ -40,7 +40,7 @@ public class NMSUtils
 						pkt.getIntegers().write(0, villager.getEntityId());
 						com.comphenix.protocol.wrappers.WrappedDataWatcher watcher = new com.comphenix.protocol.wrappers.WrappedDataWatcher(villager);
 						Messages msgs = Messages.getMessages(event.getPacket().getStrings().read(0));
-						watcher.setObject(2, type == 2 ? msgs.getNpcExchangeName() : type == 1 ? msgs.getNpcUpgradesName() : msgs.getNpcTowerName());
+						watcher.setObject(2, null, type == 2 ? msgs.getNpcExchangeName() : type == 1 ? msgs.getNpcUpgradesName() : msgs.getNpcTowerName());
 						pkt.getWatchableCollectionModifier().write(0, Lists.newArrayList(watcher));
 						try
 						{
