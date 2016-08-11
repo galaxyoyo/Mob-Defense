@@ -699,30 +699,7 @@ public class MobDefense extends JavaPlugin
 				//noinspection unchecked
 				npcTower.setRecipes(recipes);
 			if (getServer().getPluginManager().isPluginEnabled("ProtocolLib"))
-			{
-				com.comphenix.protocol.ProtocolLibrary.getProtocolManager()
-						.addPacketListener(new com.comphenix.protocol.events.PacketAdapter(this, com.comphenix.protocol.PacketType.Play.Client.SETTINGS)
-						{
-							@Override
-							public void onPacketReceiving(com.comphenix.protocol.events.PacketEvent event)
-							{
-								com.comphenix.protocol.events.PacketContainer pkt =
-										new com.comphenix.protocol.events.PacketContainer(com.comphenix.protocol.PacketType.Play.Server.UPDATE_ATTRIBUTES);
-								pkt.getIntegers().write(0, npcTower.getEntityId());
-								com.comphenix.protocol.wrappers.WrappedDataWatcher watcher = new com.comphenix.protocol.wrappers.WrappedDataWatcher(npcTower);
-								watcher.setObject(2, Messages.getMessages(event.getPacket().getStrings().read(0)).getNpcTowerName());
-								pkt.getWatchableCollectionModifier().write(0, Lists.newArrayList(watcher));
-								try
-								{
-									com.comphenix.protocol.ProtocolLibrary.getProtocolManager().sendServerPacket(event.getPlayer(), pkt);
-								}
-								catch (InvocationTargetException e)
-								{
-									e.printStackTrace();
-								}
-							}
-						});
-			}
+				NMSUtils.addEntityNameProtocolLibListener(npcTower, 0);
 			else
 				npcTower.setCustomName(Messages.getMessages().getNpcTowerName());
 		}
@@ -780,30 +757,7 @@ public class MobDefense extends JavaPlugin
 				npcUpgrades.setRecipes(recipes);
 
 			if (getServer().getPluginManager().isPluginEnabled("ProtocolLib"))
-			{
-				com.comphenix.protocol.ProtocolLibrary.getProtocolManager()
-						.addPacketListener(new com.comphenix.protocol.events.PacketAdapter(this, com.comphenix.protocol.PacketType.Play.Client.SETTINGS)
-						{
-							@Override
-							public void onPacketReceiving(com.comphenix.protocol.events.PacketEvent event)
-							{
-								com.comphenix.protocol.events.PacketContainer pkt =
-										new com.comphenix.protocol.events.PacketContainer(com.comphenix.protocol.PacketType.Play.Server.UPDATE_ATTRIBUTES);
-								pkt.getIntegers().write(0, npcUpgrades.getEntityId());
-								com.comphenix.protocol.wrappers.WrappedDataWatcher watcher = new com.comphenix.protocol.wrappers.WrappedDataWatcher(npcUpgrades);
-								watcher.setObject(2, Messages.getMessages(event.getPacket().getStrings().read(0)).getNpcUpgradesName());
-								pkt.getWatchableCollectionModifier().write(0, Lists.newArrayList(watcher));
-								try
-								{
-									com.comphenix.protocol.ProtocolLibrary.getProtocolManager().sendServerPacket(event.getPlayer(), pkt);
-								}
-								catch (InvocationTargetException e)
-								{
-									e.printStackTrace();
-								}
-							}
-						});
-			}
+				NMSUtils.addEntityNameProtocolLibListener(npcUpgrades, 1);
 			else
 				npcUpgrades.setCustomName(Messages.getMessages().getNpcUpgradesName());
 		}
@@ -871,30 +825,7 @@ public class MobDefense extends JavaPlugin
 				}
 			}
 			if (getServer().getPluginManager().isPluginEnabled("ProtocolLib"))
-			{
-				com.comphenix.protocol.ProtocolLibrary.getProtocolManager()
-						.addPacketListener(new com.comphenix.protocol.events.PacketAdapter(this, com.comphenix.protocol.PacketType.Play.Client.SETTINGS)
-						{
-							@Override
-							public void onPacketReceiving(com.comphenix.protocol.events.PacketEvent event)
-							{
-								com.comphenix.protocol.events.PacketContainer pkt =
-										new com.comphenix.protocol.events.PacketContainer(com.comphenix.protocol.PacketType.Play.Server.UPDATE_ATTRIBUTES);
-								pkt.getIntegers().write(0, npcExchange.getEntityId());
-								com.comphenix.protocol.wrappers.WrappedDataWatcher watcher = new com.comphenix.protocol.wrappers.WrappedDataWatcher(npcExchange);
-								watcher.setObject(2, Messages.getMessages(event.getPacket().getStrings().read(0)).getNpcExchangeName());
-								pkt.getWatchableCollectionModifier().write(0, Lists.newArrayList(watcher));
-								try
-								{
-									com.comphenix.protocol.ProtocolLibrary.getProtocolManager().sendServerPacket(event.getPlayer(), pkt);
-								}
-								catch (InvocationTargetException e)
-								{
-									e.printStackTrace();
-								}
-							}
-						});
-			}
+				NMSUtils.addEntityNameProtocolLibListener(npcExchange, 2);
 			else
 				npcExchange.setCustomName(Messages.getMessages().getNpcExchangeName());
 		}
