@@ -547,6 +547,9 @@ public class MobDefense extends JavaPlugin
 			}
 			FileUtils.writeStringToFile(file, getGson().toJson(Upgrade.getUpgradeRegistrations()), StandardCharsets.UTF_8);
 
+			if (getServer().getPluginManager().getPlugin("ProtocolLib") != null)
+				NMSUtils.registerSBListeners();
+
 			world.getEntities().stream().filter(entity -> !(entity instanceof Player)).forEach(Entity::remove);
 
 			Metrics metrics = new Metrics(this);
