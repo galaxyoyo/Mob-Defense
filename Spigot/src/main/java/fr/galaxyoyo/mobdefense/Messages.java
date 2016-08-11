@@ -50,6 +50,9 @@ public abstract class Messages extends YamlConfig implements Serializable
 
 	public static Messages getMessages(String language)
 	{
+		if (DEFAULT_MESSAGES != null && MobDefense.instance().getConfiguration() != null && MobDefense.instance().getConfiguration().isForcePreferredLanguage())
+			return DEFAULT_MESSAGES;
+
 		switch (language.split("_")[0].toLowerCase())
 		{
 			case "en":
