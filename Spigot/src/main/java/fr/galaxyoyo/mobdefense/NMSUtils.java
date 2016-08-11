@@ -126,13 +126,13 @@ public class NMSUtils
 
 					PacketContainer pkt = new PacketContainer(PacketType.Play.Server.SCOREBOARD_SCORE);
 					pkt.getStrings().write(0, oldMsgs.getLives());
-					pkt.getStrings().write(0, "mobdefense");
+					pkt.getStrings().write(1, "mobdefense");
 					pkt.getScoreboardActions().write(0, EnumWrappers.ScoreboardAction.REMOVE);
 					ProtocolLibrary.getProtocolManager().sendServerPacket(event.getPlayer(), pkt);
 
 					pkt = new PacketContainer(PacketType.Play.Server.SCOREBOARD_SCORE);
 					pkt.getStrings().write(0, oldMsgs.getWave());
-					pkt.getStrings().write(0, "mobdefense");
+					pkt.getStrings().write(1, "mobdefense");
 					pkt.getScoreboardActions().write(0, EnumWrappers.ScoreboardAction.REMOVE);
 					ProtocolLibrary.getProtocolManager().sendServerPacket(event.getPlayer(), pkt);
 
@@ -140,14 +140,14 @@ public class NMSUtils
 					pkt.getStrings().write(0, newMsgs.getLives());
 					pkt.getStrings().write(1, "mobdefense");
 					pkt.getScoreboardActions().write(0, EnumWrappers.ScoreboardAction.CHANGE);
-					pkt.getIntegers().write(0, event.getPlayer().getScoreboard().getObjective("mobdefense").getScore(srvMsgs.getLives()).getScore());
+					pkt.getIntegers().write(0, Bukkit.getScoreboardManager().getMainScoreboard().getObjective("mobdefense").getScore(srvMsgs.getLives()).getScore());
 					ProtocolLibrary.getProtocolManager().sendServerPacket(event.getPlayer(), pkt);
 
 					pkt = new PacketContainer(PacketType.Play.Server.SCOREBOARD_SCORE);
 					pkt.getStrings().write(0, newMsgs.getWave());
 					pkt.getStrings().write(1, "mobdefense");
 					pkt.getScoreboardActions().write(0, EnumWrappers.ScoreboardAction.CHANGE);
-					pkt.getIntegers().write(0, event.getPlayer().getScoreboard().getObjective("mobdefense").getScore(srvMsgs.getWave()).getScore());
+					pkt.getIntegers().write(0, Bukkit.getScoreboardManager().getMainScoreboard().getObjective("mobdefense").getScore(srvMsgs.getWave()).getScore());
 					ProtocolLibrary.getProtocolManager().sendServerPacket(event.getPlayer(), pkt);
 				}
 				catch (Exception e)
