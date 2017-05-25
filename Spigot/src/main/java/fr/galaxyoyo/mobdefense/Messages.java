@@ -9,7 +9,6 @@ import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.command.CommandSender;
 import org.bukkit.craftbukkit.libs.joptsimple.internal.Strings;
-import org.bukkit.craftbukkit.v1_10_R1.entity.CraftPlayer;
 import org.bukkit.entity.Player;
 
 import java.io.File;
@@ -37,7 +36,7 @@ public abstract class Messages extends YamlConfig implements Serializable
 		{
 			try
 			{
-				return getMessages(((CraftPlayer) sender).spigot().getLocale());
+				return getMessages(((Player) sender).spigot().getLocale());
 			}
 			catch (Exception ex)
 			{

@@ -287,7 +287,7 @@ public class ItemStackTypeAdapter extends TypeAdapter<ItemStack>
 			meta.setDisplayName(name);
 		meta.setLore(lore);
 		meta.addItemFlags(flags.toArray(new ItemFlag[flags.size()]));
-		//noinspection ConstantConditions
+		//noinspection deprecation
 		meta.spigot().setUnbreakable(unbreakable);
 		if (meta instanceof PotionMeta)
 		{

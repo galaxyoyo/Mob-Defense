@@ -1,6 +1,6 @@
 name: MobDefense
 main: fr.galaxyoyo.mobdefense.MobDefense
-version: 1.4.3
+version: 1.4.4
 author: galaxyoyo
 before: NBTAPI
 after: ProtocolLib

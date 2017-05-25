@@ -11,6 +11,7 @@ import com.comphenix.protocol.wrappers.WrappedDataWatcher;
 import com.google.common.collect.Lists;
 import fr.galaxyoyo.mobdefense.events.GameStartedEvent;
 import fr.galaxyoyo.mobdefense.events.GameStoppedEvent;
+import fr.galaxyoyo.mobdefense.events.LanguageChangedEvent;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.Villager;
@@ -86,6 +87,29 @@ public class NMSUtils
 					return;
 
 				Bukkit.getOnlinePlayers().forEach(player -> listener.onPacketReceiving(PacketEvent.fromClient(player, null, null, player)));
+			}
+
+			@EventHandler
+			public void onLanguageChanged(LanguageChangedEvent event)
+			{
+				if (unregistered)
+					return;
+
+				try
+				{
+					PacketContainer pkt = new PacketContainer(PacketType.Play.Server.ENTITY_METADATA);
+					pkt.getIntegers().write(0, villager.getEntityId());
+					WrappedDataWatcher watcher = WrappedDataWatcher.getEntityWatcher(villager);
+					Messages msgs = Messages.getMessages(event.getLocale() == null ? event.getPlayer().spigot().getLocale() : event.getLocale().getLanguage());
+					String name = type == 2 ? msgs.getNpcExchangeName() : type == 1 ? msgs.getNpcUpgradesName() : msgs.getNpcTowerName();
+					watcher.setObject(2, name);
+					pkt.getWatchableCollectionModifier().write(0, Lists.newArrayList(watcher));
+					ProtocolLibrary.getProtocolManager().sendServerPacket(event.getPlayer(), pkt);
+				}
+				catch (Exception e)
+				{
+					e.printStackTrace();
+				}
 			}
 		}, MobDefense.instance());
 	}
@@ -187,7 +211,9 @@ public class NMSUtils
 		v1_8_R3("1.8.6 -> 1.8.9"),
 		v1_9_R1("1.9 -> 1.9.2"),
 		v1_9_R2("1.9.4"),
-		v1_10_R1("1.10 -> 1.10.2");
+		v1_10_R1("1.10 -> 1.10.2"),
+		v1_11_R1("1.11 -> 1.11.2"),
+		v1_12_R1("1.12");
 
 		private String name;
 
@@ -214,6 +240,16 @@ public class NMSUtils
 		public boolean isAfter1_10()
 		{
 			return compareTo(v1_10_R1) >= 0;
+		}
+
+		public boolean isAfter1_11()
+		{
+			return compareTo(v1_11_R1) >= 0;
+		}
+
+		public boolean isAfter1_12()
+		{
+			return compareTo(v1_12_R1) >= 0;
 		}
 	}
 }

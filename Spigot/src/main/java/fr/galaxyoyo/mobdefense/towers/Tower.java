@@ -23,10 +23,7 @@ import org.bukkit.potion.PotionType;
 import org.bukkit.scheduler.BukkitTask;
 import org.bukkit.util.Vector;
 
-import java.util.Arrays;
-import java.util.List;
-import java.util.Map;
-import java.util.Random;
+import java.util.*;
 import java.util.stream.Collectors;
 
 public abstract class Tower
@@ -299,7 +296,7 @@ public abstract class Tower
 			arrow.setFireTicks(100);
 		if (getCriticalPercentage() > 0.0D && (getCriticalPercentage() >= 1.0D || RANDOM.nextDouble() <= getCriticalPercentage()))
 			arrow.setCritical(true);
-		getUpgrades().stream().filter(upgrade -> upgrade != null).forEach(upgrade -> upgrade.onTowerLaunchArrow(arrow));
+		getUpgrades().stream().filter(Objects::nonNull).forEach(upgrade -> upgrade.onTowerLaunchArrow(arrow));
 		return arrow;
 	}
 
